@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  id          String   @id @default(uuid())
+  shop_name   String   @unique
+  domain      String?
+  accessToken String
+  scope       String
+  state       String
+  shop_id     String
+  name        String
+  session_id  String
+  currency    String?
+  status      String   @default("active")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  // plan_id                        String?  @default("basic_1")
+  // plan_price                     Int      @default(0)
+  // plan_activated_date            Int      @default(0)
+  // plan_status                    String   @default("none")
+  // shopify_charge_id              String?
+  // next_billing_date              Int      @default(0)
+  // currency                       String?
+  // plan                           Plan?    @relation(fields: [plan_id], references: [id])
+}

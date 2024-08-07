@@ -1,0 +1,26 @@
+{
+  "name": "checkout-app-main",
+  "version": "1.0.0",
+  "main": "web/index.js",
+  "license": "UNLICENSED",
+  "scripts": {
+    "shopify": "shopify",
+    "build": "shopify app build",
+    "dev": "shopify app dev",
+    "info": "shopify app info",
+    "generate": "shopify app generate",
+    "deploy": "shopify app deploy",
+    "install-all": "npm install && cd web && npm install && cd frontend && npm install",
+    "delete-all": "rm -rf node_modules && rm package-lock.json && cd web && rm -rf node_modules && rm package-lock.json && cd frontend && rm -rf node_modules && rm package-lock.json"
+  },
+  "dependencies": {
+    "@shopify/app": "^3.58.2",
+    "@shopify/cli": "3.64",
+    "@shopify/shopify_function": "0.1.0",
+    "javy": "^0.1.2"
+  },
+  "author": "Maryam",
+  "devDependencies": {
+    "@shopify/api-codegen-preset": "^1.0.1"
+  }
+}
