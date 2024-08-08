@@ -14,19 +14,19 @@ datasource db {
 }
 
 model Shop {
-  id          String   @id @default(uuid())
-  shop_name   String   @unique
-  domain      String?
-  accessToken String
-  scope       String
-  state       String
-  shop_id     String
-  name        String
-  session_id  String
-  currency    String?
-  status      String   @default("active")
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id                    String                  @id @default(uuid())
+  shop_name             String                  @unique
+  domain                String?
+  accessToken           String
+  scope                 String
+  state                 String
+  shop_id               String
+  name                  String
+  session_id            String
+  currency              String?
+  status                String                  @default("active")
+  created_at            DateTime                @default(now())
+  updated_at            DateTime                @updatedAt
   // plan_id                        String?  @default("basic_1")
   // plan_price                     Int      @default(0)
   // plan_activated_date            Int      @default(0)
@@ -35,4 +35,31 @@ model Shop {
   // next_billing_date              Int      @default(0)
   // currency                       String?
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
+  payment_customization Payment_customization[]
+}
+
+// model Reorder {
+//   id           String  @id @default(uuid())
+//   type         String
+//   title        String
+//   rule_status  Boolean
+//   payment_rule Boolean
+//   conditions   Json
+//   payment_name Json
+//   shop_id      String
+//   shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+// }
+
+model Payment_customization {
+  id           String  @id @default(uuid())
+  type         String
+  title        String
+  rule_status  Boolean
+  payment_rule Boolean
+  conditions   Json?
+  payment_name Json?
+  shop_id      String
+  shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("payment_customization")
 }

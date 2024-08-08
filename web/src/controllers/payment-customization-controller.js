@@ -1,4 +1,6 @@
 import ShopifyService from "../services/shopify-service.js";
+import { PaymentCustomization } from "../models/index.js";
+import prismaClient from "../db/prisma/index.js";
 
 export const getPaymentCustomizationById = async (req, res) => {
   try {
@@ -124,5 +126,77 @@ export const createPaymentCustomization = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+export const createReorderPaymentCustomization = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const data = req.body;
+    const shop = req.shop;
+
+    // const createReOrder = await PaymentCustomization.create({
+    //   shop_id: shop.id,
+    //   ...data,
+    // });
+    const service = new ShopifyService({
+      shop_name,
+      accessToken,
+    });
+    const get = await service.getPaymentCustomizationNodes();
+    console.log("get ?", get);
+    // const getFnId = await service.getShopifyFunctionId("payment-customization");
+    // await service.createPaymentCustomization(getFnId, data);
+
+    res.status(200).json({
+      message: `Customization Setting for ${req.body.type} Created !! `,
+      createReOrder,
+    });
+  } catch (error) {
+    console.error("Error creating Customization:", error);
+    res.status(500).json({ error: "Error creating Customization" });
+  }
+};
+
+export const getReorderByIdPaymentCustomization = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const getByID = await PaymentCustomization.getByID(id);
+
+    res.status(200).json({ getByID });
+  } catch (error) {
+    console.error("Error Getting Customization by Id:", error);
+    res.status(500).json({ error: "Error Getting Customization by Id:" });
+  }
+};
+
+export const getAllReorderPaymentCustomization = async (req, res) => {
+  try {
+    const getAll = await PaymentCustomization.findAll();
+    res.status(200).json({ getAll });
+  } catch (error) {
+    console.error("Error Getting All Customization:", error);
+    res.status(500).json({ error: "Error Getting All Customization :" });
+  }
+};
+
+export const updateReorderPaymentCustomization = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const getByID = await PaymentCustomization.getByID(id);
+    console.log("get by id ", getByID);
+    const data = req.body;
+    const updatedReOrder = await PaymentCustomization.update({
+      id,
+      ...data,
+    });
+
+    res
+      .status(200)
+      .json({ message: `Customization id: ${id} is Updated `, updatedReOrder });
+  } catch (error) {
+    console.error("Error updating Customization:", error);
+    res.status(500).json({ error: "Error updating Customization :" });
   }
 };

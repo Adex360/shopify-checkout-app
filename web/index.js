@@ -3,7 +3,6 @@ import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
 import serveStatic from "serve-static";
-
 // import shopify from "./shopify.js";
 import shopify from "./src/shopify/index.js";
 import productCreator from "./product-creator.js";
@@ -44,12 +43,16 @@ app.post(
 );
 
 app.use(express.json());
+
+app.use("/api/*", commonMiddleware);
+registerApi(app);
+
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
 app.use("/api/*", shopify.validateAuthenticatedSession());
-app.use("/api/*", commonMiddleware);
-registerApi(app);
+// app.use("/api/*", commonMiddleware);
+// registerApi(app);
 
 app.get("/api/products/count", async (_req, res) => {
   const countData = await shopify.api.rest.Product.count({
