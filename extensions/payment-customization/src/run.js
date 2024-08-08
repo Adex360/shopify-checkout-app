@@ -87,15 +87,33 @@ export function run(input) {
   console.log("input", input);
   /**
    * @type {{
-   * payment_rule:boolean,
-   * conditions:JSON,
-   * payment_name:JSON
-   * type: string,
-   * paymentMethodName: string,
-   * cartTotal: number,
-   * codAtTop: boolean,
+   *   payment_rule: boolean,
+   *   conditions: {
+   *     type: string,
+   *     rule: string,
+   *     value: string[]
+   *   }[],
+   *   payment_name: {
+   *     match: string,
+   *     title: string[]
+   *   },
+   *   type: string,
+   *   paymentMethodName: string,
+   *   cartTotal: number,
+   *   codAtTop: boolean
    * }}
    */
+  // /**
+  //  * @type {{
+  //  * payment_rule:boolean,
+  //  * conditions:JSON,
+  //  * payment_name:JSON
+  //  * type: string,
+  //  * paymentMethodName: string,
+  //  * cartTotal: number,
+  //  * codAtTop: boolean,
+  //  * }}
+  //  */
   // console.log("today", input?.paymentCustomization?.metafield?.value);
   // const metafieldData = input?.paymentCustomization?.metafield?.value;
   const configuration = JSON.parse(
@@ -116,51 +134,230 @@ export function run(input) {
 
   let operations = [];
   if (configuration.type === "re-order") {
-    console.log("hello");
-    if (configuration.conditions) {
-    }
-    // const codPaymentMethod = input.paymentMethods.find(
-    //   (method) => method.name === "Cash on Delivery"
-    // );
+    if (!configuration.payment_rule && configuration.conditions) {
+      const countryCodes = input.cart.deliveryGroups.map((group) => {
+        return group?.deliveryAddress?.countryCode;
+      });
+      const deliveryTitles = input.cart.deliveryGroups
+        .map((group) => {
+          return group?.deliveryOptions?.map((option) => option?.title);
+        })
+        .flat();
 
-    const countryCodes = input.cart.deliveryGroups.map((group) => {
-      return group?.deliveryAddress?.countryCode;
-    });
+      // @ts-ignore
+      const conditionsMet = configuration.conditions.every((condition) => {
+        if (condition.type === "country" && condition.rule === "contains") {
+          // @ts-ignore
+          return (
+            // @ts-ignore
+            countryCodes.some((code) => condition.value.includes(code))
+          );
+        }
+        if (
+          condition.type === "country" &&
+          condition.rule === "does-not-contains"
+        ) {
+          // @ts-ignore
+          return !countryCodes.some((code) => condition.value.includes(code));
+        }
+        if (condition.type === "title" && condition.rule === "contains") {
+          // @ts-ignore
+          return deliveryTitles.some((title) =>
+            // @ts-ignore
+            condition.value.includes(title)
+          );
+        }
+        if (
+          condition.type === "title" &&
+          condition.rule === "does-not-contains"
+        ) {
+          // @ts-ignore
+          return (
+            // @ts-ignore
+            !deliveryTitles.some((name) => condition.value.includes(name))
+          );
+        } else {
+          return false;
+        }
+      });
 
-    // deliveryAddress.countryCode.find(
-    //   (method) => method === "PK"
-    // );
-    console.log("country2", countryCodes);
-    // const country = input.cart.deliveryGroups;
-    // console.log("country@ ", country);
-    // @ts-ignore
-    const paymentNames = configuration.payment_name.title; // Example: ["Cash On Delivery", "Bogus"]
+      if (conditionsMet) {
+        console.log("Condition met: Execute your code here.");
+        // @ts-ignore
+        const paymentNames = configuration.payment_name.title;
+        const matchType = configuration.payment_name.match;
+        paymentNames.forEach((name, index) => {
+          let paymentMethod;
+          switch (matchType) {
+            case "exact-case-sensitive":
+              paymentMethod = input.paymentMethods.find(
+                (method) => method.name === name
+              );
+              break;
 
-    paymentNames.forEach(
-      (/** @type {string} */ name, /** @type {any} */ index) => {
-        console.log("name", name);
-        const paymentMethod = input.paymentMethods.find(
-          (method) => method.name === name
-          // "Cash on Delivery (COD)"
-          // name
-        );
-        console.log("payment method", paymentMethod);
+            case "exact-none-case":
+              paymentMethod = input.paymentMethods.find(
+                (method) => method.name.toLowerCase() === name.toLowerCase()
+              );
+              break;
+
+            case "contains":
+              paymentMethod = input.paymentMethods.find((method) =>
+                method.name.includes(name)
+              );
+              break;
+
+            default:
+              console.log("Unknown match type:", matchType);
+              return;
+          }
+
+          if (paymentMethod) {
+            operations.push({
+              move: {
+                paymentMethodId: paymentMethod.id,
+                index: index,
+              },
+            });
+          }
+        });
+      }
+    } else {
+      console.log("sort without condition ");
+      // @ts-ignore
+      const paymentNames = configuration.payment_name.title;
+      const matchType = configuration.payment_name.match;
+      paymentNames.forEach((name, index) => {
+        let paymentMethod;
+        switch (matchType) {
+          case "exact-case-sensitive":
+            paymentMethod = input.paymentMethods.find(
+              (method) => method.name === name
+            );
+            break;
+
+          case "exact-none-case":
+            paymentMethod = input.paymentMethods.find(
+              (method) => method.name.toLowerCase() === name.toLowerCase()
+            );
+            break;
+
+          case "contains":
+            paymentMethod = input.paymentMethods.find((method) =>
+              method.name.includes(name)
+            );
+            break;
+
+          default:
+            console.log("Unknown match type:", matchType);
+            return;
+        }
 
         if (paymentMethod) {
           operations.push({
             move: {
               paymentMethodId: paymentMethod.id,
-              index: index, // Places them in the order of the array
+              index: index,
             },
           });
         }
-      }
-    );
-    console.log("wkk2");
+      });
+    }
   }
+
+  if (configuration.type === "rename") {
+    if (!configuration.payment_rule && configuration.conditions) {
+      const countryCodes = input.cart.deliveryGroups.map((group) => {
+        return group?.deliveryAddress?.countryCode;
+      });
+      const deliveryTitles = input.cart.deliveryGroups
+        .map((group) => {
+          return group?.deliveryOptions?.map((option) => option?.title);
+        })
+        .flat();
+      // @ts-ignore
+      const conditionsMet = configuration.conditions.every((condition) => {
+        if (condition.type === "country" && condition.rule === "contains") {
+          // @ts-ignore
+          return (
+            // @ts-ignore
+            countryCodes.some((code) => condition.value.includes(code))
+          );
+        }
+        if (
+          condition.type === "country" &&
+          condition.rule === "does-not-contains"
+        ) {
+          // @ts-ignore
+          return !countryCodes.some((code) => condition.value.includes(code));
+        }
+        if (condition.type === "title" && condition.rule === "contains") {
+          // @ts-ignore
+          return deliveryTitles.some((title) =>
+            // @ts-ignore
+            condition.value.includes(title)
+          );
+        }
+        if (
+          condition.type === "title" &&
+          condition.rule === "does-not-contains"
+        ) {
+          // @ts-ignore
+          return (
+            // @ts-ignore
+            !deliveryTitles.some((name) => condition.value.includes(name))
+          );
+        } else {
+          return false;
+        }
+      });
+
+      if (conditionsMet) {
+        console.log("Condition met: .");
+        // @ts-ignore
+        configuration.payment_name.forEach(
+          (/** @type {{ old: string; new: any; }} */ name) => {
+            const renamePaymentMethod = input.paymentMethods.find(
+              (method) => method.name === name.old
+            );
+
+            if (renamePaymentMethod) {
+              operations.push({
+                rename: {
+                  paymentMethodId: renamePaymentMethod.id,
+                  name: name.new,
+                },
+              });
+            }
+          }
+        );
+      }
+    } else {
+      console.log("NO CONDITION");
+      // @ts-ignore
+      configuration.payment_name.forEach(
+        (/** @type {{ old: string; new: any; }} */ name) => {
+          const renamePaymentMethod = input.paymentMethods.find(
+            (method) => method.name === name.old
+          );
+
+          if (renamePaymentMethod) {
+            operations.push({
+              rename: {
+                paymentMethodId: renamePaymentMethod.id,
+                name: name.new,
+              },
+            });
+          }
+        }
+      );
+    }
+  }
+
   // Handle the "COD at Top" functionality
   if (configuration.codAtTop) {
     console.log("configuration.codAtTop", configuration.codAtTop);
+    // @ts-ignore
     // @ts-ignore
     const codPaymentMethod = input.paymentMethods.find(
       (method) => method.name === "Cash on Delivery"
@@ -195,24 +392,7 @@ export function run(input) {
     }
   }
 
-  // Handle the "Rename" functionality
-  if (configuration.type === "rename") {
-    // @ts-ignore
-    const renamePaymentMethod = input.paymentMethods.find((method) =>
-      method.name.includes(configuration.paymentMethodName)
-    );
-
-    // if (renamePaymentMethod) {
-    operations.push({
-      rename: {
-        paymentMethodId: "gid://shopify/PaymentCustomizationPaymentMethod/2",
-        // renamePaymentMethod.id,
-        name: configuration.paymentMethodName,
-      },
-    });
-  }
   console.log("operation @@@ ", operations);
-  // }
 
   // If no operations were added, return NO_CHANGES
   if (operations.length === 0) {
