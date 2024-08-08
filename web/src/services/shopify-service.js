@@ -252,7 +252,44 @@ export default class ShopifyService {
     console.log("create resp  ", resp.data.data.paymentCustomizationCreate);
   }
 
-  async updatePaymentCustomization() {
+  async updatePaymentCustomization(id) {
+    const paymentCustomizationInput = {
+      functionId: id,
+      title: settingData.title,
+      enabled: settingData.rule_status,
+      metafields: [
+        {
+          namespace: "$app:payment-customization",
+          key: "function-configuration",
+          type: "json",
+          value: JSON.stringify({
+            type: settingData.type,
+            payment_rule: settingData.payment_rule,
+            conditions: settingData.conditions,
+            payment_name: settingData.payment_name,
+          }),
+        },
+      ],
+    };
+
+    const queryString = {
+      query: `
+      mutation updatePaymentCustomization($id: ID!, $input: PaymentCustomizationInput!) {
+        paymentCustomizationUpdate(id: $id, paymentCustomization: $input) {
+          paymentCustomization {
+            id
+          }
+          userErrors {
+            message
+          }
+        }
+      }
+      `,
+      variables: {
+        id: `gid://shopify/PaymentCustomization/${id}`,
+        input: paymentCustomizationInput,
+      },
+    };
     const response = await admin.graphql(
       `#graphql
         mutation updatePaymentCustomization($id: ID!, $input: PaymentCustomizationInput!) {
@@ -272,5 +309,7 @@ export default class ShopifyService {
         },
       }
     );
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    console.log("create resp  ", resp.data.data.paymentCustomizationCreate);
   }
 }
