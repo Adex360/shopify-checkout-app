@@ -96,25 +96,72 @@ export function run(input) {
    * codAtTop: boolean,
    * }}
    */
-  console.log("rrrrr", input?.paymentCustomization?.metafield?.value);
-
+  // console.log("today", input?.paymentCustomization?.metafield?.value);
+  // const metafieldData = input?.paymentCustomization?.metafield?.value;
   const configuration = JSON.parse(
     input?.paymentCustomization?.metafield?.value ?? "{}"
   );
   // const configuration = input?.paymentCustomization?.metafield?.value ?? "{}"
-  JSON.stringify(configuration, null, 2);
-
+  const strin = JSON.stringify(configuration, null, 2);
+  console.log("metafields", strin);
   // console.log("configuration@@@@@ ", JSON.stringify(configuration, null, 2));
   // console.log(
   //   "payment_name",
+  //   // configuration,
+  //   configuration.type,
+  //   configuration.payment_name.title,
+  //   "json",
   //   JSON.stringify(configuration.payment_name, null, 2)
   // );
 
   let operations = [];
+  if (configuration.type === "re-order") {
+    console.log("hello");
+    if (configuration.conditions) {
+    }
+    // const codPaymentMethod = input.paymentMethods.find(
+    //   (method) => method.name === "Cash on Delivery"
+    // );
 
+    const countryCodes = input.cart.deliveryGroups.map((group) => {
+      return group?.deliveryAddress?.countryCode;
+    });
+
+    // deliveryAddress.countryCode.find(
+    //   (method) => method === "PK"
+    // );
+    console.log("country2", countryCodes);
+    // const country = input.cart.deliveryGroups;
+    // console.log("country@ ", country);
+    // @ts-ignore
+    const paymentNames = configuration.payment_name.title; // Example: ["Cash On Delivery", "Bogus"]
+
+    paymentNames.forEach(
+      (/** @type {string} */ name, /** @type {any} */ index) => {
+        console.log("name", name);
+        const paymentMethod = input.paymentMethods.find(
+          (method) => method.name === name
+          // "Cash on Delivery (COD)"
+          // name
+        );
+        console.log("payment method", paymentMethod);
+
+        if (paymentMethod) {
+          operations.push({
+            move: {
+              paymentMethodId: paymentMethod.id,
+              index: index, // Places them in the order of the array
+            },
+          });
+        }
+      }
+    );
+    console.log("wkk2");
+  }
   // Handle the "COD at Top" functionality
   if (configuration.codAtTop) {
     console.log("configuration.codAtTop", configuration.codAtTop);
+    // @ts-ignore
     const codPaymentMethod = input.paymentMethods.find(
       (method) => method.name === "Cash on Delivery"
     );
@@ -150,6 +197,7 @@ export function run(input) {
 
   // Handle the "Rename" functionality
   if (configuration.type === "rename") {
+    // @ts-ignore
     const renamePaymentMethod = input.paymentMethods.find((method) =>
       method.name.includes(configuration.paymentMethodName)
     );

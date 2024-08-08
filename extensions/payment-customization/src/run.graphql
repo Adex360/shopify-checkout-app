@@ -5,6 +5,16 @@ query RunInput {
         amount
       }
     }
+    deliveryGroups {
+      deliveryAddress {
+        countryCode
+      }
+    }
+    deliveryGroups {
+      deliveryOptions {
+        title
+      }
+    }
   }
   paymentMethods {
     id

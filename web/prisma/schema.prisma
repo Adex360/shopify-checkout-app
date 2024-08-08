@@ -38,22 +38,10 @@ model Shop {
   payment_customization Payment_customization[]
 }
 
-// model Reorder {
-//   id           String  @id @default(uuid())
-//   type         String
-//   title        String
-//   rule_status  Boolean
-//   payment_rule Boolean
-//   conditions   Json
-//   payment_name Json
-//   shop_id      String
-//   shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-// }
-
 model Payment_customization {
   id           String  @id @default(uuid())
   type         String
-  title        String
+  title        String  @unique
   rule_status  Boolean
   payment_rule Boolean
   conditions   Json?
