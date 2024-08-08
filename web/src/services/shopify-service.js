@@ -167,7 +167,7 @@ export default class ShopifyService {
     return paymentCustomizationNode.id;
   }
 
-  async getPaymentCustomizationNodes() {
+  async getPaymentCustomizationNodes(title) {
     const queryString = {
       query: `
       query {
@@ -183,13 +183,11 @@ export default class ShopifyService {
   `,
     };
     const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    console.log("nodes ", resp.data.data);
-    const customizations = resp.data.data.paymentCustomizations.edges.map(
-      (edge) => {
-        return edge;
-      }
+    const nodes = resp.data.data.paymentCustomizations.edges;
+    const paymentCustomizationNode = nodes.find(
+      (edges) => edges.node.title === title
     );
-    console.log("customizations", customizations);
+    return paymentCustomizationNode.node.id.split("/").pop();
   }
 
   async getPaymentCustomization(id) {
@@ -252,9 +250,9 @@ export default class ShopifyService {
     console.log("create resp  ", resp.data.data.paymentCustomizationCreate);
   }
 
-  async updatePaymentCustomization(id) {
+  async updatePaymentCustomization(fnId, cId, settingData) {
     const paymentCustomizationInput = {
-      functionId: id,
+      functionId: fnId,
       title: settingData.title,
       enabled: settingData.rule_status,
       metafields: [
@@ -286,30 +284,11 @@ export default class ShopifyService {
       }
       `,
       variables: {
-        id: `gid://shopify/PaymentCustomization/${id}`,
+        id: `gid://shopify/PaymentCustomization/${cId}`,
         input: paymentCustomizationInput,
       },
     };
-    const response = await admin.graphql(
-      `#graphql
-        mutation updatePaymentCustomization($id: ID!, $input: PaymentCustomizationInput!) {
-          paymentCustomizationUpdate(id: $id, paymentCustomization: $input) {
-            paymentCustomization {
-              id
-            }
-            userErrors {
-              message
-            }
-          }
-        }`,
-      {
-        variables: {
-          id: `gid://shopify/PaymentCustomization/${id}`,
-          input: paymentCustomizationInput,
-        },
-      }
-    );
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    console.log("create resp  ", resp.data.data.paymentCustomizationCreate);
+
+    await this.post("/graphql.json", JSON.stringify(queryString));
   }
 }

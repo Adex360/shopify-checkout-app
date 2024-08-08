@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://daily-databases-accessible-wagon.trycloudflare.com"
+application_url = "https://partition-link-blank-endless.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products"
 
 [auth]
 redirect_urls = [
-  "https://daily-databases-accessible-wagon.trycloudflare.com/auth/callback",
-  "https://daily-databases-accessible-wagon.trycloudflare.com/auth/shopify/callback",
-  "https://daily-databases-accessible-wagon.trycloudflare.com/api/auth/callback"
+  "https://partition-link-blank-endless.trycloudflare.com/auth/callback",
+  "https://partition-link-blank-endless.trycloudflare.com/auth/shopify/callback",
+  "https://partition-link-blank-endless.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
