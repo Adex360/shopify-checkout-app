@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://suffering-legs-wallpapers-bonus.trycloudflare.com"
+application_url = "https://matter-emissions-extract-tuner.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products"
 
 [auth]
 redirect_urls = [
-  "https://suffering-legs-wallpapers-bonus.trycloudflare.com/auth/callback",
-  "https://suffering-legs-wallpapers-bonus.trycloudflare.com/auth/shopify/callback",
-  "https://suffering-legs-wallpapers-bonus.trycloudflare.com/api/auth/callback"
+  "https://matter-emissions-extract-tuner.trycloudflare.com/auth/callback",
+  "https://matter-emissions-extract-tuner.trycloudflare.com/auth/shopify/callback",
+  "https://matter-emissions-extract-tuner.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

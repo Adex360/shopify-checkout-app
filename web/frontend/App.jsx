@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { NavigationMenu } from "@shopify/app-bridge-react";
 import Routes from "./Routes";
+import "./App.css";
 
 import {
   AppBridgeProvider,
@@ -35,6 +36,10 @@ export default function App() {
                 {
                   label: "Phone Validation",
                   destination: "/phone-validation",
+                },
+                {
+                  label: "Plans",
+                  destination: "/plans",
                 },
               ]}
             />
