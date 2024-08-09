@@ -246,8 +246,7 @@ export default class ShopifyService {
         input: paymentCustomizationInput,
       },
     };
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    console.log("create resp  ", resp.data.data.paymentCustomizationCreate);
+    await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
   async updatePaymentCustomization(fnId, cId, settingData) {

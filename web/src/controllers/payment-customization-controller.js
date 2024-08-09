@@ -7,6 +7,7 @@ export const createPaymentCustomization = async (req, res) => {
     const data = req.body;
     const shop = req.shop;
 
+    await PaymentCustomization.getByTitle(data.title);
     const createReOrder = await PaymentCustomization.create({
       shop_id: shop.id,
       ...data,

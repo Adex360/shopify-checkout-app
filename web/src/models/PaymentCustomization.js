@@ -11,6 +11,18 @@ export class PaymentCustomization {
     return newReorder;
   }
 
+  static async getByTitle(title) {
+    const titleFound = await prismaClient.payment_customization.findUnique({
+      where: {
+        title,
+      },
+    });
+    if (titleFound) {
+      throw new Error(`Title already exist  `);
+    }
+
+    return titleFound;
+  }
   static async getByID(id) {
     const reOrderfound = await prismaClient.payment_customization.findUnique({
       where: {
