@@ -3,13 +3,12 @@ import { PaymentCustomization } from "../models/index.js";
 
 export const createPaymentCustomization = async (req, res) => {
   try {
-    const { shop_name, accessToken } = req.shop;
+    const { id, shop_name, accessToken } = req.shop;
     const data = req.body;
-    const shop = req.shop;
 
     await PaymentCustomization.getByTitle(data.title);
     const createReOrder = await PaymentCustomization.create({
-      shop_id: shop.id,
+      shop_id: id,
       ...data,
     });
     const service = new ShopifyService({
@@ -82,3 +81,5 @@ export const updatePaymentCustomization = async (req, res) => {
     res.status(500).json({ error: "Error updating Customization :" });
   }
 };
+// todo
+export const deletePaymentCustomization = async (req, res) => {};

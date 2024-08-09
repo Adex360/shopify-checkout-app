@@ -9,7 +9,7 @@ router.post(
   errorHandler(PaymentCustomizationController.createPaymentCustomization)
 );
 router.get(
-  "/all",
+  "/",
   errorHandler(PaymentCustomizationController.getAllPaymentCustomization)
 );
 router.get(

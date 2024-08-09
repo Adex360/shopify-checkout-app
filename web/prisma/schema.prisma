@@ -36,6 +36,7 @@ model Shop {
   // currency                       String?
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
+  validation            Validation[]
 }
 
 model Payment_customization {
@@ -50,4 +51,24 @@ model Payment_customization {
   shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("payment_customization")
+}
+
+model Validation {
+  id                         String   @id @default(uuid())
+  country_name               String?
+  country_code               Int?
+  network_code               Int?
+  phone_no_length            Int?
+  error_mesage               String?
+  limit_type                 Boolean?
+  min_length                 Int?
+  max_length                 Int?
+  block_digits               Boolean?
+  block_sequential_character Boolean?
+  special_character          String?
+  if_block_selectective      Json?
+  shop_id                    String
+  shop                       Shop?    @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("validation")
 }

@@ -11,7 +11,6 @@ class Session {
 
   async loadSession(id) {
     const shop = await Shop.findByName(id.replace("offline_", ""));
-    console.log("shop in session ", shop);
     if (!shop || !shop.accessToken) return false;
 
     const session = convertShopToSession(shop);
