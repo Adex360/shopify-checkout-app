@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://friend-frontier-trauma-voting.trycloudflare.com"
+application_url = "https://msgstr-syria-fires-ampland.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,13 +13,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_payment_customizations,write_products"
+scopes = "read_products,write_payment_customizations,write_products,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://friend-frontier-trauma-voting.trycloudflare.com/auth/callback",
-  "https://friend-frontier-trauma-voting.trycloudflare.com/auth/shopify/callback",
-  "https://friend-frontier-trauma-voting.trycloudflare.com/api/auth/callback"
+  "https://msgstr-syria-fires-ampland.trycloudflare.com/auth/callback",
+  "https://msgstr-syria-fires-ampland.trycloudflare.com/auth/shopify/callback",
+  "https://msgstr-syria-fires-ampland.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

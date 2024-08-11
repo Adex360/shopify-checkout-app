@@ -37,6 +37,7 @@ model Shop {
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
   validation            Validation[]
+  Custom_fields         CustomField[]
 }
 
 model Payment_customization {
@@ -54,21 +55,40 @@ model Payment_customization {
 }
 
 model Validation {
-  id                         String   @id @default(uuid())
-  country_name               String?
-  country_code               Int?
-  network_code               Int?
-  phone_no_length            Int?
-  error_mesage               String?
-  limit_type                 Boolean?
-  min_length                 Int?
-  max_length                 Int?
-  block_digits               Boolean?
-  block_sequential_character Boolean?
-  special_character          String?
-  if_block_selectective      Json?
-  shop_id                    String
-  shop                       Shop?    @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id                    String   @id @default(uuid())
+  title                 String   @unique
+  enabled               Boolean?
+  country_name          String?
+  phone_validation      Json?
+  first_name_validation Json?
+  last_name_validation  Json?
+  address_validation    Json?
+  shop_id               String
+  shop                  Shop?    @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("validation")
+}
+
+model CustomField {
+  id     String @id @default(uuid())
+  fields Json
+
+  // fields
+  // type           String
+  // label          String
+  // placeholder    String?
+  // field_width    String
+  // text_size      Int
+  // text_color     String
+  // font_style     String
+  // text_alignment String
+  // field_size     String
+  // divider_color  String
+  // image          String
+  // btn_link       String
+
+  shop_id String
+  shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("custom_field")
 }

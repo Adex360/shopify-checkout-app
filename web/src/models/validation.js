@@ -10,6 +10,18 @@ export class Validation {
     return newValidation;
   }
 
+  static async getByTitle(title) {
+    const titleFound = await prismaClient.validation.findUnique({
+      where: {
+        title,
+      },
+    });
+    if (titleFound) {
+      throw new Error(`Title already exist  `);
+    }
+
+    return titleFound;
+  }
   static async getByID(id) {
     const validationFound = await prismaClient.validation.findUnique({
       where: {

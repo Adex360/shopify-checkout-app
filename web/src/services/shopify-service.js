@@ -14,6 +14,9 @@ export const WEBHOOK_TOPICS = [
   "shop/update",
 ];
 
+const SHOPIFY_API_VERSION = "2024-04";
+const API_VERSION = SHOPIFY_API_VERSION;
+
 export default class ShopifyService {
   shop_name = null;
   accessToken = null;
@@ -32,7 +35,8 @@ export default class ShopifyService {
 
   $init() {
     const service = axios.create({
-      baseURL: `https://${this.shop_name}/admin/api/${LATEST_API_VERSION}`,
+      baseURL: `https://${this.shop_name}/admin/api/${API_VERSION}`,
+      // ${LATEST_API_VERSION}
     });
 
     service.interceptors.request.use(
@@ -158,13 +162,9 @@ export default class ShopifyService {
   `,
     };
     const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-
     const nodes = resp.data.data.shopifyFunctions.nodes;
-
-    const paymentCustomizationNode = nodes.find(
-      (node) => node.title === extensionName
-    );
-    return paymentCustomizationNode.id;
+    const functionNode = nodes.find((node) => node.title === extensionName);
+    return functionNode.id;
   }
 
   async getPaymentCustomizationNodes(title) {
@@ -290,4 +290,342 @@ export default class ShopifyService {
 
     await this.post("/graphql.json", JSON.stringify(queryString));
   }
+
+  async deletePaymentCustomization(id) {
+    const queryString = {
+      query: `
+      mutation paymentCustomizationDelete($id: ID!) {
+        paymentCustomizationDelete(id: $id) {
+          deletedId
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+  `,
+      variables: {
+        id: `gid://shopify/PaymentCustomization/${id}`,
+      },
+    };
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+
+  async createMetafield() {
+    const MetafieldDefinitionInput = {
+      // definition: {
+      access: {
+        admin: "MERCHANT_READ_WRITE",
+      },
+      key: "function-configuration",
+      name: "Validation Configuration",
+      namespace: "$app:cart-checkout-validation",
+      ownerType: "VALIDATION",
+      type: "json",
+      // },
+    };
+
+    const queryString = {
+      query: `
+      mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
+        metafieldDefinitionCreate(definition: $definition) {
+          createdDefinition {
+            id
+            name
+            namespace
+            key
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }
+      `,
+      variables: {
+        definition: MetafieldDefinitionInput,
+      },
+    };
+
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+  async getAllMetafield(title) {
+    const queryString = {
+      query: `
+      query {
+        metafieldDefinitions(first: 250, ownerType: VALIDATION) {
+          edges {
+            node {
+              id
+              name
+            }   
+          }
+        }
+      }
+      `,
+    };
+
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const nodes = resp.data.data.metafieldDefinitions.edges;
+    const metafieldNode = nodes.find((edges) => edges.node.name === title);
+
+    return metafieldNode.node.id;
+  }
+
+  async updateMetafield(fnId, cId, settingData) {
+    const MetafieldDefinitionUpdateInput = {
+      access: {
+        admin: "MERCHANT_READ_WRITE",
+      },
+      key: "function-configuration",
+      name: "Validation Configuration",
+      namespace: "$app:cart-checkout-validation",
+      ownerType: "VALIDATION",
+      type: "json",
+    };
+
+    const queryString = {
+      query: `
+      mutation UpdateMetafieldDefinition($definition: MetafieldDefinitionUpdateInput!) {
+        metafieldDefinitionUpdate(definition: $definition) {
+          updatedDefinition {
+            id
+            name
+            namespace
+            key
+            # add other return fields
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }
+      `,
+      variables: {
+        id: `gid://shopify/MetafieldDefinition/${cId}`,
+        definition: MetafieldDefinitionUpdateInput,
+      },
+    };
+
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+
+  async deleteMetafield(fnId, cId, settingData) {
+    const queryString = {
+      query: `
+      mutation DeleteMetafieldDefinition {
+        metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: $deleteAllAssociatedMetafields) {
+          deletedDefinitionId
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }
+      `,
+
+      variables: {
+        id: `gid://shopify/MetafieldDefinition/${cId}`,
+        deleteAllAssociatedMetafields: true,
+      },
+    };
+
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+
+  async createMetafieldSet(id, metafieldData) {
+    console.log("idddd", id);
+    const MetafieldsSetInput = {
+      // {
+      // "metafields": [
+      // {
+      key: "function-configuration",
+      namespace: "$app:cart-checkout-validation",
+      ownerId: "gid://shopify/Validation/8356117",
+      //  id,
+      //  "gid://shopify/MetafieldDefinition/34244198677",
+      type: "json",
+      value: JSON.stringify({
+        data: metafieldData,
+        // type: "test",
+        // CountryCode: 3,
+        // type: settingData.type,
+        // payment_rule: settingData.payment_rule,
+        // conditions: settingData.conditions,
+        // payment_name: settingData.payment_name,
+      }),
+      // },
+
+      // ]
+      // }
+    };
+
+    const queryString = {
+      query: `
+      mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+        metafieldsSet(metafields: $metafields) {
+          metafields {
+            key
+            namespace
+            value
+            createdAt
+            updatedAt
+          }
+          userErrors {
+            field
+            message
+            code
+          }
+        }
+      }
+      `,
+      variables: {
+        metafields: MetafieldsSetInput,
+      },
+    };
+
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    console.log("aaa", resp.data.data.metafieldsSet.metafields);
+  }
+
+  async createValidation(id, settingData) {
+    const ValidationCreateInput = {
+      functionId: id,
+      title: settingData.title,
+      blockOnFailure: false,
+      enable: true,
+      metafields: [
+        {
+          namespace: "$app:cart-checkout-validation",
+          key: "function-configuration",
+          type: "json",
+          value: JSON.stringify({
+            setting: settingData,
+          }),
+        },
+      ],
+    };
+    const queryString = {
+      query: `
+      mutation validationCreate($validation: ValidationCreateInput!) {
+        validationCreate(validation: $validation) {  
+          validation {
+            id
+           title
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+  `,
+      variables: {
+        validation: ValidationCreateInput,
+      },
+    };
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    console.log("resp", resp.data.data.validationCreate.validation);
+  }
+
+  async getValidationNodes(title) {
+    const queryString = {
+      query: `
+      query {
+        validations(first: 250) {
+          edges {
+            node {
+              id
+              title
+            }   
+          }
+        }
+      }
+  `,
+    };
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const nodes = resp.data.data.validations.edges;
+    const paymentCustomizationNode = nodes.find(
+      (edges) => edges.node.title === title
+    );
+    return paymentCustomizationNode.node.id.split("/").pop();
+  }
+  async updateValidation(cId, settingData) {
+    const ValidationUpdateInput = {
+      title: settingData.title,
+      blockOnFailure: true,
+      enable: settingData.enabled,
+      metafields: [
+        {
+          namespace: "$app:cart-checkout-validation",
+          key: "function-configuration",
+          type: "json",
+          value: JSON.stringify({
+            setting: settingData,
+          }),
+        },
+      ],
+    };
+
+    const queryString = {
+      query: `
+      mutation validationUpdate($id: ID!, $validation: ValidationUpdateInput!) {
+        validationUpdate(id: $id, validation: $validation) {
+          userErrors {
+            field
+            message
+          }
+          validation {
+         id
+          }
+        }
+      }
+      `,
+      variables: {
+        id: `gid://shopify/Validation/${cId}`,
+        validation: ValidationUpdateInput,
+      },
+    };
+
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+
+  async deleteValidation(id) {
+    const queryString = {
+      query: `
+      mutation validationDelete($id: ID!) {
+        validationDelete(id: $id) {
+          deletedId
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+  `,
+      variables: {
+        id: `gid://shopify/Validation/${id}`,
+      },
+    };
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
 }
+
+// get all metafields value
+// {
+//   "data": {
+//     "metafieldDefinitions": {
+//       "edges": [
+//         {
+//           "node": {
+//             "id": "gid://shopify/MetafieldDefinition/34244198677",
+//             "name": "Validation Configuration"
+//           }
+//         }
+//       ]
+//     }
+//   },

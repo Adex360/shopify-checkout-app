@@ -20,5 +20,9 @@ router.put(
   "/:id",
   errorHandler(PaymentCustomizationController.updatePaymentCustomization)
 );
+router.delete(
+  "/:id",
+  errorHandler(PaymentCustomizationController.deletePaymentCustomization)
+);
 
 export const paymentCustomizationRoutes = router;

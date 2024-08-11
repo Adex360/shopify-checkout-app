@@ -61,4 +61,11 @@ export class PaymentCustomization {
     });
     return updatedReorder;
   }
+  static async delete(id) {
+    const deletedPaymentCustomization =
+      await prismaClient.payment_customization.delete({
+        where: { id },
+      });
+    return deletedPaymentCustomization;
+  }
 }
