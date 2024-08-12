@@ -23,7 +23,7 @@ export default function App() {
               navigationLinks={[
                 {
                   label: "Payment Customization",
-                  destination: "/payment-customization",
+                  destination: "/payment",
                 },
                 {
                   label: "Shipping Customization",

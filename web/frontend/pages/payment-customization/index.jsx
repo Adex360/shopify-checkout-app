@@ -1,68 +1,95 @@
 import React from "react";
-import {
-  Banner,
-  Button,
-  Card,
-  EmptyState,
-  Layout,
-  Link,
-  Page,
-} from "@shopify/polaris";
-import { PlanUpgradeWarning } from "../../components";
 import { useNavigate } from "@shopify/app-bridge-react";
+import { CustomActionCard } from "../../components";
+import { Badge, Card, InlineGrid, Layout, Link, Page } from "@shopify/polaris";
 
 const PaymentCustomization = () => {
   const navigate = useNavigate();
-  //  /////////////////////// States
-
-  const isSubscribed = true;
-  const customizationRules = null;
-
-  /////////////////////
 
   return (
     <>
-      {!isSubscribed ? (
-        <Page>
-          <PlanUpgradeWarning />
-        </Page>
-      ) : (
-        <Page
-          title="All Payment Customizations"
-          primaryAction={{
-            content: "Create payment customizations",
-            onAction: () => navigate("/create-payment-customization"),
-          }}
-        >
-          <Layout>
-            <Layout.Section>
-              {customizationRules ? (
-                <>Table of Rules</>
-              ) : (
-                <>
-                  <Card>
-                    <EmptyState
-                      heading="Add a payment customizations to get started"
-                      action={{
-                        content: "Create payment customizations",
-                        onAction: () =>
-                          navigate("/create-payment-customization"),
+      <Page
+        title="Choose your customization type "
+        backAction={{
+          content: "adasd",
+          onAction: () => navigate("/payment"),
+        }}
+      >
+        <Layout>
+          <Layout.Section>
+            <InlineGrid gap="400" alignItems="start" columns={2}>
+              <CustomActionCard
+                status={<Badge tone="attention">New</Badge>}
+                title="Advance Payment rules(Hide/Delete)"
+                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
+              nulla doloremque sapiente repudiandae suscipit tenetur sequi harum
+              aperiam alias. Praesentium harum labrum obcaecati similique
+              molestias dolorem asperiores unde atque ut?"
+                action={
+                  <>
+                    <Link
+                      onClick={() => {
+                        navigate(
+                          "/payment-customization/create/?type=payment-customization"
+                        );
                       }}
-                      image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
                     >
-                      <p>
-                        It looks like you haven't created any customization yet.
-                        Click the "Create payment customizations" button to
-                        create your own customization
-                      </p>
-                    </EmptyState>
-                  </Card>
-                </>
-              )}
-            </Layout.Section>
-          </Layout>
-        </Page>
-      )}
+                      Create Customization
+                    </Link>
+                  </>
+                }
+              />
+              <CustomActionCard
+                status={<Badge tone="critical">Legacy</Badge>}
+                title="Hide/Delete - Rule Set 1 - Single"
+                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
+              nulla doloremque sapiente repudiandae suscipit tenetur sequi harum
+              aperiam alias. Praesentium harum laborum obcaecati similique
+              molestias dolorem asperiores unde atque ut?"
+                action={
+                  <>
+                    <Link>Create Customization</Link>
+                  </>
+                }
+              />
+
+              <CustomActionCard
+                status={<Badge tone="critical">Legacy</Badge>}
+                title="Hide/Delete - Rule Set 2 - Multiple"
+                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
+              nulla doloremque sapiente repudiandae suscipit tenetur sequi harum
+              aperiam alias. Praesentium harum laborum obcaecati similique
+              molestias dolorem asperiores unde atque ut?"
+                action={
+                  <>
+                    <Link>Create Customization</Link>
+                  </>
+                }
+              />
+              <CustomActionCard
+                title="Sort/Re-order"
+                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
+              molestias dolorem asperiores unde atque ut?"
+                action={
+                  <>
+                    <Link>Create Customization</Link>
+                  </>
+                }
+              />
+              <CustomActionCard
+                title="Translate/Re-name"
+                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
+              molestias dolorem asperiores unde atque ut?"
+                action={
+                  <>
+                    <Link>Create Customization</Link>
+                  </>
+                }
+              />
+            </InlineGrid>
+          </Layout.Section>
+        </Layout>
+      </Page>
     </>
   );
 };
