@@ -6,8 +6,8 @@
 api_version = "2024-07"
 
 [[extensions]]
-name = "Custom Fields"
-handle = "custom-fields-extension"
+name = "Info Banner"
+handle = "info-banner"
 type = "ui_extension"
 
 
@@ -18,16 +18,6 @@ type = "ui_extension"
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
 target = "purchase.checkout.block.render"
-
-[[extensions.targeting]]
-module = "./src/Checkout.jsx"
-target = "purchase.checkout.delivery-address.render-before"
-
-[[extensions.targeting]]
-module = "./src/Checkout.jsx"
-target = "purchase.checkout.delivery-address.render-after"
-
-
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.
@@ -54,16 +44,46 @@ network_access = true
 # your extension. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#settings-definition
 
-# [extensions.settings]
-  # [[extensions.settings.fields]]
-  # key = "title"
-  # type = "single_line_text_field"
- # name = "Banner title"
-  
+
 
 [extensions.settings]
  [[extensions.settings.fields]]
-  key = "form_name"
+  key = "banner_only"
+  type = "boolean"
+  name = "Banner Only"
+  description = "If 'Banner Only' is set to 'True', display the banner. if 'False', show plain text with a heading and description."
+
+  [[extensions.settings.fields]]
+  key = "title"
   type = "single_line_text_field"
-  name = "Form Name"
-  description = "Enter form name that you created on app"
+  name = "Banner title"
+   description = "Enter a title for the banner."
+ [[extensions.settings.fields]]
+  key = "title_size"
+  type = "single_line_text_field"
+  name = "Title Size"
+  description = "It only allows values from this list: extraSmall' , 'small' , 'base' , 'large' , 'extraLarge','medium'"
+  [[extensions.settings.fields]]
+  key = "description"
+  type = "single_line_text_field"
+  name = "Banner description"
+  description = "Enter a description for the banner."
+   [[extensions.settings.fields]]
+  key = "description_size"
+  type = "single_line_text_field"
+  name = "Description Size"
+  description = "It only allows values from this list: extraTight, extraSmall, small, base, large, extraLarge . The default value is 'base'"
+  [[extensions.settings.fields]]
+  key = "status"
+  type = "single_line_text_field"
+  name = "Banner status"
+    [[extensions.settings.fields.validations]]
+    name = "choices"
+    value = "[\"info\", \"success\", \"warning\", \"critical\"]"
+  [[extensions.settings.fields]]
+  key = "collapsible"
+  type = "boolean"
+  name = "Show collapsible description."
+  description = "If 'Banner Only' is set to 'True':Display controls to expand or collapse the banner description."
+
+
