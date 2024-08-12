@@ -34,31 +34,39 @@ export const getAllCustomFields = async (req, res) => {
 };
 export const getByIdCustomFields = async (req, res) => {
   try {
+    const { id } = req.params;
+    const getByID = await CustomField.getByID(id);
     res.status(200).json({
-      message: `Customization Setting for ${req.body.type} Created !! `,
-      createReOrder,
+      getByID,
     });
   } catch (error) {
-    console.error("Error creating Customization:", error);
-    res.status(500).json({ error: "Error creating Customization" });
+    console.error("Error Getting Custom Field by Id:", error);
+    res.status(500).json({ error: "Error Getting Custom Field by Id:" });
   }
 };
 export const updateCustomFields = async (req, res) => {
   try {
+    const { id } = req.params;
+    const data = req.body;
+    const updatedCustomField = await CustomField.update({
+      id,
+      ...data,
+    });
     res.status(200).json({
-      message: `Customization Setting for ${req.body.type} Created !! `,
-      createReOrder,
+      message: `Custom Field id: ${id} is Updated `,
+      updatedCustomField,
     });
   } catch (error) {
-    console.error("Error creating Customization:", error);
-    res.status(500).json({ error: "Error creating Customization" });
+    console.error("Error updating Custom field:", error);
+    res.status(500).json({ error: "Error updating Custom field:" });
   }
 };
 export const deleteFields = async (req, res) => {
   try {
+    const { id } = req.params;
+    const deletedCustomFields = await CustomField.delete(id);
     res.status(200).json({
-      message: `Customization Setting for ${req.body.type} Created !! `,
-      createReOrder,
+      message: `Custom Field id : ${deletedCustomFields.id} deleted`,
     });
   } catch (error) {
     console.error("Error creating Customization:", error);

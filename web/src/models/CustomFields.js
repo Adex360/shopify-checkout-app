@@ -44,7 +44,7 @@ export class CustomField {
   static async update(fieldData) {
     const updatedCustomField = await prismaClient.custom_field.update({
       where: { id: fieldData.id },
-      data: validationData,
+      data: fieldData,
     });
     return updatedCustomField;
   }
