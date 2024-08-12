@@ -9,7 +9,7 @@ router.post(
   errorHandler(PaymentCustomizationController.createPaymentCustomization)
 );
 router.get(
-  "/all",
+  "/",
   errorHandler(PaymentCustomizationController.getAllPaymentCustomization)
 );
 router.get(
@@ -19,6 +19,10 @@ router.get(
 router.put(
   "/:id",
   errorHandler(PaymentCustomizationController.updatePaymentCustomization)
+);
+router.delete(
+  "/:id",
+  errorHandler(PaymentCustomizationController.deletePaymentCustomization)
 );
 
 export const paymentCustomizationRoutes = router;

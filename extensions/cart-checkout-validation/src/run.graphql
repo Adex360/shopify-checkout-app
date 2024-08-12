@@ -1,0 +1,33 @@
+query RunInput {
+  cart {
+    buyerIdentity {
+      phone
+      customer {
+        numberOfOrders
+        firstName
+        lastName
+      }
+    }
+    deliveryGroups {
+      deliveryAddress {
+        countryCode
+      }
+      deliveryAddress {
+        address1
+      }
+    }
+    cost {
+      subtotalAmount {
+        amount
+      }
+    }
+  }
+  validation {
+    metafield(
+      namespace: "$app:cart-checkout-validation"
+      key: "function-configuration"
+    ) {
+      value
+    }
+  }
+}

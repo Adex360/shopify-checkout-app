@@ -11,6 +11,18 @@ export class PaymentCustomization {
     return newReorder;
   }
 
+  static async getByTitle(title) {
+    const titleFound = await prismaClient.payment_customization.findUnique({
+      where: {
+        title,
+      },
+    });
+    if (titleFound) {
+      throw new Error(`Title already exist  `);
+    }
+
+    return titleFound;
+  }
   static async getByID(id) {
     const reOrderfound = await prismaClient.payment_customization.findUnique({
       where: {
@@ -48,5 +60,12 @@ export class PaymentCustomization {
       data: reOrderData,
     });
     return updatedReorder;
+  }
+  static async delete(id) {
+    const deletedPaymentCustomization =
+      await prismaClient.payment_customization.delete({
+        where: { id },
+      });
+    return deletedPaymentCustomization;
   }
 }

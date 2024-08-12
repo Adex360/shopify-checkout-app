@@ -3,12 +3,12 @@ import { PaymentCustomization } from "../models/index.js";
 
 export const createPaymentCustomization = async (req, res) => {
   try {
-    const { shop_name, accessToken } = req.shop;
+    const { id, shop_name, accessToken } = req.shop;
     const data = req.body;
-    const shop = req.shop;
 
+    await PaymentCustomization.getByTitle(data.title);
     const createReOrder = await PaymentCustomization.create({
-      shop_id: shop.id,
+      shop_id: id,
       ...data,
     });
     const service = new ShopifyService({
@@ -63,11 +63,9 @@ export const updatePaymentCustomization = async (req, res) => {
       accessToken,
     });
     const getByID = await PaymentCustomization.getByID(id);
-    const paymentCNode = await service.getPaymentCustomizationNodes(
-      getByID.title
-    );
+    const paymentId = await service.getPaymentCustomizationNodes(getByID.title);
     const getFnId = await service.getShopifyFunctionId("payment-customization");
-    await service.updatePaymentCustomization(getFnId, paymentCNode, data);
+    await service.updatePaymentCustomization(getFnId, paymentId, data);
 
     const updatedReOrder = await PaymentCustomization.update({
       id,
@@ -79,5 +77,26 @@ export const updatePaymentCustomization = async (req, res) => {
   } catch (error) {
     console.error("Error updating Customization:", error);
     res.status(500).json({ error: "Error updating Customization :" });
+  }
+};
+export const deletePaymentCustomization = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const { id } = req.params;
+    const service = new ShopifyService({
+      shop_name,
+      accessToken,
+    });
+    const getByID = await PaymentCustomization.getByID(id);
+    const pId = await service.getPaymentCustomizationNodes(getByID.title);
+    await service.deletePaymentCustomization(pId);
+
+    const deletedPaymentCustomization = await PaymentCustomization.delete(id);
+    return res.status(200).json({
+      message: `Validation id : ${deletedPaymentCustomization.id} deleted`,
+    });
+  } catch (error) {
+    console.error("Error Deleting Validation:", error);
+    res.status(500).json({ error: "Error Deleting Validation:" });
   }
 };

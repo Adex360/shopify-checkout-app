@@ -36,6 +36,8 @@ model Shop {
   // currency                       String?
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
+  validation            Validation[]
+  Custom_fields         Custom_field[]
 }
 
 model Payment_customization {
@@ -50,4 +52,45 @@ model Payment_customization {
   shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("payment_customization")
+}
+
+model Validation {
+  id                    String   @id @default(uuid())
+  title                 String   @unique
+  enabled               Boolean?
+  country_name          String?
+  phone_validation      Json?
+  first_name_validation Json?
+  last_name_validation  Json?
+  address_validation    Json?
+  shop_id               String
+  shop                  Shop?    @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("validation")
+}
+
+model Custom_field {
+  id     String @id @default(uuid())
+  name   String
+  target String
+  fields Json
+
+  // fields
+  // type           String
+  // label          String
+  // placeholder    String?
+  // field_width    String
+  // text_size      Int
+  // text_color     String
+  // font_style     String
+  // text_alignment String
+  // field_size     String
+  // divider_color  String
+  // image          String
+  // btn_link       String
+
+  shop_id String
+  shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("custom_field")
 }
