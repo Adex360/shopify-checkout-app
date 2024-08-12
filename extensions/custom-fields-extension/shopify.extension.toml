@@ -6,15 +6,14 @@
 api_version = "2024-07"
 
 [[extensions]]
-name = "custom-checkout"
-handle = "custom-checkout"
+name = "custom-fields-extension"
+handle = "custom-fields-extension"
 type = "ui_extension"
 
 
 # Controls where in Shopify your extension will be injected,
 # and the file that contains your extension’s source code. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/extension-targets-overview
-
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
@@ -26,21 +25,15 @@ target = "purchase.checkout.delivery-address.render-before"
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
-target = "purchase.checkout.footer.render-after"
+target = "purchase.checkout.delivery-address.render-after"
 
-[[extensions.targeting]]
-module = "./src/Checkout.jsx"
-target = "purchase.checkout.shipping-option-list.render-after"
 
-[[extensions.targeting]]
-module = "./src/Checkout.jsx"
-target = "purchase.checkout.contact.render-after"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#api-access
 api_access = true
-block_progress = true
+
 # Gives your extension access to make external network calls, using the
 # JavaScript `fetch()` API. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#network-access
@@ -49,6 +42,7 @@ network_access = true
 # Loads metafields on checkout resources, including the cart,
 # products, customers, and more. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#metafields
+
 # [[extensions.metafields]]
 # namespace = "my_namespace"
 # key = "my_key"
@@ -56,12 +50,9 @@ network_access = true
 # namespace = "my_namespace"
 # key = "my_other_key"
 
-
 # Defines settings that will be collected from merchants installing
 # your extension. Learn more:
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#settings-definition
-
-
 
 [extensions.settings]
   [[extensions.settings.fields]]
@@ -92,3 +83,4 @@ network_access = true
   type = "boolean"
   name = "Show collapsible description."
   description = "Display controls to expand or collapse the banner description."
+

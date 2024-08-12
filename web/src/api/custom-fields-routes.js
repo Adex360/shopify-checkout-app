@@ -4,25 +4,10 @@ import * as CustomFieldsController from "../controllers/index.js";
 
 const router = express.Router();
 
-router.post(
-  "/create",
-  errorHandler(CustomFieldsController.createPaymentCustomization)
-);
-router.get(
-  "/",
-  errorHandler(CustomFieldsController.getAllPaymentCustomization)
-);
-router.get(
-  "/:id",
-  errorHandler(CustomFieldsController.getByIdPaymentCustomization)
-);
-router.put(
-  "/:id",
-  errorHandler(CustomFieldsController.updatePaymentCustomization)
-);
-router.delete(
-  "/:id",
-  errorHandler(CustomFieldsController.deletePaymentCustomization)
-);
+router.post("/create", errorHandler(CustomFieldsController.createCustomFields));
+router.get("/", errorHandler(CustomFieldsController.getAllCustomFields));
+router.get("/:id", errorHandler(CustomFieldsController.getByIdCustomFields));
+router.put("/:id", errorHandler(CustomFieldsController.updateCustomFields));
+router.delete("/:id", errorHandler(CustomFieldsController.deleteFields));
 
 export const customFieldsRoutes = router;

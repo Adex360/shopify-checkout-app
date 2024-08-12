@@ -17,7 +17,10 @@
     "@shopify/app": "^3.58.2",
     "@shopify/cli": "3.64",
     "@shopify/shopify_function": "0.1.0",
-    "javy": "^0.1.2"
+    "@shopify/ui-extensions": "2024.7.0",
+    "@shopify/ui-extensions-react": "2024.7.0",
+    "javy": "^0.1.2",
+    "react": "^18.3.1"
   },
   "author": "Maryam",
   "devDependencies": {

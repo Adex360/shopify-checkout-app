@@ -37,7 +37,7 @@ model Shop {
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
   validation            Validation[]
-  Custom_fields         CustomField[]
+  Custom_fields         Custom_field[]
 }
 
 model Payment_customization {
@@ -69,8 +69,10 @@ model Validation {
   @@map("validation")
 }
 
-model CustomField {
+model Custom_field {
   id     String @id @default(uuid())
+  name   String
+  target String
   fields Json
 
   // fields

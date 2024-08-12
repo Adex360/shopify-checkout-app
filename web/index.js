@@ -10,7 +10,7 @@ import PrivacyWebhookHandlers from "./privacy.js";
 
 import {
   registerApi,
-  // registerClientApi,
+  registerClientApi,
   // registerConfirmationApi,
 } from "./src/api/index.js";
 import {
@@ -44,6 +44,9 @@ app.post(
 
 app.use(express.json());
 
+registerClientApi(app);
+// app.use("/api/*", commonMiddleware);
+// registerApi(app);
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
