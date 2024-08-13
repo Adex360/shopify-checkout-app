@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://quizzes-century-developing-sister.trycloudflare.com"
+application_url = "https://alliance-upcoming-ages-refers.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://quizzes-century-developing-sister.trycloudflare.com/auth/callback",
-  "https://quizzes-century-developing-sister.trycloudflare.com/auth/shopify/callback",
-  "https://quizzes-century-developing-sister.trycloudflare.com/api/auth/callback"
+  "https://alliance-upcoming-ages-refers.trycloudflare.com/auth/callback",
+  "https://alliance-upcoming-ages-refers.trycloudflare.com/auth/shopify/callback",
+  "https://alliance-upcoming-ages-refers.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
