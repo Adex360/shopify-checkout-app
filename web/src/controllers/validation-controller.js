@@ -2,32 +2,27 @@ import ShopifyService from "../services/shopify-service.js";
 import { Validation } from "../models/index.js";
 
 export const createValidation = async (req, res) => {
-  try {
-    const { id, shop_name, accessToken } = req.shop;
-    const data = req.body;
-    const service = new ShopifyService({
-      shop_name,
-      accessToken,
-    });
+  const { id, shop_name, accessToken } = req.shop;
+  const data = req.body;
+  const service = new ShopifyService({
+    shop_name,
+    accessToken,
+  });
 
-    await Validation.getByTitle(data.title);
-    const getFnId = await service.getShopifyFunctionId(
-      "cart-checkout-validation"
-    );
-    await service.createValidation(getFnId, data);
-    const createValidation = await Validation.create({
-      shop_id: id,
-      ...data,
-    });
+  await Validation.getByTitle(data.title);
+  const getFnId = await service.getShopifyFunctionId(
+    "cart-checkout-validation"
+  );
+  await service.createValidation(getFnId, data);
+  const createValidation = await Validation.create({
+    shop_id: id,
+    ...data,
+  });
 
-    res.status(200).json({
-      message: `Validation  Setting  Created !! `,
-      createValidation,
-    });
-  } catch (error) {
-    console.error("Error creating Validation:", error);
-    res.status(500).json({ error: "Error creating Validation" });
-  }
+  res.status(200).json({
+    message: `Validation  Setting  Created !! `,
+    createValidation,
+  });
 };
 
 export const getByIdValidation = async (req, res) => {
@@ -36,7 +31,6 @@ export const getByIdValidation = async (req, res) => {
     const getByID = await Validation.getByID(id);
     res.status(200).json({ getByID });
   } catch (error) {
-    console.error("Error Getting Validation by Id:", error);
     res.status(500).json({ error: "Error Getting Validation by Id:" });
   }
 };
@@ -46,7 +40,6 @@ export const getAllValidation = async (req, res) => {
     const getAll = await Validation.findAll();
     res.status(200).json({ getAll });
   } catch (error) {
-    console.error("Error Getting All Validation:", error);
     res.status(500).json({ error: "Error Getting All Validation:" });
   }
 };
@@ -74,7 +67,6 @@ export const updateValidation = async (req, res) => {
       .status(200)
       .json({ message: `Validation id: ${id} is Updated `, updatedValidation });
   } catch (error) {
-    console.error("Error updating Validation:", error);
     res.status(500).json({ error: "Error updating Validation :" });
   }
 };
@@ -97,7 +89,6 @@ export const deleteValidation = async (req, res) => {
       .status(200)
       .json({ message: `Validation id : ${deletedValidation.id} deleted` });
   } catch (error) {
-    console.error("Error Deleting Validation:", error);
     res.status(500).json({ error: "Error Deleting Validation:" });
   }
 };

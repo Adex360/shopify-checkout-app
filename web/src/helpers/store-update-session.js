@@ -1,11 +1,10 @@
 import { ShopifyService } from "../services/index.js";
 import { Shop } from "../models/index.js";
-// import { startShopInstallQueue } from '../jobs/queue/index.js';
+import { startShopInstallQueue } from "../jobs/queue/index.js";
 
 export const storeOrUpdateSession = async (session) => {
   console.log("********* [storeOrUpdateSession] *********", session);
   const { shop, accessToken, scope, state, id } = session;
-
   try {
     const shop_exist = await Shop.findByName(shop);
     if (shop_exist && shop_exist.status === "active") {
@@ -24,7 +23,7 @@ export const storeOrUpdateSession = async (session) => {
       };
       const shop_updated = await Shop.update(update_shop);
 
-      // await startShopInstallQueue(shop_updated);
+      await startShopInstallQueue(shop_updated);
 
       return true;
     }

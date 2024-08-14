@@ -7,7 +7,6 @@ export const redisClient = createClient({
     process.env.REDIS_PORT
   )}`,
 });
-
 redisClient.on("error", (err) => console.log("Redis Client Error", err));
 redisClient.on("connect", () => console.log("Redis Client connect"));
 redisClient.on("reconnecting", (d) => console.log("Redis  reconnecting", d));

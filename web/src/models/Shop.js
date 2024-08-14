@@ -1,7 +1,7 @@
 import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
 
-// import { startShopInstallQueue } from "../jobs/queue/shop-install.js";
+import { startShopInstallQueue } from "../jobs/queue/index.js";
 // import { Plan } from "./Plan.js";
 
 export class Shop {
@@ -19,8 +19,7 @@ export class Shop {
         ...shopData,
       },
     });
-    // await startShopInstallQueue(newShopCreated);
-
+    await startShopInstallQueue(newShopCreated);
     return newShopCreated;
   }
 

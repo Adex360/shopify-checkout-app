@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   reactExtension,
-  Banner,
   useSettings,
-  useApi,
   TextField,
   BlockStack,
   Checkbox,
@@ -14,90 +12,16 @@ import {
   Choice,
   useApplyAttributeChange,
   useAttributeValues,
-  useExtensionCapability,
-  useBuyerJourneyIntercept,
 } from "@shopify/ui-extensions-react/checkout";
-import { useDeliveryGroupListTarget } from "@shopify/ui-extensions-react/checkout";
 
-// // 1. Choose an extension target
-// export default reactExtension("purchase.checkout.block.render", () => (
-//   // <CustomBanner />
-//   <CitydownCountryName />
-// ));
-
-// Main extension for 'at-top'
-// export default reactExtension("purchase.checkout.block.render", () => (
-//   <CustomFieldsExtension target="at-top" />
-// ));
 export default reactExtension("purchase.checkout.block.render", () => (
   <CustomFieldsExtension />
 ));
 
-function CitydownCountryName() {
-  const CITY_END_POINT = "https://countriesnow.space/api/v0.1/countries/cities";
-  const requestHeader = {
-    "Content-Type": "application/json",
-  };
-  const [selectedCountryCode, setSelectedCountryCode] = useState("");
-  const [cities, setCities] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const fetchCities = async (countryCode) => {
-    if (countryCode) {
-      setLoading(true);
-      setError("");
-      try {
-        const response = await fetch(`${CITY_END_POINT}`, {
-          method: "POST",
-          headers: requestHeader,
-          body: JSON.stringify({ country: countryCode }),
-        });
-        const data = await response.json();
-        setCities(data.data || []);
-      } catch (error) {
-        console.error("Error:", error);
-        setError("Failed to load cities");
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const countryCode = "pakistan";
-
-    // const countryCodeElement = document.querySelector(
-    //   'select[name="countryCode"]',
-    // );
-    // if (countryCodeElement) {
-    // setSelectedCountryCode(countryCodeElement.value);
-    // fetchCities(countryCodeElement.value);
-    setSelectedCountryCode(countryCode);
-    fetchCities(countryCode);
-    // }
-  }, []);
-
-  // Handle city selection change
-  const handleCityChange = (value) => {
-    console.log("Selected city:", value);
-  };
-
-  return (
-    <>
-      <Select
-        label="City"
-        options={cities.map((city) => ({ label: city, value: city }))}
-        onChange={handleCityChange}
-        disabled={loading}
-      />
-    </>
-  );
-}
 function CustomFieldsExtension() {
   // function CustomFieldsExtension({ target }) {
   const { form_name } = useSettings();
-  console.log("use settings ## ", useSettings());
+  // console.log("use settings ## ", useSettings());
   // console.log("target@@@@@", target);
   const [customFields, setCustomFields] = useState([]);
   const attributeKeys = customFields.flatMap((form) =>
@@ -107,7 +31,7 @@ function CustomFieldsExtension() {
   const applyAttributeChange = useApplyAttributeChange();
 
   const CUSTOM_FIELDS_END_POINT =
-    "https://alliance-upcoming-ages-refers.trycloudflare.com/api/v1/custom-fields/all";
+    "https://commercial-remainder-denial-realtors.trycloudflare.com/api/v1/custom-fields/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -124,15 +48,15 @@ function CustomFieldsExtension() {
       console.error("Error:", error);
     }
   };
-  console.log("customfields", customFields);
-  console.log("Attribute Values:", attributeValues);
+  // console.log("customfields", customFields);
+  // console.log("Attribute Values:", attributeValues);
   useEffect(() => {
     fetchCustomFields();
   }, []);
 
   const renderField = (field) => {
     const handleChange = (value) => {
-      console.log("Selected value:", value);
+      // console.log("Selected value:", value);
       applyAttributeChange({
         key: field.name,
         type: "updateAttribute",
