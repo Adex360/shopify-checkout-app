@@ -1,26 +1,79 @@
 import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
-
-// import { startShopInstallQueue } from "../jobs/queue/shop-install.js";
+import { ShopifyService } from "../services/index.js";
+import { startShopInstallQueue } from "../jobs/queue/index.js";
 // import { Plan } from "./Plan.js";
 
 export class Shop {
+  static async storeOrUpdateSession(session) {
+    const { shop, accessToken, scope, state, id } = session;
+    const shop_exist = await this.findById(shop);
+    console.log("shop_exist", shop_exist);
+    // this.findByName(shop);
+
+    // checking the shop scope and accessToken if the shop already existed
+    if (shop_exist && shop_exist.status === "active") {
+      if (
+        shop_exist.accessToken !== accessToken ||
+        shop_exist.scope !== scope
+      ) {
+        await Shop.update({
+          id: shop_exist.id,
+          scope: scope,
+          accessToken: accessToken,
+        });
+      }
+
+      return true;
+    }
+
+    // checking if the shop is deleted before
+    if (shop_exist && shop_exist.status === "uninstalled") {
+      const update_shop = {
+        id: shop_exist.id,
+        accessToken,
+        scope,
+        state,
+        status: "active",
+      };
+      const shop_updated = await this.update(update_shop);
+      console.log("shop_updated", shop_updated);
+      await startShopInstallQueue(shop_updated);
+      return true;
+    }
+
+    const shopify_service = new ShopifyService({
+      shop_name: shop,
+      accessToken,
+    });
+    const shopify_shop = await shopify_service.getShopDetails();
+
+    await Shop.create({
+      shop_name: shop,
+      session_id: id,
+      shop_id: shopify_shop.id.toString(),
+      name: shopify_shop.name,
+      currency: shopify_shop.currency,
+      status: "active",
+      accessToken,
+      scope,
+      state,
+    });
+
+    return true;
+  }
   static async create(shopData) {
     const shopExist = await this.findByName(shopData.shop_name);
 
     if (shopExist) {
       return;
     }
-
-    // const freePlan = await Plan.getFreePlan();
-
     const newShopCreated = await prismaClient.shop.create({
       data: {
         ...shopData,
       },
     });
-    // await startShopInstallQueue(newShopCreated);
-
+    await startShopInstallQueue(newShopCreated);
     return newShopCreated;
   }
 
@@ -61,5 +114,12 @@ export class Shop {
     });
 
     return updatedShop;
+  }
+
+  static async delete(id) {
+    const deleteShop = await prismaClient.shop.delete({
+      where: { id },
+    });
+    return deleteShop;
   }
 }

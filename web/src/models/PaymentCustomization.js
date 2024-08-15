@@ -18,7 +18,7 @@ export class PaymentCustomization {
       },
     });
     if (titleFound) {
-      throw new Error(`Title already exist  `);
+      throw new Error(`Title already exist. Please choose a different title.`);
     }
 
     return titleFound;
@@ -67,5 +67,23 @@ export class PaymentCustomization {
         where: { id },
       });
     return deletedPaymentCustomization;
+  }
+
+  static async count(options = {}) {
+    const whereClause = {};
+
+    if (options.type) {
+      whereClause.type = options.type;
+    }
+
+    if (options.rule_status === true) {
+      whereClause.rule_status = options.rule_status;
+    }
+
+    const count = await prisma.payment_customization.count({
+      where: whereClause,
+    });
+
+    return count;
   }
 }

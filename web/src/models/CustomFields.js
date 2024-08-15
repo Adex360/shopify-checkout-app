@@ -17,7 +17,7 @@ export class CustomField {
       },
     });
     if (titleFound) {
-      throw new Error(`Title already exist  `);
+      throw new Error(`Title already exist. Please choose a different title.`);
     }
 
     return titleFound;

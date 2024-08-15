@@ -16,7 +16,6 @@ datasource db {
 model Shop {
   id                    String                  @id @default(uuid())
   shop_name             String                  @unique
-  domain                String?
   accessToken           String
   scope                 String
   state                 String
@@ -37,7 +36,8 @@ model Shop {
   // plan                           Plan?    @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
   validation            Validation[]
-  Custom_fields         Custom_field[]
+  custom_fields         Custom_field[]
+  city_list             City_list[]
 }
 
 model Payment_customization {
@@ -46,8 +46,8 @@ model Payment_customization {
   title        String  @unique
   rule_status  Boolean
   payment_rule Boolean
-  conditions   Json?
-  payment_name Json?
+  conditions   Json
+  payment_name Json
   shop_id      String
   shop         Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -55,24 +55,23 @@ model Payment_customization {
 }
 
 model Validation {
-  id                    String   @id @default(uuid())
-  title                 String   @unique
-  enabled               Boolean?
-  country_name          String?
+  id                    String  @id @default(uuid())
+  title                 String  @unique
+  enabled               Boolean
+  country_name          String
   phone_validation      Json?
   first_name_validation Json?
   last_name_validation  Json?
   address_validation    Json?
   shop_id               String
-  shop                  Shop?    @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  shop                  Shop?   @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("validation")
 }
 
 model Custom_field {
   id     String @id @default(uuid())
-  name   String
-  target String
+  title  String @unique
   fields Json
 
   // fields
@@ -93,4 +92,17 @@ model Custom_field {
   shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("custom_field")
+}
+
+model City_list {
+  id           String  @id @default(uuid())
+  enabled      Boolean
+  country_name String
+  zone_list    Json?
+  city_list    Json
+
+  shop_id String
+  shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("city_list")
 }
