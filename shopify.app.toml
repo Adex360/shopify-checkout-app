@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://delicious-surrounding-sic-operating.trycloudflare.com"
+application_url = "https://warm-applies-charms-agencies.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,13 +13,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_payment_customizations,write_products"
+scopes = "read_products,write_payment_customizations,write_products,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://delicious-surrounding-sic-operating.trycloudflare.com/auth/callback",
-  "https://delicious-surrounding-sic-operating.trycloudflare.com/auth/shopify/callback",
-  "https://delicious-surrounding-sic-operating.trycloudflare.com/api/auth/callback"
+  "https://warm-applies-charms-agencies.trycloudflare.com/auth/callback",
+  "https://warm-applies-charms-agencies.trycloudflare.com/auth/shopify/callback",
+  "https://warm-applies-charms-agencies.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

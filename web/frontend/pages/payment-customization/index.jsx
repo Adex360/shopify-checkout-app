@@ -1,17 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "@shopify/app-bridge-react";
 import { CustomActionCard } from "../../components";
 import { Badge, Card, InlineGrid, Layout, Link, Page } from "@shopify/polaris";
+import { useAuthenticatedFetch } from "../../hooks";
 
 const PaymentCustomization = () => {
   const navigate = useNavigate();
+  // const fetch = useAuthenticatedFetch();
+  // const apitest = async () => {
+  //   try {
+  //     const resp = await fetch("api/v1/payment-customization");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   apitest();
+  // }, []);
   return (
     <>
       <Page
         title="Choose your customization type "
         backAction={{
-          content: "adasd",
+          content: "",
           onAction: () => navigate("/payment"),
         }}
       >
@@ -29,9 +41,7 @@ const PaymentCustomization = () => {
                   <>
                     <Link
                       onClick={() => {
-                        navigate(
-                          "/payment-customization/create/?type=payment-customization"
-                        );
+                        navigate("/payment-customization/create/?type=hide");
                       }}
                     >
                       Create Customization
@@ -39,40 +49,24 @@ const PaymentCustomization = () => {
                   </>
                 }
               />
-              <CustomActionCard
-                status={<Badge tone="critical">Legacy</Badge>}
-                title="Hide/Delete - Rule Set 1 - Single"
-                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
-              nulla doloremque sapiente repudiandae suscipit tenetur sequi harum
-              aperiam alias. Praesentium harum laborum obcaecati similique
-              molestias dolorem asperiores unde atque ut?"
-                action={
-                  <>
-                    <Link>Create Customization</Link>
-                  </>
-                }
-              />
 
-              <CustomActionCard
-                status={<Badge tone="critical">Legacy</Badge>}
-                title="Hide/Delete - Rule Set 2 - Multiple"
-                description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
-              nulla doloremque sapiente repudiandae suscipit tenetur sequi harum
-              aperiam alias. Praesentium harum laborum obcaecati similique
-              molestias dolorem asperiores unde atque ut?"
-                action={
-                  <>
-                    <Link>Create Customization</Link>
-                  </>
-                }
-              />
               <CustomActionCard
                 title="Sort/Re-order"
                 description="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
               molestias dolorem asperiores unde atque ut?"
                 action={
                   <>
-                    <Link>Create Customization</Link>
+                    <>
+                      <Link
+                        onClick={() => {
+                          navigate(
+                            "/payment-customization/create/?type=re-order"
+                          );
+                        }}
+                      >
+                        Create Customization
+                      </Link>
+                    </>
                   </>
                 }
               />
@@ -82,7 +76,13 @@ const PaymentCustomization = () => {
               molestias dolorem asperiores unde atque ut?"
                 action={
                   <>
-                    <Link>Create Customization</Link>
+                    <Link
+                      onClick={() => {
+                        navigate("/payment-customization/create/?type=rename");
+                      }}
+                    >
+                      Create Customization
+                    </Link>
                   </>
                 }
               />

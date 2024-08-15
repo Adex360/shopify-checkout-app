@@ -2,18 +2,14 @@ import React from "react";
 import { LegacyStack, Tag, Autocomplete, InlineStack } from "@shopify/polaris";
 import { useState, useCallback, useMemo } from "react";
 
-const SearchAndSelect = ({ placeholder, label }) => {
-  const deselectedOptions = useMemo(
-    () => [
-      { value: "rustic", label: "Rustic" },
-      { value: "antique", label: "Antique" },
-      { value: "vinyl", label: "Vinyl" },
-      { value: "vintage", label: "Vintage" },
-      { value: "refurbished", label: "Refurbished" },
-    ],
-    []
-  );
-  const [selectedOptions, setSelectedOptions] = useState(["rustic"]);
+const SearchAndSelect = ({
+  placeholder,
+  label,
+  selectionOption,
+  selectedOptions,
+  setSelectedOptions,
+}) => {
+  const deselectedOptions = useMemo(() => selectionOption, []);
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState(deselectedOptions);
 
@@ -45,12 +41,14 @@ const SearchAndSelect = ({ placeholder, label }) => {
     [selectedOptions]
   );
 
+  const tagContent = "";
+
   const verticalContentMarkup =
-    selectedOptions.length > 0 ? (
-      <InlineStack spacing="extraTight" alignment="center">
+    selectedOptions?.length > 0 ? (
+      <InlineStack gap="100" alignment="center">
         {selectedOptions.map((option) => {
           let tagLabel = "";
-          tagLabel = option.replace("_", " ");
+          tagLabel = option?.replace("_", " ");
           tagLabel = titleCase(tagLabel);
           return (
             <Tag key={`option${option}`} onRemove={removeTag(option)}>
@@ -78,7 +76,10 @@ const SearchAndSelect = ({ placeholder, label }) => {
       options={options}
       selected={selectedOptions}
       textField={textField}
-      onSelect={setSelectedOptions}
+      onSelect={(value) => {
+        console.log(value);
+        setSelectedOptions(value);
+      }}
       listTitle="Suggested Tags"
     />
   );

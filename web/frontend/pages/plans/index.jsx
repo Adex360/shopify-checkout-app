@@ -13,12 +13,50 @@ import {
   Text,
   useBreakpoints,
 } from "@shopify/polaris";
-import React from "react";
+import React, { useEffect } from "react";
 import { plansCardData } from "../../constants";
+import { useAuthenticatedFetch } from "../../hooks";
 
 const Plans = () => {
   const { mdUp } = useBreakpoints();
+  const fetch = useAuthenticatedFetch();
 
+  const h = async () => {
+    const resp = await fetch("api/v1/payment-customization/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: "re order now ",
+        type: "re-order",
+        rule_status: true,
+        payment_rule: true,
+        conditions: [
+          {
+            type: "country",
+            rule: "contains",
+            value: ["PK"],
+          },
+          {
+            type: "title",
+            rule: "contains",
+            value: ["Standard"],
+          },
+        ],
+        payment_name: {
+          match: "exact-none-case",
+          title: ["cash on delivery (COD)", "(for testing) Bogus Gateway"],
+        },
+      }),
+    });
+    const data = await resp.json();
+    console.log("data", data);
+  };
+
+  useEffect(() => {
+    h();
+  }, []);
   return (
     <>
       <Page title="Plans">
