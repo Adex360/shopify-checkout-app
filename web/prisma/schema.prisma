@@ -16,7 +16,6 @@ datasource db {
 model Shop {
   id                    String                  @id @default(uuid())
   shop_name             String                  @unique
-  domain                String?
   accessToken           String
   scope                 String
   state                 String
@@ -96,7 +95,8 @@ model Custom_field {
 }
 
 model City_list {
-  id           String @id @default(uuid())
+  id           String  @id @default(uuid())
+  enabled      Boolean
   country_name String
   zone_list    Json?
   city_list    Json

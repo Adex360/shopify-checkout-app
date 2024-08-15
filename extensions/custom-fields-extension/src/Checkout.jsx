@@ -31,7 +31,7 @@ function CustomFieldsExtension() {
   const applyAttributeChange = useApplyAttributeChange();
 
   const CUSTOM_FIELDS_END_POINT =
-    "https://commercial-remainder-denial-realtors.trycloudflare.com/api/v1/custom-fields/all";
+    "https://seo-services-liver-accident.trycloudflare.com/api/v1/custom-fields/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };

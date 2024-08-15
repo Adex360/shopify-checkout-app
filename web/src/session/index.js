@@ -1,12 +1,9 @@
-import {
-  storeOrUpdateSession,
-  convertShopToSession,
-} from "../helpers/index.js";
+import { convertShopToSession } from "../helpers/index.js";
 import { Shop } from "../models/index.js";
 
 class Session {
   async storeSession(session) {
-    return await storeOrUpdateSession(session);
+    return await Shop.storeOrUpdateSession(session);
   }
 
   async loadSession(id) {

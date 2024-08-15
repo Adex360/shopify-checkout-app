@@ -68,4 +68,22 @@ export class PaymentCustomization {
       });
     return deletedPaymentCustomization;
   }
+
+  static async count(options = {}) {
+    const whereClause = {};
+
+    if (options.type) {
+      whereClause.type = options.type;
+    }
+
+    if (options.rule_status === true) {
+      whereClause.rule_status = options.rule_status;
+    }
+
+    const count = await prisma.payment_customization.count({
+      where: whereClause,
+    });
+
+    return count;
+  }
 }

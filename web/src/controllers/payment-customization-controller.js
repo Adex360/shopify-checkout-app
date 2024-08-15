@@ -90,3 +90,23 @@ export const deletePaymentCustomization = async (req, res) => {
     res.status(500).json({ error: "Error Deleting Validation:" });
   }
 };
+
+export const countByTypesAndActive = async (req, res) => {
+  try {
+    const types = ["rename", "hide", "re-order"];
+
+    const counts = {};
+    for (const type of types) {
+      const typeCount = await PaymentCustomization.count({ type: type });
+      counts[type] = typeCount;
+    }
+
+    const activeCount = await PaymentCustomization.count({ rule_status: true });
+    res.json({
+      count: counts,
+      activeCount: activeCount,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error while counting" });
+  }
+};

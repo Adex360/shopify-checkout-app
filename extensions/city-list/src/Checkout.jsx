@@ -26,13 +26,13 @@ import {
 
 // 1. Choose an extension target
 export default reactExtension("purchase.checkout.block.render", () => (
-  <CityDropdown2 />
+  <CityDropdown />
 ));
 
 export function CityDropdown2() {
   console.log("ok city dropdown ");
   const CUSTOM_FIELDS_END_POINT =
-    "https://commercial-remainder-denial-realtors.trycloudflare.com/api/v1/city-list/all";
+    "https://seo-services-liver-accident.trycloudflare.com/api/v1/city-list/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -93,7 +93,7 @@ export function CityDropdown2() {
 
   return (
     <Select
-      label="Select your city"
+      label="Select your city aaa"
       options={filteredCities.map((city) => ({ label: city, value: city }))}
       onChange={handleChange}
       value={selectedCity}
@@ -103,7 +103,7 @@ export function CityDropdown2() {
 
 export function CityDropdown() {
   const CUSTOM_FIELDS_END_POINT =
-    "https://commercial-remainder-denial-realtors.trycloudflare.com/api/v1/city-list/all";
+    "https://seo-services-liver-accident.trycloudflare.com/api/v1/city-list/all";
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);
@@ -176,7 +176,7 @@ export function CityDropdown() {
   return (
     <BlockStack>
       <TextField
-        label="City"
+        label="city 2"
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setDropdownVisible(true)}

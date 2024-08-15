@@ -4,6 +4,7 @@ import { customFieldsRoutes } from "./custom-fields-routes.js";
 import { API_VERSION } from "../config/index.js";
 import { publicRoutes } from "./public-routes.js";
 import { cityListRoutes } from "./city-list-routes.js";
+import { adminRoutes } from "./admin-routes.js";
 const API_PREFIX = API_VERSION;
 
 export const registerApi = (app) => {
@@ -16,6 +17,7 @@ export const registerApi = (app) => {
 
 export const registerClientApi = (app) => {
   app.use(`${API_PREFIX}`, publicRoutes);
+  app.use("/api/admin", adminRoutes);
 };
 
 // export const registerConfirmationApi = (app) => {

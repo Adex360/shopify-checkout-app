@@ -13,9 +13,14 @@ router.get(
   errorHandler(PaymentCustomizationController.getAllPaymentCustomization)
 );
 router.get(
+  "/count",
+  errorHandler(PaymentCustomizationController.countByTypesAndActive)
+);
+router.get(
   "/:id",
   errorHandler(PaymentCustomizationController.getByIdPaymentCustomization)
 );
+
 router.put(
   "/:id",
   errorHandler(PaymentCustomizationController.updatePaymentCustomization)

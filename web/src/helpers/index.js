@@ -1,9 +1,8 @@
 import { convertShopToSession } from "./convert-shop-to-session.js";
-import { storeOrUpdateSession } from "./store-update-session.js";
 import { sleep } from "./sleep.js";
 export * from "./fetch-paginated-list.js";
 
-export { sleep, convertShopToSession, storeOrUpdateSession };
+export { sleep, convertShopToSession };
 
 export function getNextBillingDate() {
   var now = new Date();

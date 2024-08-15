@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://animals-pit-sponsors-vendors.trycloudflare.com"
+application_url = "https://seo-services-liver-accident.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://animals-pit-sponsors-vendors.trycloudflare.com/auth/callback",
-  "https://animals-pit-sponsors-vendors.trycloudflare.com/auth/shopify/callback",
-  "https://animals-pit-sponsors-vendors.trycloudflare.com/api/auth/callback"
+  "https://seo-services-liver-accident.trycloudflare.com/auth/callback",
+  "https://seo-services-liver-accident.trycloudflare.com/auth/shopify/callback",
+  "https://seo-services-liver-accident.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

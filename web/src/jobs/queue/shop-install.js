@@ -28,6 +28,35 @@ export const startShopInstallQueue = async (shop) => {
   );
 };
 
+export async function getShopInstallQueueDetails() {
+  const [
+    activeCount,
+    completedCount,
+    delayedCount,
+    failedCount,
+    jobByTypes,
+    jobCount,
+    waitingCount,
+  ] = await Promise.all([
+    queue.getActiveCount(),
+    queue.getCompletedCount(),
+    queue.getDelayedCount(),
+    queue.getFailedCount(),
+    queue.getJobCountByTypes(),
+    queue.getJobCounts(),
+    queue.getWaitingCount(),
+  ]);
+
+  return {
+    activeCount,
+    completedCount,
+    delayedCount,
+    failedCount,
+    jobByTypes,
+    jobCount,
+    waitingCount,
+  };
+}
 queue.on("active", () => {
   console.log(`[${QUEUE_NAME}] is active`);
 });

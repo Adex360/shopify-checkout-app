@@ -1,5 +1,5 @@
 import { DeliveryMethod } from "@shopify/shopify-api";
-
+import { Shop } from "../web/src/models/Shop.js";
 /**
  * @type {{[key: string]: import("@shopify/shopify-api").WebhookHandler}}
  */
@@ -81,6 +81,15 @@ export default {
       //   "shop_id": 954889,
       //   "shop_domain": "{shop}.myshopify.com"
       // }
+    },
+  },
+  APP_UNINSTALLED: {
+    deliveryMethod: DeliveryMethod.Http,
+    callbackUrl: "/api/webhooks",
+    callback: async (topic, shop, body, webhookId) => {
+      console.log(shop, " ===>>>APP UNINSTALLED HOOK");
+      const shopFound = await Shop.findByName(shop);
+      await Shop.delete(shopFound.id);
     },
   },
 };
