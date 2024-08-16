@@ -24,42 +24,7 @@ const PhoneValidation = () => {
     setModalOpen(true);
   };
 
-  const getPhoneValidations = async () => {
-    try {
-      const resp = await shopifyFetch("api/v1/validation/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: "first1 validation",
-          country_name: "PK",
-          enabled: true,
-          phone_validation: {
-            type: "phone-validation",
-            country_name: "PK",
-            country_code: 92,
-            network_code: 3,
-            phone_no_length: 8,
-            error_message: "wrong length",
-          },
-        }),
-      });
-      const data = await resp.json();
-      if (resp.ok) {
-        show(data.message, { duration: 2000 });
-      } else {
-        show(data.error.message, {
-          isError: true,
-        });
-      }
-
-      console.log(data.error.message);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  };
+  const getPhoneValidations = async () => {};
 
   useEffect(() => {
     getPhoneValidations();
