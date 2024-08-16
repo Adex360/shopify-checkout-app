@@ -1,24 +1,15 @@
 query RunInput {
   cart {
-    buyerIdentity {
-      phone
-      customer {
-        numberOfOrders
-        firstName
-        lastName
-      }
-    }
     deliveryGroups {
       deliveryAddress {
         countryCode
+        firstName
+        lastName
+        address1
+        phone
       }
       deliveryAddress {
         address1
-      }
-    }
-    cost {
-      subtotalAmount {
-        amount
       }
     }
   }

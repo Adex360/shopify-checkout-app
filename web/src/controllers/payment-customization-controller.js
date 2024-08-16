@@ -17,7 +17,6 @@ export const createPaymentCustomization = async (req, res) => {
 
   const getFnId = await service.getShopifyFunctionId("payment-customization");
   await service.createPaymentCustomization(getFnId, data);
-
   res.status(200).json({
     message: `Customization Setting for ${req.body.type} Created !! `,
     createReOrder,

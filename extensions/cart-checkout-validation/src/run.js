@@ -9,6 +9,7 @@
  * @param {RunInput} input
  * @returns {FunctionRunResult}
  */
+
 export function run(input) {
   const { cart, validation } = input;
 
@@ -16,11 +17,13 @@ export function run(input) {
   const errors = [];
   const obj = JSON.stringify(setting, null, 2);
   console.log("metafields", obj);
-  const phone = cart?.buyerIdentity.phone || "924567896542";
-  const firstName = cart?.buyerIdentity?.customer?.firstName || "m12";
-  const lastName = cart?.buyerIdentity?.customer?.lastName || "m34";
-  const address1 = cart?.deliveryGroups[0]?.deliveryAddress.address1 || "";
-  console.log("firstName", firstName, lastName);
+
+  const deliveryAddress = cart?.deliveryGroups[0]?.deliveryAddress || {};
+  const phone = deliveryAddress.phone || "";
+  const firstName = deliveryAddress.firstName || "";
+  const lastName = deliveryAddress.lastName || "";
+  const address1 = deliveryAddress.address1 || "";
+
   const countryCode = input.cart.deliveryGroups.map(
     (group) => group?.deliveryAddress?.countryCode
   );
@@ -29,14 +32,7 @@ export function run(input) {
   );
 
   if (setting && isCountryMatch) {
-    // Function to validate fields
     const validateField = (fieldValue, fieldSetting, fieldName) => {
-      console.log(
-        "fieldValue",
-        fieldValue,
-        fieldSetting,
-        fieldSetting.limit_type
-      );
       if (fieldSetting.limit_type) {
         const wordCount = fieldValue.trim().split(/\s+/).length;
         if (
@@ -102,7 +98,7 @@ export function run(input) {
       validateField(firstName, setting.first_name_validation, "firstName");
     }
 
-    // // Validate last name
+    // Validate last name
     if (setting.last_name_validation) {
       validateField(lastName, setting.last_name_validation, "lastName");
     }
@@ -114,36 +110,46 @@ export function run(input) {
 
     // Phone validation
     if (setting.phone_validation) {
-      if (!phone.startsWith(setting.phone_validation.country_code.toString())) {
-        errors.push({
-          localizedMessage: setting.phone_validation.error_message,
-          target: "$.cart.buyerIdentity.phone",
-        });
-      }
+      const phoneValidation = setting.phone_validation;
 
-      const startOfNetworkCode =
-        setting.phone_validation.country_code.toString().length;
-      const networkCode = phone.slice(
-        startOfNetworkCode,
-        startOfNetworkCode + setting.phone_validation.network_code
+      // Check if the phone starts with any of the allowed country codes
+      const isCountryCodeValid = phoneValidation.country_code.some((code) =>
+        phone.startsWith(code)
       );
 
-      if (networkCode.length !== setting.phone_validation.network_code) {
+      if (!isCountryCodeValid) {
         errors.push({
-          localizedMessage: setting.phone_validation.error_message,
-          target: "$.cart.buyerIdentity.phone",
+          localizedMessage: phoneValidation.error_message,
+          target: "$.cart.deliveryGroups[0].deliveryAddress.phone",
         });
-      }
+      } else {
+        // Find the matching country code to calculate where the network code starts
+        const matchedCountryCode = phoneValidation.country_code.find((code) =>
+          phone.startsWith(code)
+        );
+        const startOfNetworkCode = matchedCountryCode.length;
+        console.log("startOfNetworkCode", startOfNetworkCode);
+        const networkCode = phone.slice(
+          startOfNetworkCode,
+          startOfNetworkCode + phoneValidation.network_code
+        );
 
-      const startOfPhoneNo =
-        startOfNetworkCode + setting.phone_validation.network_code;
-      const phoneNoLength = phone.slice(startOfPhoneNo).length;
+        if (networkCode.length !== phoneValidation.network_code) {
+          errors.push({
+            localizedMessage: phoneValidation.error_message,
+            target: "$.cart.deliveryGroups[0].deliveryAddress.phone",
+          });
+        }
 
-      if (phoneNoLength !== setting.phone_validation.phone_no_length) {
-        errors.push({
-          localizedMessage: setting.phone_validation.error_message,
-          target: "$.cart.buyerIdentity.phone",
-        });
+        const startOfPhoneNo =
+          startOfNetworkCode + phoneValidation.network_code;
+        const phoneNoLength = phone.slice(startOfPhoneNo).length;
+        if (phoneNoLength !== phoneValidation.phone_no_length) {
+          errors.push({
+            localizedMessage: phoneValidation.error_message,
+            target: "$.cart.deliveryGroups[0].deliveryAddress.phone",
+          });
+        }
       }
     }
   }
