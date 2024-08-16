@@ -176,7 +176,7 @@ export function CityDropdown() {
   return (
     <BlockStack>
       <TextField
-        label="city 2"
+        label="city ma"
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setDropdownVisible(true)}

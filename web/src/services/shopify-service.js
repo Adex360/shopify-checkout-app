@@ -528,8 +528,7 @@ export default class ShopifyService {
         validation: ValidationCreateInput,
       },
     };
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    console.log("resp", resp.data.data.validationCreate.validation);
+    await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
   async getValidationNodes(title) {
