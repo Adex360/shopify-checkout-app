@@ -83,10 +83,10 @@ export const deletePaymentCustomization = async (req, res) => {
 
     const deletedPaymentCustomization = await PaymentCustomization.delete(id);
     return res.status(200).json({
-      message: `Validation id : ${deletedPaymentCustomization.id} deleted`,
+      message: `${deletedPaymentCustomization.title} is successfully deleted`,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error Deleting Validation:" });
+    res.status(500).json({ error: "Error Deleting PaymentCustomization:" });
   }
 };
 

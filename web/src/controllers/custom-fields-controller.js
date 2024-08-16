@@ -55,7 +55,7 @@ export const deleteFields = async (req, res) => {
     const { id } = req.params;
     const deletedCustomFields = await CustomField.delete(id);
     res.status(200).json({
-      message: `Custom Field id : ${deletedCustomFields.id} deleted`,
+      message: `${deletedCustomFields.title} is successfully deleted`,
     });
   } catch (error) {
     res.status(500).json({ error: "Error creating Custom field" });
