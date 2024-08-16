@@ -1,5 +1,5 @@
 import ShopifyService from "../services/shopify-service.js";
-import { PaymentCustomization } from "../models/index.js";
+import { PaymentCustomization, CityList } from "../models/index.js";
 
 export const createPaymentCustomization = async (req, res) => {
   const { id, shop_name, accessToken } = req.shop;
@@ -97,15 +97,20 @@ export const countByTypesAndActive = async (req, res) => {
     const counts = {};
     for (const type of types) {
       const typeCount = await PaymentCustomization.count({ type: type });
+
       counts[type] = typeCount;
     }
 
     const activeCount = await PaymentCustomization.count({ rule_status: true });
+    const activeCountries = await CityList.activeCountries();
+    const countryNames = activeCountries.map((country) => country.country_name);
     res.json({
       count: counts,
       activeCount: activeCount,
+      activeCountries: countryNames,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Error while counting" });
   }
 };

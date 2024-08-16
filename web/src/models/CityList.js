@@ -1,5 +1,5 @@
 import prismaClient from "../db/prisma/index.js";
-import { DEFAULT_TEST } from "../constants/index.js";
+import { DEFAULT_CITY_LIST } from "../constants/index.js";
 export class CityList {
   static async create(CityFields) {
     const newCityField = await prismaClient.city_list.create({
@@ -10,14 +10,14 @@ export class CityList {
     return newCityField;
   }
 
-  static async getByTitle(title) {
+  static async getByTitle(name) {
     const titleFound = await prismaClient.city_list.findUnique({
       where: {
-        title,
+        country_name: name,
       },
     });
     if (titleFound) {
-      throw new Error(`Title already exist. Please choose a different title.`);
+      throw new Error(`City list with the given name already exist`);
     }
 
     return titleFound;
@@ -62,9 +62,17 @@ export class CityList {
     const defaultSetting = await prismaClient.city_list.create({
       data: {
         shop_id,
-        ...DEFAULT_TEST,
+        ...DEFAULT_CITY_LIST,
       },
     });
     return defaultSetting;
+  }
+  static async activeCountries() {
+    const active = await prismaClient.city_list.findMany({
+      where: { enabled: true },
+      select: { country_name: true },
+    });
+    console.log("activeee ", active);
+    return active;
   }
 }

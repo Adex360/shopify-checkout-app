@@ -1,23 +1,17 @@
-import ShopifyService from "../services/shopify-service.js";
 import { CityList } from "../models/index.js";
 
 export const createCityList = async (req, res) => {
-  try {
-    const { id } = req.shop;
-    const data = req.body;
-
-    const createCityList = await CityList.create({
-      shop_id: id,
-      ...data,
-    });
-    res.status(200).json({
-      message: `City list Created !! `,
-      createCityList,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Error creating City List" });
-  }
+  const { id } = req.shop;
+  const data = req.body;
+  const t = await CityList.getByTitle(data.country_name);
+  const createCityList = await CityList.create({
+    shop_id: id,
+    ...data,
+  });
+  res.status(200).json({
+    message: `City list Created !! `,
+    createCityList,
+  });
 };
 
 export const getAllCityList = async (req, res) => {

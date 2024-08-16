@@ -70,24 +70,9 @@ model Validation {
 }
 
 model Custom_field {
-  id     String @id @default(uuid())
-  title  String @unique
-  fields Json
-
-  // fields
-  // type           String
-  // label          String
-  // placeholder    String?
-  // field_width    String
-  // text_size      Int
-  // text_color     String
-  // font_style     String
-  // text_alignment String
-  // field_size     String
-  // divider_color  String
-  // image          String
-  // btn_link       String
-
+  id      String @id @default(uuid())
+  title   String @unique
+  fields  Json
   shop_id String
   shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -97,8 +82,8 @@ model Custom_field {
 model City_list {
   id           String  @id @default(uuid())
   enabled      Boolean
-  country_name String
-  zone_list    Json?
+  country_name String  @unique
+  country_code String
   city_list    Json
 
   shop_id String

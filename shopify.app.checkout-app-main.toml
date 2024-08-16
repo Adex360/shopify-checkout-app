@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://retailer-kit-hardware-suppliers.trycloudflare.com"
+application_url = "https://pdas-technique-spent-influences.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://retailer-kit-hardware-suppliers.trycloudflare.com/auth/callback",
-  "https://retailer-kit-hardware-suppliers.trycloudflare.com/auth/shopify/callback",
-  "https://retailer-kit-hardware-suppliers.trycloudflare.com/api/auth/callback"
+  "https://pdas-technique-spent-influences.trycloudflare.com/auth/callback",
+  "https://pdas-technique-spent-influences.trycloudflare.com/auth/shopify/callback",
+  "https://pdas-technique-spent-influences.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
