@@ -8,6 +8,7 @@ const SearchAndSelect = ({
   selectionOption,
   selectedOptions,
   setSelectedOptions,
+  allowMultiple,
 }) => {
   const deselectedOptions = useMemo(() => selectionOption, []);
   const [inputValue, setInputValue] = useState("");
@@ -72,7 +73,7 @@ const SearchAndSelect = ({
 
   return (
     <Autocomplete
-      allowMultiple
+      allowMultiple={allowMultiple}
       options={options}
       selected={selectedOptions}
       textField={textField}

@@ -78,7 +78,7 @@ const CreateCustomization = () => {
   const handleCreateCustomization = async () => {
     try {
       const resp = await shopifyFetch(
-        "https://warm-applies-charms-agencies.trycloudflare.com/api/v1/payment-customization/create",
+        "https://4774-39-58-100-72.ngrok-free.app/extensions/dev-console/api/v1/payment-customization/create",
         {
           method: "POST",
           headers: {
@@ -467,6 +467,7 @@ const CreateCustomization = () => {
                               <>
                                 {countries !== "" ? (
                                   <SearchAndSelect
+                                    allowMultiple={true}
                                     selectedOptions={rule.value}
                                     setSelectedOptions={(value) => {
                                       handleCustomizationRuleChange(

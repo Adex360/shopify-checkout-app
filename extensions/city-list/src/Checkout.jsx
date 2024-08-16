@@ -32,7 +32,7 @@ export default reactExtension("purchase.checkout.block.render", () => (
 export function CityDropdown2() {
   console.log("ok city dropdown ");
   const CUSTOM_FIELDS_END_POINT =
-    "https://seo-services-liver-accident.trycloudflare.com/api/v1/city-list/all";
+    "https://4774-39-58-100-72.ngrok-free.app/api/v1/city-list/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -103,7 +103,7 @@ export function CityDropdown2() {
 
 export function CityDropdown() {
   const CUSTOM_FIELDS_END_POINT =
-    "https://seo-services-liver-accident.trycloudflare.com/api/v1/city-list/all";
+    "https://4774-39-58-100-72.ngrok-free.app/api/v1/city-list/all";
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);
@@ -123,7 +123,7 @@ export function CityDropdown() {
         headers: requestHeader,
       });
       const data = await response.json();
-      console.log("data", data);
+      console.log("data222222", data);
       setCityList(Array.isArray(data.getAll) ? data.getAll : []);
     } catch (error) {
       console.error("Error fetching city list:", error);
