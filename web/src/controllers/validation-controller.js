@@ -87,7 +87,7 @@ export const deleteValidation = async (req, res) => {
     const deletedValidation = await Validation.delete(id);
     return res
       .status(200)
-      .json({ message: `Validation id : ${deletedValidation.id} deleted` });
+      .json({ message: `${deletedValidation.title} is successfully deleted` });
   } catch (error) {
     res.status(500).json({ error: "Error Deleting Validation:" });
   }

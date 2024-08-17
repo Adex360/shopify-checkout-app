@@ -1,5 +1,7 @@
-export const DEFAULT_TEST = {
-  country_name: "PK",
+export const DEFAULT_CITY_LIST = {
+  enabled: true,
+  country_name: "Pakistan",
+  country_code: "PK",
   city_list: [
     "LAHORE",
     "KARACHI",
