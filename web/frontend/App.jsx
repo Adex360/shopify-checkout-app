@@ -8,6 +8,7 @@ import {
   QueryProvider,
   PolarisProvider,
 } from "./components";
+import { AppContextProvider } from "./context";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
@@ -18,33 +19,39 @@ export default function App() {
     <PolarisProvider>
       <BrowserRouter>
         <AppBridgeProvider>
-          <QueryProvider>
-            <NavigationMenu
-              navigationLinks={[
-                {
-                  label: "Payment Customization",
-                  destination: "/payment",
-                },
-                {
-                  label: "Shipping Customization",
-                  destination: "/shipping-customization",
-                },
-                {
-                  label: "Checkout City List ",
-                  destination: "/checkout-city",
-                },
-                {
-                  label: "Phone Validation",
-                  destination: "/phone-validation",
-                },
-                {
-                  label: "Plans",
-                  destination: "/plans",
-                },
-              ]}
-            />
-            <Routes pages={pages} />
-          </QueryProvider>
+          <AppContextProvider>
+            <QueryProvider>
+              <NavigationMenu
+                navigationLinks={[
+                  {
+                    label: "Payment Customization",
+                    destination: "/payment",
+                  },
+                  {
+                    label: "Shipping Customization",
+                    destination: "/shipping-customization",
+                  },
+                  {
+                    label: "Checkout City List ",
+                    destination: "/checkout-city",
+                  },
+                  {
+                    label: "Phone Validation",
+                    destination: "/phone-validation",
+                  },
+                  {
+                    label: "Custom Fields",
+                    destination: "/custom-fields",
+                  },
+                  {
+                    label: "Plans",
+                    destination: "/plans",
+                  },
+                ]}
+              />
+              <Routes pages={pages} />
+            </QueryProvider>
+          </AppContextProvider>
         </AppBridgeProvider>
       </BrowserRouter>
     </PolarisProvider>

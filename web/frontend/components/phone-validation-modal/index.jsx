@@ -1,16 +1,15 @@
-import {
-  Banner,
-  BlockStack,
-  Box,
-  Spinner,
-  TextField,
-  Modal,
-  Button,
-} from "@shopify/polaris";
 import React, { useEffect, useState } from "react";
 import SearchAndSelect from "../search-and-select";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useToast } from "@shopify/app-bridge-react";
+import {
+  Banner,
+  BlockStack,
+  Box,
+  TextField,
+  Modal,
+  Checkbox,
+} from "@shopify/polaris";
 
 const PhoneValidationModal = ({ open, onClose }) => {
   const shopifyFetch = useAuthenticatedFetch();
@@ -23,6 +22,7 @@ const PhoneValidationModal = ({ open, onClose }) => {
   const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
+    enable: true,
     country: [],
     countryCode: "",
     networkCodeLength: "",
@@ -63,20 +63,20 @@ const PhoneValidationModal = ({ open, onClose }) => {
             value: country.iso2,
           });
         });
-        console.log(countryArr);
         setCountries(countryArr);
         changeLoading("modalLoading", false);
       }
     } catch (e) {
       console.error(e);
     } finally {
-      // console.log(countries);
     }
   };
 
   const isFormDataValid = () => {
     return Object.values(formData).every((value) => {
-      if (Array.isArray(value)) {
+      if (typeof value === "boolean") {
+        return true; // Ignore boolean values in validation
+      } else if (Array.isArray(value)) {
         return value.length > 0;
       } else {
         return value.trim() !== "";
@@ -85,6 +85,19 @@ const PhoneValidationModal = ({ open, onClose }) => {
   };
 
   const setPhoneValidation = async () => {
+    const reqData = {
+      title: formData.title,
+      country_name: formData.country[0],
+      enabled: formData.enable,
+      phone_validation: {
+        type: "phone-validation",
+        country_name: formData.country[0],
+        country_code: formData.countryCode.split(","),
+        network_code: formData.networkCodeLength,
+        phone_no_length: formData.phoneLength,
+        error_message: formData.errorMessage,
+      },
+    };
     try {
       changeLoading("btnLoading", true);
       const resp = await shopifyFetch("api/v1/validation/create", {
@@ -92,19 +105,7 @@ const PhoneValidationModal = ({ open, onClose }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: formData.title,
-          country_name: formData.country[0],
-          enabled: true,
-          phone_validation: {
-            type: "phone-validation",
-            country_name: formData.country[0],
-            country_code: formData.countryCode,
-            network_code: formData.networkCodeLength,
-            phone_no_length: formData.phoneLength,
-            error_message: formData.errorMessage,
-          },
-        }),
+        body: JSON.stringify(reqData),
       });
       const data = await resp.json();
       if (resp.ok) {
@@ -131,7 +132,18 @@ const PhoneValidationModal = ({ open, onClose }) => {
     <>
       <Modal
         open={open}
-        onClose={onClose}
+        onClose={() => {
+          setFormData({
+            title: "",
+            enable: true,
+            country: [],
+            countryCode: "",
+            networkCodeLength: "",
+            phoneLength: "",
+            errorMessage: "",
+          });
+          onClose();
+        }}
         loading={loading.modalLoading}
         // size="medium"
         primaryAction={{
@@ -154,6 +166,12 @@ const PhoneValidationModal = ({ open, onClose }) => {
             }}
           >
             <BlockStack gap="200">
+              <Checkbox
+                label="Enable Validation "
+                checked={formData.enable}
+                onChange={(value) => handleFormDataChange("enable", value)}
+              />
+
               <TextField
                 label="Title"
                 value={formData.title}
@@ -181,7 +199,6 @@ const PhoneValidationModal = ({ open, onClose }) => {
               </Banner>
               <TextField
                 label="Country Code"
-                type="number"
                 helpText="Enter multiple values comma separated (e.g., +32,11,+92)"
                 value={formData.countryCode}
                 onChange={(value) => handleFormDataChange("countryCode", value)}

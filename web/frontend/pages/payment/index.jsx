@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Banner,
   Button,
+  ButtonGroup,
   Card,
   DataTable,
   EmptyState,
@@ -9,33 +10,23 @@ import {
   Link,
   Page,
   Spinner,
+  Text,
 } from "@shopify/polaris";
 import { PlanUpgradeWarning } from "../../components";
-import { useNavigate } from "@shopify/app-bridge-react";
+import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
 
 const Payment = () => {
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
-
+  const { show } = useToast();
   //  /////////////////////// States
   const isSubscribed = true;
   // const customizationRules = null;
+  const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
   const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
   /////////////////////
-
-  const tableRows = customizationRules?.map((data) => {
-    const ruleCondition = data.conditions?.map((condition, index) => {
-      return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
-    });
-    return [
-      data.title,
-      data.type,
-      data.rule_status ? "Active" : "Inactive",
-      ruleCondition,
-    ];
-  });
 
   const getCustomization = async () => {
     try {
@@ -54,6 +45,56 @@ const Payment = () => {
       setLoading(false);
     }
   };
+
+  console.log(customizationRules);
+
+  const handleDeleteCustomization = async (id, index) => {
+    try {
+      setBtnLoadingIndex(index);
+      const resp = await shopifyFetch(`api/v1/payment-customization/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await resp.json();
+      console.log(data);
+      if (resp.ok) {
+        show("Payment Customization Deleted!");
+        setCustomizationRules((prev) => {
+          prev.splice(index, 1);
+          return prev;
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setBtnLoadingIndex("");
+    }
+  };
+
+  const tableRows = customizationRules?.map((data, index) => {
+    const ruleCondition = data.conditions?.map((condition, index) => {
+      return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
+    });
+    return [
+      data.title,
+      data.type,
+      data.rule_status ? "Active" : "Inactive",
+      ruleCondition,
+      <ButtonGroup variant="segmented">
+        <Button>Edit</Button>
+        <Button
+          variant="primary"
+          loading={btnLoadingIndex === index}
+          onClick={() => handleDeleteCustomization(data.id, index)}
+        >
+          Delete
+        </Button>
+      </ButtonGroup>,
+    ];
+  });
+
   useEffect(() => {
     getCustomization();
   }, []);
@@ -82,14 +123,15 @@ const Payment = () => {
                 <Layout.Section>
                   {customizationRules.length !== 0 ? (
                     <>
-                      <Card>
+                      <Card padding="0">
                         <DataTable
                           columnContentTypes={["text", "text", "text", "text"]}
                           headings={[
-                            "Title",
-                            "Rule",
-                            "Rule Status",
-                            "Condition",
+                            <Text variant="headingMd">Title</Text>,
+                            <Text variant="headingMd">Rule</Text>,
+                            <Text variant="headingMd">Rule Status</Text>,
+                            <Text variant="headingMd">Condition</Text>,
+                            "",
                           ]}
                           rows={tableRows}
                         />
