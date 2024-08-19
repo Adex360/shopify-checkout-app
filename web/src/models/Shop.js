@@ -2,7 +2,8 @@ import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
 import { ShopifyService } from "../services/index.js";
 import { startShopInstallQueue } from "../jobs/queue/index.js";
-// import { Plan } from "./Plan.js";
+import { getNextBillingDate } from "../helpers/index.js";
+import { Plan } from "./plan.js";
 
 export class Shop {
   static async storeOrUpdateSession(session) {
@@ -121,5 +122,35 @@ export class Shop {
       where: { id },
     });
     return deleteShop;
+  }
+  static async subscribedToPlan(shop_name, plan_id, charge_id = 0) {
+    const type = plan_id;
+    const plan = await Plan.getByType(type);
+    if (!plan) throw new Error("Plan not found", plan_id);
+    const shop = await this.findByName(shop_name);
+    if (!shop) throw new Error("Shop Not Found [Plan.js]");
+    const next_billing_date = getNextBillingDate();
+    const updatedValues = {
+      plan_id: plan.id,
+      next_billing_date,
+      plan_status: "active",
+      shopify_charge_id: charge_id,
+      plan_price: plan.price,
+      plan_activated_date: Date.now(),
+    };
+    if (type === "essential") {
+      updatedValues.payment_modification = true;
+    } else if (type === "professional") {
+      updatedValues.payment_modification = true;
+      updatedValues.advanced_city_dropdown = true;
+      updatedValues.field_validation = true;
+      updatedValues.custom_field = true;
+    }
+    await prismaClient.shop.update({
+      where: { id: shop.id },
+      data: {
+        ...updatedValues,
+      },
+    });
   }
 }

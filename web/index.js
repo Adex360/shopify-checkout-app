@@ -9,7 +9,7 @@ import PrivacyWebhookHandlers from "./privacy.js";
 import {
   registerApi,
   registerClientApi,
-  // registerConfirmationApi,
+  registerConfirmationApi,
 } from "./src/api/index.js";
 import {
   commonMiddleware,
@@ -28,6 +28,7 @@ const STATIC_PATH =
 
 const app = express();
 
+registerConfirmationApi(app);
 // Set up Shopify authentication and webhook handling
 app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(

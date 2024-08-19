@@ -72,7 +72,6 @@ export class CityList {
       where: { enabled: true },
       select: { country_name: true },
     });
-    console.log("activeee ", active);
     return active;
   }
 }

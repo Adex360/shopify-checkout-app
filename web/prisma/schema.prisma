@@ -14,26 +14,32 @@ datasource db {
 }
 
 model Shop {
-  id                    String                  @id @default(uuid())
-  shop_name             String                  @unique
-  accessToken           String
-  scope                 String
-  state                 String
-  shop_id               String
-  name                  String
-  session_id            String
-  currency              String?
-  status                String                  @default("active")
-  created_at            DateTime                @default(now())
-  updated_at            DateTime                @updatedAt
-  // plan_id                        String?  @default("basic_1")
-  // plan_price                     Int      @default(0)
-  // plan_activated_date            Int      @default(0)
-  // plan_status                    String   @default("none")
-  // shopify_charge_id              String?
-  // next_billing_date              Int      @default(0)
-  // currency                       String?
-  // plan                           Plan?    @relation(fields: [plan_id], references: [id])
+  id          String   @id @default(uuid())
+  shop_name   String   @unique
+  accessToken String
+  scope       String
+  state       String
+  shop_id     String
+  name        String
+  session_id  String
+  currency    String?
+  status      String   @default("active")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  plan_id             String?
+  plan_price          Int     @default(0)
+  plan_activated_date Int     @default(0)
+  plan_status         String  @default("none")
+  shopify_charge_id   String?
+  next_billing_date   Int     @default(0)
+
+  payment_modification   Boolean @default(false)
+  advanced_city_dropdown Boolean @default(false)
+  field_validation       Boolean @default(false)
+  custom_field           Boolean @default(false)
+
+  plan                  Plan?                   @relation(fields: [plan_id], references: [id])
   payment_customization Payment_customization[]
   validation            Validation[]
   custom_fields         Custom_field[]
@@ -90,4 +96,19 @@ model City_list {
   shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("city_list")
+}
+
+model Plan {
+  id         String    @id @default(uuid())
+  name       PlanNames
+  type       String
+  price      Int
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  Shop       Shop[]
+}
+
+enum PlanNames {
+  Essential
+  Professional
 }

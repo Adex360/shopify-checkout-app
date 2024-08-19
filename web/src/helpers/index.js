@@ -13,7 +13,7 @@ export function getNextBillingDate() {
   } else {
     current = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
   }
-  return current.toString();
+  return current;
 }
 
 export function getFirstAndLastMonthDate() {

@@ -5,6 +5,8 @@ import { API_VERSION } from "../config/index.js";
 import { publicRoutes } from "./public-routes.js";
 import { cityListRoutes } from "./city-list-routes.js";
 import { adminRoutes } from "./admin-routes.js";
+import { planRoutes } from "./plan-routes.js";
+import { confirmationRoutes } from "./confirmation-routes.js";
 const API_PREFIX = API_VERSION;
 
 export const registerApi = (app) => {
@@ -13,6 +15,7 @@ export const registerApi = (app) => {
   app.use(`${API_PREFIX}/validation`, validationRoutes);
   app.use(`${API_PREFIX}/custom-fields`, customFieldsRoutes);
   app.use(`${API_PREFIX}/city-list`, cityListRoutes);
+  app.use(`${API_PREFIX}/plan`, planRoutes);
 };
 
 export const registerClientApi = (app) => {
@@ -20,6 +23,6 @@ export const registerClientApi = (app) => {
   app.use("/api/admin", adminRoutes);
 };
 
-// export const registerConfirmationApi = (app) => {
-//   app.use(`${API_PREFIX}/confirmation`, confirmationRoutes);
-// };
+export const registerConfirmationApi = (app) => {
+  app.use(`${API_PREFIX}/confirmation`, confirmationRoutes);
+};
