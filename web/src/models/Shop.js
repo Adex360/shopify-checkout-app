@@ -153,4 +153,13 @@ export class Shop {
       },
     });
   }
+  static formatShopForApp(shop) {
+    const copied_shop = { ...shop };
+    delete copied_shop.accessToken;
+    delete copied_shop.scope;
+    delete copied_shop.state;
+    delete copied_shop.status;
+    delete copied_shop.shopify_charge_id;
+    return copied_shop;
+  }
 }

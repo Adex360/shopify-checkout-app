@@ -5,3 +5,4 @@ export * from "./city-list-controller.js";
 export * from "./admin-controller.js";
 export * from "./plan-controller.js";
 export * from "./confirmation-controller.js";
+export * from "./shop-controller.js";
