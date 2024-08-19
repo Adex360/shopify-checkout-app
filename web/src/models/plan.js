@@ -19,7 +19,7 @@ export class Plan {
       await this.createDefaultPlans();
       return this.getAll();
     }
-    return this.getAll();
+    return plans;
   }
 
   static async getByType(type) {

@@ -55,4 +55,11 @@ export class Validation {
     });
     return deletedValidation;
   }
+
+  static async deleteAll(id) {
+    const deleteShop = await prismaClient.validation.deleteMany({
+      where: { shop_id: id },
+    });
+    return deleteShop;
+  }
 }

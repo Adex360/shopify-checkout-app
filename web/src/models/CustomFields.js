@@ -49,10 +49,10 @@ export class CustomField {
     return updatedCustomField;
   }
 
-  static async delete(id) {
-    const deletedCustomField = await prismaClient.custom_field.delete({
-      where: { id },
+  static async deleteAll(id) {
+    const deleteAll = await prismaClient.custom_field.deleteMany({
+      where: { shop_id: id },
     });
-    return deletedCustomField;
+    return deleteAll;
   }
 }

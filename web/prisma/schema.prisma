@@ -110,5 +110,4 @@ model Plan {
 
 enum PlanNames {
   Essential
-  Professional
 }

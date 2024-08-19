@@ -7,27 +7,27 @@ const router = express.Router();
 
 router.post(
   "/create",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(CustomFieldsController.createCustomFields)
 );
 router.get(
   "/",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(CustomFieldsController.getAllCustomFields)
 );
 router.get(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(CustomFieldsController.getByIdCustomFields)
 );
 router.put(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(CustomFieldsController.updateCustomFields)
 );
 router.delete(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(CustomFieldsController.deleteFields)
 );
 
