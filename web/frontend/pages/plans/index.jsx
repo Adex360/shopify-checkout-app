@@ -10,151 +10,143 @@ import {
   Layout,
   List,
   Page,
+  Spinner,
   Text,
   useBreakpoints,
 } from "@shopify/polaris";
-import React, { useEffect } from "react";
-import { plansCardData } from "../../constants";
+import React, { useEffect, useState } from "react";
+import { features } from "../../constants";
 import { useAuthenticatedFetch } from "../../hooks";
+import { useNavigate } from "@shopify/app-bridge-react";
+import { useAppContext } from "../../context";
 
 const Plans = () => {
-  const { mdUp } = useBreakpoints();
-  const fetch = useAuthenticatedFetch();
+  const { shop, loading, setLoading } = useAppContext();
+  console.log(shop);
+  const shopifyFetch = useAuthenticatedFetch();
+  const [plans, setPlans] = useState([]);
+  // const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const h = async () => {
-    const resp = await fetch("api/v1/payment-customization/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: "re order now ",
-        type: "re-order",
-        rule_status: true,
-        payment_rule: true,
-        conditions: [
-          {
-            type: "country",
-            rule: "contains",
-            value: ["PK"],
-          },
-          {
-            type: "title",
-            rule: "contains",
-            value: ["Standard"],
-          },
-        ],
-        payment_name: {
-          match: "exact-none-case",
-          title: ["cash on delivery (COD)", "(for testing) Bogus Gateway"],
+  const getPlans = async () => {
+    try {
+      setLoading(true);
+      const resp = await shopifyFetch("/api/v1/plan");
+      const data = await resp.json();
+      if (resp.ok) {
+        setPlans(data.plans);
+        setLoading(false);
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const subscribe = async () => {
+    try {
+      setBtnLoading(true);
+      const resp = await shopifyFetch("/api/v1/plan/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-    const data = await resp.json();
-    console.log("data", data);
+        body: JSON.stringify({
+          type: "essential",
+        }),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        navigate(data.confirmation_url);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
-    h();
+    // subscribe();
+    getPlans();
   }, []);
   return (
     <>
-      <Page title="Plans">
-        <Layout>
-          <Layout.Section>
-            <InlineGrid columns={mdUp ? 4 : 2} gap="300">
-              {plansCardData.map((plan, i) => {
-                return (
-                  <>
-                    <Card key={i}>
-                      <div>
-                        <BlockStack>
-                          <Box paddingBlockEnd="200">
-                            <InlineStack align="center">
-                              <Text variant="headingLg">{plan.name}</Text>
-                            </InlineStack>
-                          </Box>
-                          <Divider />
-                          <Box paddingBlock="400">
-                            <InlineStack
-                              gap="100"
-                              align="center"
-                              blockAlign="center"
-                            >
-                              <InlineStack blockAlign="center">
-                                <Text variant="headingMd">$</Text>
-                                <Text variant="heading3xl">{plan.price}</Text>
+      {loading ? (
+        <div className="loading">
+          <Spinner />
+        </div>
+      ) : (
+        <Page title="Plans">
+          <Layout>
+            <Layout.Section>
+              <InlineGrid columns={2} gap="300">
+                {plans?.map((plan, i) => {
+                  return (
+                    <>
+                      <Card key={i}>
+                        <div>
+                          <BlockStack>
+                            <Box paddingBlockEnd="200">
+                              <InlineStack align="center">
+                                <Text variant="headingLg">{plan.name}</Text>
                               </InlineStack>
-                              <Text variant="headingMd">/ Month</Text>
-                            </InlineStack>
-                          </Box>
-                          <Divider />
+                            </Box>
+                            <Divider />
+                            <Box paddingBlock="400">
+                              <InlineStack
+                                gap="100"
+                                align="center"
+                                blockAlign="center"
+                              >
+                                <InlineStack blockAlign="center">
+                                  <Text variant="headingMd">$</Text>
+                                  <Text variant="heading3xl">{plan.price}</Text>
+                                </InlineStack>
+                                <Text variant="headingMd">/ Month</Text>
+                              </InlineStack>
+                            </Box>
+                            <Divider />
 
-                          <Box paddingBlock="200">
-                            <Text variant="headingMd">Available:</Text>
-                            <List>
-                              {plan.features.map((feature, i) => (
-                                <List.Item key={i}>{feature}</List.Item>
-                              ))}
-                              <List.Item>
-                                <Text variant="bodyMd">
-                                  Payment Modification
-                                </Text>
-                              </List.Item>
-                              <List.Item>Payment Modification</List.Item>
-                              <List.Item>Payment Modification</List.Item>
-                            </List>
-                          </Box>
-                          {plan?.comingSoon && (
-                            <>
-                              <Divider />
-
-                              <Box paddingBlock="400">
-                                <Text variant="headingMd">Cooming soon:</Text>
-                                <List>
-                                  {plan.comingSoon.map((feature, i) => {
-                                    return (
-                                      <List.Item key={i}>{feature}</List.Item>
-                                    );
-                                  })}
-                                </List>
-                              </Box>
-                            </>
-                          )}
-                          {plan?.shopifyPlus && (
-                            <>
-                              <Box paddingBlock="400">
-                                <Banner tone="critical">
-                                  <Text>
-                                    <Text variant="headingMd">Note:</Text>
-                                    This Feature is only available for Shopify
-                                    Plus plans
-                                  </Text>
-                                </Banner>
-                              </Box>
-                            </>
-                          )}
-                        </BlockStack>
-                        <div
-                          style={{
-                            height: "100",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "end",
-                            alignItems: "center",
-                          }}
-                        >
-                          <Button variant="primary">Select</Button>
+                            <Box paddingBlock="200">
+                              <Text variant="headingMd">Available:</Text>
+                              <List>
+                                <List.Item>feature</List.Item>
+                                {features?.map((feature, i) => (
+                                  <List.Item key={i}>{feature}</List.Item>
+                                ))}
+                              </List>
+                            </Box>
+                          </BlockStack>
+                          <div
+                            style={{
+                              height: "100",
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "end",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Button
+                              variant="primary"
+                              loading={btnLoading}
+                              disabled={shop.plan_status === "active"}
+                              onClick={() => subscribe()}
+                            >
+                              {shop.plan_status === "active"
+                                ? "Subscribed"
+                                : "Subscribe"}
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    </Card>
-                  </>
-                );
-              })}
-            </InlineGrid>
-          </Layout.Section>
-        </Layout>
-      </Page>
+                      </Card>
+                    </>
+                  );
+                })}
+              </InlineGrid>
+            </Layout.Section>
+          </Layout>
+        </Page>
+      )}
     </>
   );
 };

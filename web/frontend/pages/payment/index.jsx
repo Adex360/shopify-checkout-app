@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Badge,
   Banner,
   Button,
   ButtonGroup,
@@ -20,13 +21,10 @@ const Payment = () => {
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  //  /////////////////////// States
   const isSubscribed = true;
-  // const customizationRules = null;
   const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
   const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
-  /////////////////////
 
   const getCustomization = async () => {
     try {
@@ -34,9 +32,7 @@ const Payment = () => {
       const resp = await shopifyFetch("api/v1/payment-customization/");
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data.getAll[0]);
-
-        setCustomizationRules(data.getAll);
+        setCustomizationRules(data.customizations);
         setLoading(false);
       }
     } catch (e) {
@@ -46,7 +42,9 @@ const Payment = () => {
     }
   };
 
-  console.log(customizationRules);
+  const handleUpdateCustomization = (id, type) => {
+    navigate(`/payment-customization/${type}/${id}`);
+  };
 
   const handleDeleteCustomization = async (id, index) => {
     try {
@@ -74,16 +72,28 @@ const Payment = () => {
   };
 
   const tableRows = customizationRules?.map((data, index) => {
+    console.log(data.rule_status);
     const ruleCondition = data.conditions?.map((condition, index) => {
       return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
     });
     return [
       data.title,
       data.type,
-      data.rule_status ? "Active" : "Inactive",
+      data.rule_status ? (
+        <Badge tone="success-strong">Active</Badge>
+      ) : (
+        <Badge tone="attention-strong">Inactive</Badge>
+      ),
+
       ruleCondition,
       <ButtonGroup variant="segmented">
-        <Button>Edit</Button>
+        <Button
+          onClick={() =>
+            navigate(`/payment-customization/${data.type}/${data.id}`)
+          }
+        >
+          Edit
+        </Button>
         <Button
           variant="primary"
           loading={btnLoadingIndex === index}

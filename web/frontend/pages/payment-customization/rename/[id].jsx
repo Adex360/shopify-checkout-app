@@ -9,8 +9,10 @@ import {
   Divider,
   InlineGrid,
   InlineStack,
+  labelID,
   Page,
   Select,
+  Spinner,
   Text,
   TextField,
   useBreakpoints,
@@ -21,7 +23,6 @@ import {
   customizationRuleForCountry,
   customizationRuleForPayment,
 } from "../../../constants";
-import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 
@@ -30,7 +31,6 @@ const ReOrder = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  console.log(id);
 
   const { show } = useToast();
 
@@ -44,13 +44,22 @@ const ReOrder = () => {
     title: "",
     status: "active",
     paymentMethodType: "contain",
-    paymentMethodTitles: [],
     ruleType: "all",
     customizationRule: [
       {
         type: "country",
         rule: "equal-to",
         value: [],
+      },
+    ],
+    paymentName: [
+      {
+        old: "Cash on Delivery (COD)",
+        new: "Cash On Delivery test",
+      },
+      {
+        old: "(for testing) Bogus Gateway",
+        new: "bbbb",
       },
     ],
   });
@@ -77,7 +86,7 @@ const ReOrder = () => {
   const handleCreateCustomization = async () => {
     try {
       const resp = await shopifyFetch(
-        "https://threshold-package-take-enhancements.trycloudflare.com/api/v1/payment-customization/create",
+        "https://princess-h-cluster-tutorials.trycloudflare.com/api/v1/payment-customization/create",
         {
           method: "POST",
           headers: {
@@ -85,14 +94,11 @@ const ReOrder = () => {
           },
           body: JSON.stringify({
             title: formData.title,
-            type: "hide",
+            type: "rename",
             rule_status: formData.status[0] === "active" ? true : false,
             payment_rule: formData.ruleType === "all" ? true : false,
             conditions: formData.customizationRule,
-            payment_name: {
-              match: formData.paymentMethodType,
-              title: formData.paymentMethodTitles,
-            },
+            payment_name: formData.paymentName,
           }),
         }
       );
@@ -101,10 +107,35 @@ const ReOrder = () => {
         show("Added Successfully!", {
           duration: 2000,
         });
+        navigate("/payment-customization");
       }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const addNewTitle = () => {
+    setFormData((prev) => {
+      const newArr = [...prev.paymentName];
+      newArr.push({
+        old: "",
+        new: "",
+      });
+      return {
+        ...prev,
+        paymentName: newArr,
+      };
+    });
+  };
+
+  const handleDeleteTitle = (index) => {
+    setFormData((prev) => {
+      const newArr = [...prev.paymentName];
+      return {
+        ...prev,
+        paymentName: newArr.filter((_, tempIndex) => tempIndex !== index),
+      };
+    });
   };
 
   const handleAddCondition = () => {
@@ -137,6 +168,27 @@ const ReOrder = () => {
     });
   };
 
+  const handlePaymentRuleChange = (index, name, value) => {
+    setFormData((prev) => {
+      const newRules = [...prev.paymentName];
+      console.log(newRules[index]);
+      newRules[index][name] = value;
+      return {
+        ...prev,
+        paymentName: newRules,
+      };
+    });
+  };
+
+  const handleFormDataChange = (name, value) => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
   const handleCustomizationRuleChange = (index, name, value) => {
     setFormData((prev) => {
       const newRules = prev.customizationRule;
@@ -147,14 +199,6 @@ const ReOrder = () => {
       return {
         ...prev,
         customizationRule: newRules,
-      };
-    });
-  };
-  const handleFormDataChange = (name, value) => {
-    setFormData((prev) => {
-      return {
-        ...prev,
-        [name]: value,
       };
     });
   };
@@ -170,12 +214,11 @@ const ReOrder = () => {
           content: "",
           onAction: () => navigate("/payment-customization"),
         }}
-        title="Advance Payment rules (Hide/Delete)"
+        title="Rename Payment Methods"
         primaryAction={{
           content: "Create",
+          disabled: formData.title === "",
           onAction: handleCreateCustomization,
-          disabled:
-            !formData.title || formData.paymentMethodTitles.length === 0,
         }}
       >
         <BlockStack gap={{ xs: "800", sm: "400" }}>
@@ -263,97 +306,7 @@ const ReOrder = () => {
           </InlineGrid>
 
           {smUp ? <Divider /> : null}
-          <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
-            <Box
-              as="section"
-              paddingInlineStart={{ xs: 400, sm: 0 }}
-              paddingInlineEnd={{ xs: 400, sm: 0 }}
-            >
-              <BlockStack gap="100">
-                <Text as="h3" variant="headingMd">
-                  Enter Payment method
-                </Text>
-              </BlockStack>
-            </Box>
-            <Card roundedAbove="sm">
-              <BlockStack gap="400">
-                <InlineStack align="space-between">
-                  <ChoiceList
-                    choices={[
-                      {
-                        label: "Contain",
-                        value: "contain",
-                      },
-                    ]}
-                    selected={formData.paymentMethodType}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentMethodType", value)
-                    }
-                  />
-                  <ChoiceList
-                    choices={[
-                      {
-                        label: "Exact(Case Sensitive)",
-                        value: "exact_case_sensitive",
-                      },
-                    ]}
-                    selected={formData.paymentMethodType}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentMethodType", value)
-                    }
-                  />
-                  <ChoiceList
-                    choices={[
-                      {
-                        label: "Exact(No Case)",
-                        value: "exact_no_case",
-                      },
-                    ]}
-                    selected={formData.paymentMethodType}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentMethodType", value)
-                    }
-                  />
-                </InlineStack>
-                <Divider />
 
-                <AddTag
-                  error={
-                    formError.paymentMethodTitles && "This field is required"
-                  }
-                  onBlur={() =>
-                    formData.paymentMethodTitles.length === 0
-                      ? setFormError((prev) => {
-                          console.log(formData.paymentMethodTitles.length);
-                          return {
-                            ...prev,
-                            paymentMethodTitles: true,
-                          };
-                        })
-                      : null
-                  }
-                  onFocus={() =>
-                    setFormError((prev) => {
-                      return {
-                        ...prev,
-                        paymentMethodTitles: false,
-                      };
-                    })
-                  }
-                  tags={formData.paymentMethodTitles}
-                  setTags={(value) => {
-                    handleFormDataChange("paymentMethodTitles", value);
-                  }}
-                  placeholder="Ex. Standard"
-                />
-              </BlockStack>
-              <Text>
-                payment Method name that you have set up on the store's settings
-              </Text>
-            </Card>
-          </InlineGrid>
-
-          {smUp ? <Divider /> : null}
           <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
             <Box
               as="section"
@@ -460,7 +413,7 @@ const ReOrder = () => {
                             </InlineGrid>
                             {rule.type === "country" ? (
                               <>
-                                {countries !== "" ? (
+                                {countries.length > 0 ? (
                                   <SearchAndSelect
                                     allowMultiple={true}
                                     selectedOptions={rule.value}
@@ -475,7 +428,12 @@ const ReOrder = () => {
                                     selectionOption={countries}
                                   />
                                 ) : (
-                                  <>loading...</>
+                                  <BlockStack
+                                    align="center"
+                                    inlineAlign="center"
+                                  >
+                                    <Spinner size="small" />
+                                  </BlockStack>
                                 )}
                               </>
                             ) : (
@@ -519,6 +477,96 @@ const ReOrder = () => {
                     Add Condition
                   </Button>
                 </InlineStack>
+              </BlockStack>
+            </Card>
+          </InlineGrid>
+
+          {smUp ? <Divider /> : null}
+          <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+            <Box
+              as="section"
+              paddingInlineStart={{ xs: 400, sm: 0 }}
+              paddingInlineEnd={{ xs: 400, sm: 0 }}
+            >
+              <BlockStack gap="100">
+                <Text as="h3" variant="headingMd">
+                  Customization Rules
+                </Text>
+              </BlockStack>
+            </Box>
+
+            <Card roundedAbove="sm">
+              <BlockStack gap="400">
+                {/* <ChoiceList
+                    choices={[
+                      {
+                        label: "Contain",
+                        value: "contain",
+                      },
+                    ]}
+                    selected={formData.paymentName.match}
+                    onChange={(value) => {
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          paymentName: {
+                            ...prev.paymentName,
+                            match: value,
+                          },
+                        };
+                      });
+                    }}
+                  /> */}
+
+                <BlockStack gap="200">
+                  {formData.paymentName.map((payment, index) => {
+                    return (
+                      <Card>
+                        <InlineStack key={index} gap="400">
+                          <Box
+                            style={{
+                              flexGrow: 1,
+                            }}
+                          >
+                            <BlockStack gap="200">
+                              <TextField
+                                placeholder="Previous Method Name"
+                                value={payment.old}
+                                onChange={(value) => {
+                                  handlePaymentRuleChange(index, "old", value);
+                                }}
+                              />
+                              <TextField
+                                placeholder="New Method Name"
+                                value={payment.new}
+                                onChange={(value) => {
+                                  handlePaymentRuleChange(index, "new", value);
+                                }}
+                              />
+                            </BlockStack>
+                          </Box>
+                          {index > 0 && (
+                            <Button
+                              icon={DeleteIcon}
+                              onClick={() => handleDeleteTitle(index)}
+                            />
+                          )}
+                        </InlineStack>
+                      </Card>
+                    );
+                  })}
+                  <Box paddingBlockStart="200">
+                    <InlineStack align="end">
+                      <Button
+                        onClick={addNewTitle}
+                        variant="primary"
+                        icon={PlusCircleIcon}
+                      >
+                        Add condition
+                      </Button>
+                    </InlineStack>
+                  </Box>
+                </BlockStack>
               </BlockStack>
             </Card>
           </InlineGrid>

@@ -1,16 +1,36 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useAuthenticatedFetch } from "../hooks";
 
 const AppContext = createContext();
 
 const AppContextProvider = ({ children }) => {
-  const [loading, setLoading] = useState();
-  const [shop, setShop] = useState({
-    validations: [],
-  });
+  const shopifyFetch = useAuthenticatedFetch();
+  const [loading, setLoading] = useState(false);
+  const [shop, setShop] = useState({});
+
+  const getShop = async () => {
+    try {
+      setLoading(true);
+      const resp = await shopifyFetch("/api/v1/shop");
+      const data = await resp.json();
+      if (resp.ok) {
+        setShop(data);
+        setLoading(false);
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getShop();
+  }, []);
 
   const contextValues = {
-    // validations,
-    // setValidations,
+    shop,
+    loading,
+    setLoading,
   };
 
   return (

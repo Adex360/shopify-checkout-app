@@ -11,6 +11,7 @@ import {
   InlineStack,
   Page,
   Select,
+  Spinner,
   Text,
   TextField,
   useBreakpoints,
@@ -30,19 +31,18 @@ const ReOrder = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
-  console.log(id);
 
   const { show } = useToast();
 
   const { smUp } = useBreakpoints();
-  const [countries, setCountries] = useState("");
+  const [countries, setCountries] = useState([]);
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
   });
   const [formData, setFormData] = useState({
     title: "",
-    status: "active",
+    status: ["active"],
     paymentMethodType: "contain",
     paymentMethodTitles: [],
     ruleType: "all",
@@ -77,7 +77,7 @@ const ReOrder = () => {
   const handleCreateCustomization = async () => {
     try {
       const resp = await shopifyFetch(
-        "https://threshold-package-take-enhancements.trycloudflare.com/api/v1/payment-customization/create",
+        "https://princess-h-cluster-tutorials.trycloudflare.com/api/v1/payment-customization/create",
         {
           method: "POST",
           headers: {
@@ -96,11 +96,23 @@ const ReOrder = () => {
           }),
         }
       );
+      console.log({
+        title: formData.title,
+        type: "hide",
+        rule_status: formData.status[0] === "active" ? true : false,
+        payment_rule: formData.ruleType === "all" ? true : false,
+        conditions: formData.customizationRule,
+        payment_name: {
+          match: formData.paymentMethodType,
+          title: formData.paymentMethodTitles,
+        },
+      });
       const data = await resp.json();
       if (resp.ok) {
         show("Added Successfully!", {
           duration: 2000,
         });
+        navigate("/payment-customization");
       }
     } catch (error) {
       console.error(error);
@@ -150,6 +162,7 @@ const ReOrder = () => {
       };
     });
   };
+
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {
@@ -159,7 +172,24 @@ const ReOrder = () => {
     });
   };
 
+  const getCustomizationData = async () => {
+    try {
+      const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        console.log(data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
+    if (id !== "create") {
+      console.log("editing.....");
+      getCustomizationData();
+    }
+
     getCountries();
   }, []);
 
@@ -254,7 +284,10 @@ const ReOrder = () => {
                         value: "inactive",
                       },
                     ]}
-                    onChange={(value) => handleFormDataChange("status", value)}
+                    onChange={(value) => {
+                      console.log(formData.status);
+                      handleFormDataChange("status", value);
+                    }}
                     selected={formData.status}
                   />
                 </Box>
@@ -460,19 +493,28 @@ const ReOrder = () => {
                             </InlineGrid>
                             {rule.type === "country" ? (
                               <>
-                                <SearchAndSelect
-                                  allowMultiple={true}
-                                  selectedOptions={rule.value}
-                                  setSelectedOptions={(value) => {
-                                    handleCustomizationRuleChange(
-                                      index,
-                                      "value",
-                                      value
-                                    );
-                                  }}
-                                  placeholder="Search Tags"
-                                  selectionOption={countries}
-                                />
+                                {countries.length > 0 ? (
+                                  <SearchAndSelect
+                                    allowMultiple={true}
+                                    selectedOptions={rule.value}
+                                    setSelectedOptions={(value) => {
+                                      handleCustomizationRuleChange(
+                                        index,
+                                        "value",
+                                        value
+                                      );
+                                    }}
+                                    placeholder="Search Tags"
+                                    selectionOption={countries}
+                                  />
+                                ) : (
+                                  <BlockStack
+                                    align="center"
+                                    inlineAlign="center"
+                                  >
+                                    <Spinner size="small" />
+                                  </BlockStack>
+                                )}
                               </>
                             ) : (
                               // passing string into array due to server side validation

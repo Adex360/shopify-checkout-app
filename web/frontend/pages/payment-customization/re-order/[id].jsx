@@ -9,19 +9,15 @@ import {
   Divider,
   InlineGrid,
   InlineStack,
-  labelID,
   Page,
   Select,
+  Spinner,
   Text,
   TextField,
   useBreakpoints,
 } from "@shopify/polaris";
 import { AddTag, SearchAndSelect } from "../../../components";
 import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
-import {
-  customizationRuleForCountry,
-  customizationRuleForPayment,
-} from "../../../constants";
 import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
@@ -29,9 +25,8 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 const ReOrder = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
-
   const { id } = useParams();
-
+  console.log(id, "operation..........");
   const { show } = useToast();
 
   const { smUp } = useBreakpoints();
@@ -46,24 +41,15 @@ const ReOrder = () => {
     paymentRule: "always",
     paymentRuleConditions: [
       {
-        type: "title",
-        rule: "contains",
-        value: ["Standard"],
-      },
-    ],
-    paymentName: {
-      match: "exact-case-sensitive",
-      title: ["Cash On Delivery (COD)"],
-    },
-    paymentMethodTitles: [],
-    ruleType: "all",
-    customizationRule: [
-      {
         type: "country",
-        rule: "equal-to",
+        rule: "contains",
         value: [],
       },
     ],
+    paymentName: {
+      match: "contain",
+      title: [""],
+    },
   });
 
   const getCountries = async () => {
@@ -88,7 +74,7 @@ const ReOrder = () => {
   const handleCreateCustomization = async () => {
     try {
       const resp = await shopifyFetch(
-        "https://threshold-package-take-enhancements.trycloudflare.com/api/v1/payment-customization/create",
+        "https://princess-h-cluster-tutorials.trycloudflare.com/api/v1/payment-customization/create",
         {
           method: "POST",
           headers: {
@@ -96,14 +82,11 @@ const ReOrder = () => {
           },
           body: JSON.stringify({
             title: formData.title,
-            type: "hide",
+            type: "re-order",
             rule_status: formData.status[0] === "active" ? true : false,
-            payment_rule: formData.ruleType === "all" ? true : false,
-            conditions: formData.customizationRule,
-            payment_name: {
-              match: formData.paymentRule,
-              title: formData.paymentMethodTitles,
-            },
+            payment_rule: formData.ruleType === "condition" ? true : false,
+            conditions: formData.paymentRuleConditions,
+            payment_name: formData.paymentName,
           }),
         }
       );
@@ -112,55 +95,65 @@ const ReOrder = () => {
         show("Added Successfully!", {
           duration: 2000,
         });
+        navigate("/payment-customization");
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleAddCondition = () => {
+  const addNewTitle = () => {
     setFormData((prev) => {
+      const newArr = [...prev.paymentName.title];
+      newArr.push("");
       return {
         ...prev,
-        customizationRule: [
-          ...prev.customizationRule,
-          {
-            type: "country",
-            rule: "equal-to",
-            value: [],
-          },
-        ],
+        paymentName: {
+          ...prev.paymentName,
+          title: newArr,
+        },
       };
     });
   };
 
-  const handleDeleCondition = (index) => {
-    console.log(index, formData.customizationRule.length);
-    const newConditions = [...formData.customizationRule];
-    console.log(newConditions, "before");
-    newConditions?.splice(index, 1);
-    console.log(newConditions, formData.customizationRule.length, "after");
+  const handleDeleteTitle = (index) => {
     setFormData((prev) => {
+      const newArr = [...prev.paymentName.title];
       return {
         ...prev,
-        customizationRule: newConditions,
+        paymentName: {
+          ...prev.paymentName,
+          title: newArr.filter((_, tempIndex) => tempIndex !== index),
+        },
       };
     });
   };
 
-  const handleCustomizationRuleChange = (index, name, value) => {
+  const handleSortingRuleChange = (index, name, value) => {
     setFormData((prev) => {
-      const newRules = prev.customizationRule;
+      const newRules = prev.paymentRuleConditions;
       newRules[index] = {
         ...newRules[index],
         [name]: value,
       };
       return {
         ...prev,
-        customizationRule: newRules,
+        paymentRuleConditions: newRules,
       };
     });
   };
+
+  const handlePaymentRuleChange = (index, name, value) => {
+    setFormData((prev) => {
+      const newRules = { ...prev.paymentName };
+      newRules[name][index] = value;
+      return {
+        ...prev,
+        paymentName: newRules,
+      };
+    });
+  };
+
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {
@@ -170,7 +163,15 @@ const ReOrder = () => {
     });
   };
 
+  const getCustomizationData = async () => {
+    const resp = await shopifyFetch("api/v1/payment-customization");
+  };
+
   useEffect(() => {
+    if (id !== "create") {
+      console.log(id);
+      // getCustomizationData();
+    }
     getCountries();
   }, []);
 
@@ -183,10 +184,10 @@ const ReOrder = () => {
         }}
         title="Re-order Payment Methods"
         primaryAction={{
+          disabled:
+            formData.paymentName.title.includes("") || formData.title === "",
           content: "Create",
           onAction: handleCreateCustomization,
-          disabled:
-            !formData.title || formData.paymentMethodTitles.length === 0,
         }}
       >
         <BlockStack gap={{ xs: "800", sm: "400" }}>
@@ -325,6 +326,8 @@ const ReOrder = () => {
       }, */}
 
                     {formData.paymentRuleConditions.map((condition, index) => {
+                      console.log(condition.type);
+                      console.log(condition.rule);
                       return (
                         <>
                           <Select
@@ -339,6 +342,9 @@ const ReOrder = () => {
                                 value: "country",
                               },
                             ]}
+                            onChange={(value) => {
+                              handleSortingRuleChange(index, "type", value);
+                            }}
                           />
                           <Select
                             value={condition.rule}
@@ -352,23 +358,39 @@ const ReOrder = () => {
                                 value: "does-not-contains",
                               },
                             ]}
+                            onChange={(value) => {
+                              handleSortingRuleChange(index, "rule", value);
+                            }}
                           />
                           {condition.type === "title" ? (
-                            <AddTag />
-                          ) : (
-                            <SearchAndSelect
-                              allowMultiple={true}
-                              selectedOptions={[]}
-                              setSelectedOptions={(value) => {
-                                handleCustomizationRuleChange(
-                                  index,
-                                  "value",
-                                  value
-                                );
-                              }}
-                              placeholder="Search Tags"
-                              selectionOption={countries}
+                            <AddTag
+                              setTags={(value) =>
+                                handleSortingRuleChange(index, "value", value)
+                              }
+                              tags={condition.value}
                             />
+                          ) : (
+                            <>
+                              {countries.length > 0 ? (
+                                <SearchAndSelect
+                                  allowMultiple={true}
+                                  selectedOptions={condition.value}
+                                  setSelectedOptions={(value) => {
+                                    handleSortingRuleChange(
+                                      index,
+                                      "value",
+                                      value
+                                    );
+                                  }}
+                                  placeholder="Search Tags"
+                                  selectionOption={countries}
+                                />
+                              ) : (
+                                <BlockStack align="center" inlineAlign="center">
+                                  <Spinner size="small" />
+                                </BlockStack>
+                              )}
+                            </>
                           )}
                         </>
                       );
@@ -403,10 +425,18 @@ const ReOrder = () => {
                         value: "contain",
                       },
                     ]}
-                    selected={formData.paymentName}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentName", value)
-                    }
+                    selected={formData.paymentName.match}
+                    onChange={(value) => {
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          paymentName: {
+                            ...prev.paymentName,
+                            match: value,
+                          },
+                        };
+                      });
+                    }}
                   />
                   <ChoiceList
                     choices={[
@@ -415,10 +445,18 @@ const ReOrder = () => {
                         value: "exact_case_sensitive",
                       },
                     ]}
-                    selected={formData.paymentName}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentName", value)
-                    }
+                    selected={formData?.paymentName.match}
+                    onChange={(value) => {
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          paymentName: {
+                            ...prev.paymentName,
+                            match: value,
+                          },
+                        };
+                      });
+                    }}
                   />
                   <ChoiceList
                     choices={[
@@ -427,15 +465,61 @@ const ReOrder = () => {
                         value: "exact_no_case",
                       },
                     ]}
-                    selected={formData.paymentName}
-                    onChange={(value) =>
-                      handleFormDataChange("paymentName", value)
-                    }
+                    selected={formData?.paymentName.match}
+                    onChange={(value) => {
+                      setFormData((prev) => {
+                        return {
+                          ...prev,
+                          paymentName: {
+                            ...prev.paymentName,
+                            match: value,
+                          },
+                        };
+                      });
+                    }}
+
+                    // onChange={(value) =>
+                    //   handleFormDataChange("paymentName", value)
+                    // }
                   />
                 </InlineStack>
                 <BlockStack gap="200">
-                  {}
-                  <TextField />
+                  {formData.paymentName.title.map((payment, index) => {
+                    return (
+                      <InlineStack key={index} gap="400">
+                        <Box
+                          style={{
+                            flexGrow: 1,
+                          }}
+                        >
+                          <TextField
+                            value={payment}
+                            onChange={(value) => {
+                              handlePaymentRuleChange(index, "title", value);
+                            }}
+                          />
+                        </Box>
+                        {index > 0 && (
+                          <Button
+                            icon={DeleteIcon}
+                            onClick={() => handleDeleteTitle(index)}
+                          />
+                        )}
+                      </InlineStack>
+                    );
+                  })}
+                  <Box paddingBlockStart="200">
+                    <InlineStack align="end">
+                      <Button
+                        disabled={formData.paymentName.title.includes("")}
+                        onClick={addNewTitle}
+                        variant="primary"
+                        icon={PlusCircleIcon}
+                      >
+                        Add condition
+                      </Button>
+                    </InlineStack>
+                  </Box>
                 </BlockStack>
               </BlockStack>
             </Card>
