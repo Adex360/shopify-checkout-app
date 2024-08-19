@@ -1,16 +1,13 @@
-import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
 import { ShopifyService } from "../services/index.js";
 import { startShopInstallQueue } from "../jobs/queue/index.js";
 import { getNextBillingDate } from "../helpers/index.js";
 import { Plan } from "./plan.js";
-import { DEFAULT_CITY_LIST } from "../constants/index.js";
 
 export class Shop {
   static async storeOrUpdateSession(session) {
     const { shop, accessToken, scope, state, id } = session;
     const shop_exist = await this.findById(shop);
-    console.log("shop_exist", shop_exist);
 
     if (shop_exist && shop_exist.status === "active") {
       if (
@@ -98,15 +95,6 @@ export class Shop {
     const updatedShop = await prismaClient.shop.update({
       where: { id: shop.id },
       data: shop,
-      include: {
-        _count: {
-          select: {
-            subscribers: true,
-          },
-        },
-        shop_settings: true,
-        plan: true,
-      },
     });
 
     return updatedShop;
@@ -134,8 +122,6 @@ export class Shop {
       plan_activated_date: Date.now(),
     };
     if (type === "essential") {
-      updatedValues.payment_modification = true;
-    } else if (type === "professional") {
       updatedValues.payment_modification = true;
       updatedValues.advanced_city_dropdown = true;
       updatedValues.field_validation = true;

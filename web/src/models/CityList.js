@@ -72,4 +72,10 @@ export class CityList {
     });
     return active;
   }
+  static async deleteAll(id) {
+    const deleteAll = await prismaClient.city_list.deleteMany({
+      where: { shop_id: id },
+    });
+    return deleteAll;
+  }
 }

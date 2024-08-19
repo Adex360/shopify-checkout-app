@@ -86,4 +86,10 @@ export class PaymentCustomization {
 
     return count;
   }
+  static async deleteAll(id) {
+    const deleteAll = await prismaClient.payment_customization.deleteMany({
+      where: { shop_id: id },
+    });
+    return deleteAll;
+  }
 }

@@ -7,27 +7,27 @@ const router = express.Router();
 
 router.post(
   "/create",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(ValidationController.createValidation)
 );
 router.get(
   "/",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(ValidationController.getAllValidation)
 );
 router.get(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(ValidationController.getByIdValidation)
 );
 router.put(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(ValidationController.updateValidation)
 );
 router.delete(
   "/:id",
-  planMiddleware([PLAN_OPTIONS.PROFESSIONAL]),
+  planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(ValidationController.deleteValidation)
 );
 

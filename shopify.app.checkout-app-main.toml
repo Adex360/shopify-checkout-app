@@ -3,7 +3,7 @@
 client_id = "e64cc53951817f4a5a3045a61055ef35"
 name = "checkout-app-main"
 handle = "checkout-app-main"
-application_url = "https://joshua-alexandria-alerts-former.trycloudflare.com"
+application_url = "https://visual-barbie-gamespot-tripadvisor.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://joshua-alexandria-alerts-former.trycloudflare.com/auth/callback",
-  "https://joshua-alexandria-alerts-former.trycloudflare.com/auth/shopify/callback",
-  "https://joshua-alexandria-alerts-former.trycloudflare.com/api/auth/callback"
+  "https://visual-barbie-gamespot-tripadvisor.trycloudflare.com/auth/callback",
+  "https://visual-barbie-gamespot-tripadvisor.trycloudflare.com/auth/shopify/callback",
+  "https://visual-barbie-gamespot-tripadvisor.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
