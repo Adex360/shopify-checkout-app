@@ -4,15 +4,14 @@ import { ShopifyService } from "../services/index.js";
 import { startShopInstallQueue } from "../jobs/queue/index.js";
 import { getNextBillingDate } from "../helpers/index.js";
 import { Plan } from "./plan.js";
+import { DEFAULT_CITY_LIST } from "../constants/index.js";
 
 export class Shop {
   static async storeOrUpdateSession(session) {
     const { shop, accessToken, scope, state, id } = session;
     const shop_exist = await this.findById(shop);
     console.log("shop_exist", shop_exist);
-    // this.findByName(shop);
 
-    // checking the shop scope and accessToken if the shop already existed
     if (shop_exist && shop_exist.status === "active") {
       if (
         shop_exist.accessToken !== accessToken ||
@@ -28,7 +27,6 @@ export class Shop {
       return true;
     }
 
-    // checking if the shop is deleted before
     if (shop_exist && shop_exist.status === "uninstalled") {
       const update_shop = {
         id: shop_exist.id,
@@ -38,7 +36,6 @@ export class Shop {
         status: "active",
       };
       const shop_updated = await this.update(update_shop);
-      console.log("shop_updated", shop_updated);
       await startShopInstallQueue(shop_updated);
       return true;
     }
@@ -48,8 +45,7 @@ export class Shop {
       accessToken,
     });
     const shopify_shop = await shopify_service.getShopDetails();
-
-    await Shop.create({
+    await this.create({
       shop_name: shop,
       session_id: id,
       shop_id: shopify_shop.id.toString(),
@@ -60,7 +56,6 @@ export class Shop {
       scope,
       state,
     });
-
     return true;
   }
   static async create(shopData) {

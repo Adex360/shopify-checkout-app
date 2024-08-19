@@ -30,7 +30,7 @@ function CustomFieldsExtension() {
   const applyAttributeChange = useApplyAttributeChange();
 
   const CUSTOM_FIELDS_END_POINT =
-    "https://scientist-negotiation-instrumentation-guidance.trycloudflare.com/api/v1/custom-fields/all";
+    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/custom-fields/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };

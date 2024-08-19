@@ -57,8 +57,6 @@ export class CityList {
   }
 
   static async defaultSetting(shop_id) {
-    console.log("hello shop id ", shop_id);
-    console.log("qqqqq");
     const defaultSetting = await prismaClient.city_list.create({
       data: {
         shop_id,
