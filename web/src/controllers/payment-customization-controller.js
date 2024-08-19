@@ -23,23 +23,21 @@ export const createPaymentCustomization = async (req, res) => {
   });
 };
 
-export const getByIdPaymentCustomization = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const getByID = await PaymentCustomization.getByID(id);
-
-    res.status(200).json({ getByID });
-  } catch (error) {
-    res.status(500).json({ error: "Error Getting Customization by Id:" });
-  }
-};
-
 export const getAllPaymentCustomization = async (req, res) => {
   try {
     const getAll = await PaymentCustomization.findAll();
-    res.status(200).json({ getAll });
+
+    if (getAll.length >= 5) {
+      return res.status(200).json({
+        message:
+          "You have reached the maximum limit of 5 payment customizations. No additional customizations can be added.",
+        customizations: getAll,
+      });
+    }
+
+    res.status(200).json({ customizations: getAll });
   } catch (error) {
-    res.status(500).json({ error: "Error Getting All Customization :" });
+    res.status(500).json({ error: "Error Getting All Customizations:" });
   }
 };
 
