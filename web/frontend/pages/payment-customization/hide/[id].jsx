@@ -15,27 +15,26 @@ import {
   TextField,
   useBreakpoints,
 } from "@shopify/polaris";
-import { AddTag, SearchAndSelect } from "../../components";
+import { AddTag, SearchAndSelect } from "../../../components";
 import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {
   customizationRuleForCountry,
   customizationRuleForPayment,
-} from "../../constants";
+} from "../../../constants";
 import {} from "@shopify/polaris-icons";
-import { useAuthenticatedFetch } from "../../hooks";
+import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 
-const CreateCustomization = () => {
+const ReOrder = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
 
   const { id } = useParams();
-  const [searchParams] = useSearchParams();
-  const type = searchParams.get("type");
-  const { smUp } = useBreakpoints();
+  console.log(id);
 
   const { show } = useToast();
 
+  const { smUp } = useBreakpoints();
   const [countries, setCountries] = useState("");
   const [formError, setFormError] = useState({
     title: false,
@@ -78,7 +77,7 @@ const CreateCustomization = () => {
   const handleCreateCustomization = async () => {
     try {
       const resp = await shopifyFetch(
-        "https://4774-39-58-100-72.ngrok-free.app/api/v1/payment-customization/create",
+        "https://threshold-package-take-enhancements.trycloudflare.com/api/v1/payment-customization/create",
         {
           method: "POST",
           headers: {
@@ -86,7 +85,7 @@ const CreateCustomization = () => {
           },
           body: JSON.stringify({
             title: formData.title,
-            type: type,
+            type: "hide",
             rule_status: formData.status[0] === "active" ? true : false,
             payment_rule: formData.ruleType === "all" ? true : false,
             conditions: formData.customizationRule,
@@ -172,10 +171,6 @@ const CreateCustomization = () => {
           onAction: () => navigate("/payment-customization"),
         }}
         title="Advance Payment rules (Hide/Delete)"
-        subtitle="You can use payment customization to hide payment options that are
-            available to buyers during checkout.With this app you'll hide all
-            your payment options offered to customers at checkout , based on
-            condition that you set in below."
         primaryAction={{
           content: "Create",
           onAction: handleCreateCustomization,
@@ -465,23 +460,19 @@ const CreateCustomization = () => {
                             </InlineGrid>
                             {rule.type === "country" ? (
                               <>
-                                {countries !== "" ? (
-                                  <SearchAndSelect
-                                    allowMultiple={true}
-                                    selectedOptions={rule.value}
-                                    setSelectedOptions={(value) => {
-                                      handleCustomizationRuleChange(
-                                        index,
-                                        "value",
-                                        value
-                                      );
-                                    }}
-                                    placeholder="Search Tags"
-                                    selectionOption={countries}
-                                  />
-                                ) : (
-                                  <>loading...</>
-                                )}
+                                <SearchAndSelect
+                                  allowMultiple={true}
+                                  selectedOptions={rule.value}
+                                  setSelectedOptions={(value) => {
+                                    handleCustomizationRuleChange(
+                                      index,
+                                      "value",
+                                      value
+                                    );
+                                  }}
+                                  placeholder="Search Tags"
+                                  selectionOption={countries}
+                                />
                               </>
                             ) : (
                               // passing string into array due to server side validation
@@ -533,4 +524,4 @@ const CreateCustomization = () => {
   );
 };
 
-export default CreateCustomization;
+export default ReOrder;
