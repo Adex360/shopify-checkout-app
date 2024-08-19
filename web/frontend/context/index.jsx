@@ -9,8 +9,8 @@ const AppContextProvider = ({ children }) => {
   });
 
   const contextValues = {
-    validations,
-    setValidations,
+    // validations,
+    // setValidations,
   };
 
   return (

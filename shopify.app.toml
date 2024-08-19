@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://4774-39-58-100-72.ngrok-free.app"
+application_url = "https://threshold-package-take-enhancements.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://4774-39-58-100-72.ngrok-free.app/auth/callback",
-  "https://4774-39-58-100-72.ngrok-free.app/auth/shopify/callback",
-  "https://4774-39-58-100-72.ngrok-free.app/api/auth/callback"
+  "https://threshold-package-take-enhancements.trycloudflare.com/auth/callback",
+  "https://threshold-package-take-enhancements.trycloudflare.com/auth/shopify/callback",
+  "https://threshold-package-take-enhancements.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
