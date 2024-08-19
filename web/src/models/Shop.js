@@ -2,16 +2,16 @@ import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
 import { ShopifyService } from "../services/index.js";
 import { startShopInstallQueue } from "../jobs/queue/index.js";
-// import { Plan } from "./Plan.js";
+import { getNextBillingDate } from "../helpers/index.js";
+import { Plan } from "./plan.js";
+import { DEFAULT_CITY_LIST } from "../constants/index.js";
 
 export class Shop {
   static async storeOrUpdateSession(session) {
     const { shop, accessToken, scope, state, id } = session;
     const shop_exist = await this.findById(shop);
     console.log("shop_exist", shop_exist);
-    // this.findByName(shop);
 
-    // checking the shop scope and accessToken if the shop already existed
     if (shop_exist && shop_exist.status === "active") {
       if (
         shop_exist.accessToken !== accessToken ||
@@ -27,7 +27,6 @@ export class Shop {
       return true;
     }
 
-    // checking if the shop is deleted before
     if (shop_exist && shop_exist.status === "uninstalled") {
       const update_shop = {
         id: shop_exist.id,
@@ -37,7 +36,6 @@ export class Shop {
         status: "active",
       };
       const shop_updated = await this.update(update_shop);
-      console.log("shop_updated", shop_updated);
       await startShopInstallQueue(shop_updated);
       return true;
     }
@@ -47,8 +45,7 @@ export class Shop {
       accessToken,
     });
     const shopify_shop = await shopify_service.getShopDetails();
-
-    await Shop.create({
+    await this.create({
       shop_name: shop,
       session_id: id,
       shop_id: shopify_shop.id.toString(),
@@ -59,7 +56,6 @@ export class Shop {
       scope,
       state,
     });
-
     return true;
   }
   static async create(shopData) {
@@ -121,5 +117,44 @@ export class Shop {
       where: { id },
     });
     return deleteShop;
+  }
+  static async subscribedToPlan(shop_name, plan_id, charge_id = 0) {
+    const type = plan_id;
+    const plan = await Plan.getByType(type);
+    if (!plan) throw new Error("Plan not found", plan_id);
+    const shop = await this.findByName(shop_name);
+    if (!shop) throw new Error("Shop Not Found [Plan.js]");
+    const next_billing_date = getNextBillingDate();
+    const updatedValues = {
+      plan_id: plan.id,
+      next_billing_date,
+      plan_status: "active",
+      shopify_charge_id: charge_id,
+      plan_price: plan.price,
+      plan_activated_date: Date.now(),
+    };
+    if (type === "essential") {
+      updatedValues.payment_modification = true;
+    } else if (type === "professional") {
+      updatedValues.payment_modification = true;
+      updatedValues.advanced_city_dropdown = true;
+      updatedValues.field_validation = true;
+      updatedValues.custom_field = true;
+    }
+    await prismaClient.shop.update({
+      where: { id: shop.id },
+      data: {
+        ...updatedValues,
+      },
+    });
+  }
+  static formatShopForApp(shop) {
+    const copied_shop = { ...shop };
+    delete copied_shop.accessToken;
+    delete copied_shop.scope;
+    delete copied_shop.state;
+    delete copied_shop.status;
+    delete copied_shop.shopify_charge_id;
+    return copied_shop;
   }
 }

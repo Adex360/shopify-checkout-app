@@ -1,10 +1,10 @@
 import Queue from "bull";
 import { redisClient } from "../../db/redis/index.js";
-
 import { CityList } from "../../models/index.js";
 import ShopifyService from "../../services/shopify-service.js";
 
 const QUEUE_NAME = `${process.env.APP_NAME}:SHOP_INSTALL_QUEUE`;
+
 const CONCURRENT = 50;
 const JOB_FAIL_RETRIES = 3;
 
@@ -22,8 +22,7 @@ export const startShopInstallQueue = async (shop) => {
     {
       attempts: JOB_FAIL_RETRIES,
       priority: 1,
-      jobId: `${QUEUE_NAME}-${shop.shop_name}`,
-      delay: 2000,
+      jobId: `${QUEUE_NAME}-${shop.shop_name}-${Date.now()}`,
     }
   );
 };

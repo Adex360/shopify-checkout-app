@@ -32,7 +32,8 @@ export default reactExtension("purchase.checkout.block.render", () => (
 export function CityDropdown2() {
   console.log("ok city dropdown ");
   const CUSTOM_FIELDS_END_POINT =
-    "https://spyware-trackback-browsing-mechanics.trycloudflare.com/api/v1/city-list/all";
+    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/city-list/all";
+  ("https://spyware-trackback-browsing-mechanics.trycloudflare.com/api/v1/city-list/all");
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -103,7 +104,7 @@ export function CityDropdown2() {
 
 export function CityDropdown() {
   const CUSTOM_FIELDS_END_POINT =
-    "https://spyware-trackback-browsing-mechanics.trycloudflare.com/api/v1/city-list/all";
+    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/city-list/all";
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);

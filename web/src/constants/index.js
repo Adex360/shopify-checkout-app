@@ -1,3 +1,25 @@
+import dotenv from "dotenv";
+dotenv.config();
+import { API_VERSION } from "../config/index.js";
+const API_PREFIX = API_VERSION;
+export const DEFAULT_PLANS_OBJ = [
+  {
+    name: "Essential",
+    type: "essential",
+    price: 7,
+  },
+  {
+    name: "Professional",
+    type: "professional",
+    price: 49,
+  },
+];
+
+export const PLAN_OPTIONS = {
+  ESSENTIAL: "Essential",
+  PROFESSIONAL: "Professional",
+};
+export const PLAN_CONFIRMATION_PREFIX = `${process.env.HOST}${API_PREFIX}/confirmation`;
 export const DEFAULT_CITY_LIST = {
   enabled: true,
   country_name: "Pakistan",

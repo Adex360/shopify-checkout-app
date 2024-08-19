@@ -3,3 +3,6 @@ export * from "./validation-controller.js";
 export * from "./custom-fields-controller.js";
 export * from "./city-list-controller.js";
 export * from "./admin-controller.js";
+export * from "./plan-controller.js";
+export * from "./confirmation-controller.js";
+export * from "./shop-controller.js";
