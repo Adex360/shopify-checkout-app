@@ -11,7 +11,7 @@ import {
   Checkbox,
 } from "@shopify/polaris";
 
-const PhoneValidationModal = ({ open, onClose }) => {
+const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [loading, setLoading] = useState({
@@ -111,6 +111,8 @@ const PhoneValidationModal = ({ open, onClose }) => {
       if (resp.ok) {
         show(data.message, { duration: 2000 });
         changeLoading("btnLoading", false);
+        console.log(data);
+        onSuccess(data.createValidation);
         onClose();
       } else {
         show(data.error.message, {

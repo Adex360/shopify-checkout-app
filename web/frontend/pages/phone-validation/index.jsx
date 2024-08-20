@@ -143,6 +143,13 @@ const PhoneValidation = () => {
               <Layout>
                 <Layout.Section>
                   <PhoneValidationModal
+                    // data={validations}
+                    onSuccess={(value) => {
+                      setValidations((prev) => {
+                        const newArr = [...prev, value];
+                        return newArr;
+                      });
+                    }}
                     onClose={() => {
                       navigate("/phone-validation");
                       setModalOpen(false);

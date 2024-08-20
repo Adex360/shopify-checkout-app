@@ -41,11 +41,6 @@ const Payment = () => {
       setLoading(false);
     }
   };
-
-  const handleUpdateCustomization = (id, type) => {
-    navigate(`/payment-customization/${type}/${id}`);
-  };
-
   const handleDeleteCustomization = async (id, index) => {
     try {
       setBtnLoadingIndex(index);
@@ -72,7 +67,7 @@ const Payment = () => {
   };
 
   const tableRows = customizationRules?.map((data, index) => {
-    console.log(data.rule_status);
+    console.log(data);
     const ruleCondition = data.conditions?.map((condition, index) => {
       return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
     });
