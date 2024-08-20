@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "0f68786e5fb1400997d13885faab3bd3"
+name = "checkout-app"
+handle = "checkout-app-716"
+application_url = "https://website-combining-branches-mainly.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "checkout-ui-testing.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_payment_customizations,write_products,write_validations"
+
+[auth]
+redirect_urls = [
+  "https://website-combining-branches-mainly.trycloudflare.com/auth/callback",
+  "https://website-combining-branches-mainly.trycloudflare.com/auth/shopify/callback",
+  "https://website-combining-branches-mainly.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false
