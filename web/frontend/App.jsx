@@ -28,10 +28,6 @@ export default function App() {
                     destination: "/payment",
                   },
                   {
-                    label: "Shipping Customization",
-                    destination: "/shipping-customization",
-                  },
-                  {
                     label: "Checkout City List ",
                     destination: "/checkout-city",
                   },

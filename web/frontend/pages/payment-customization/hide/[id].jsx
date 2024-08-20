@@ -26,7 +26,7 @@ import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 
-const ReOrder = () => {
+const Hide = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
 
@@ -36,6 +36,7 @@ const ReOrder = () => {
 
   const { smUp } = useBreakpoints();
   const [countries, setCountries] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
@@ -76,6 +77,7 @@ const ReOrder = () => {
 
   const handleCreateCustomization = async () => {
     try {
+      setLoading(true);
       const resp = await shopifyFetch(
         "https://princess-h-cluster-tutorials.trycloudflare.com/api/v1/payment-customization/create",
         {
@@ -96,22 +98,12 @@ const ReOrder = () => {
           }),
         }
       );
-      console.log({
-        title: formData.title,
-        type: "hide",
-        rule_status: formData.status[0] === "active" ? true : false,
-        payment_rule: formData.ruleType === "all" ? true : false,
-        conditions: formData.customizationRule,
-        payment_name: {
-          match: formData.paymentMethodType,
-          title: formData.paymentMethodTitles,
-        },
-      });
       const data = await resp.json();
       if (resp.ok) {
         show("Added Successfully!", {
           duration: 2000,
         });
+        setLoading(false);
         navigate("/payment-customization");
       }
     } catch (error) {
@@ -174,7 +166,9 @@ const ReOrder = () => {
 
   const getCustomizationData = async () => {
     try {
-      const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
+      const resp = await shopifyFetch(
+        `https://website-combining-branches-mainly.trycloudflare.com/api/v1/payment-customization/=${id}`
+      );
       const data = await resp.json();
       if (resp.ok) {
         console.log(data);
@@ -204,6 +198,7 @@ const ReOrder = () => {
         primaryAction={{
           content: "Create",
           onAction: handleCreateCustomization,
+          loading: loading,
           disabled:
             !formData.title || formData.paymentMethodTitles.length === 0,
         }}
@@ -566,4 +561,4 @@ const ReOrder = () => {
   );
 };
 
-export default ReOrder;
+export default Hide;

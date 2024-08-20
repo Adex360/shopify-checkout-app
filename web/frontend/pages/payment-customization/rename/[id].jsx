@@ -26,7 +26,7 @@ import {
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 
-const ReOrder = () => {
+const ReName = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
 
@@ -576,4 +576,4 @@ const ReOrder = () => {
   );
 };
 
-export default ReOrder;
+export default ReName;
