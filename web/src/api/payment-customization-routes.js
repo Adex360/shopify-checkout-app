@@ -15,6 +15,7 @@ router.get(
   planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
   errorHandler(PaymentCustomizationController.getAllPaymentCustomization)
 );
+
 router.get(
   "/count",
   planMiddleware([PLAN_OPTIONS.ESSENTIAL]),
