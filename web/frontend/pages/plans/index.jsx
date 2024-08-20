@@ -22,7 +22,6 @@ import { useAppContext } from "../../context";
 
 const Plans = () => {
   const { shop, loading, setLoading } = useAppContext();
-  console.log(shop);
   const shopifyFetch = useAuthenticatedFetch();
   const [plans, setPlans] = useState([]);
   // const [loading, setLoading] = useState(false);
@@ -79,67 +78,70 @@ const Plans = () => {
         <Page title="Plans">
           <Layout>
             <Layout.Section>
-              <InlineGrid key="aas" columns={2} alignItems="center" gap="300">
+              <InlineGrid
+                key="plans_container"
+                columns={2}
+                alignItems="center"
+                gap="300"
+              >
                 {plans?.map((plan, i) => {
                   return (
-                    <>
-                      <Card key={i}>
-                        <div>
-                          <BlockStack>
-                            <Box paddingBlockEnd="200">
-                              <InlineStack align="center">
-                                <Text variant="headingLg">{plan.name}</Text>
-                              </InlineStack>
-                            </Box>
-                            <Divider />
-                            <Box paddingBlock="400">
-                              <InlineStack
-                                gap="100"
-                                align="center"
-                                blockAlign="center"
-                              >
-                                <InlineStack blockAlign="center">
-                                  <Text variant="headingMd">$</Text>
-                                  <Text variant="heading3xl">{plan.price}</Text>
-                                </InlineStack>
-                                <Text variant="headingMd">/ Month</Text>
-                              </InlineStack>
-                            </Box>
-                            <Divider />
-
-                            <Box paddingBlock="200">
-                              <Text variant="headingMd">Available:</Text>
-                              <List>
-                                <List.Item>feature</List.Item>
-                                {features?.map((feature, i) => (
-                                  <List.Item key={i}>{feature}</List.Item>
-                                ))}
-                              </List>
-                            </Box>
-                          </BlockStack>
-                          <div
-                            style={{
-                              height: "100",
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "end",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Button
-                              variant="primary"
-                              loading={btnLoading}
-                              disabled={shop.plan_status === "active"}
-                              onClick={() => subscribe()}
+                    <Card key={i}>
+                      <div>
+                        <BlockStack>
+                          <Box paddingBlockEnd="200">
+                            <InlineStack align="center">
+                              <Text variant="headingLg">{plan.name}</Text>
+                            </InlineStack>
+                          </Box>
+                          <Divider />
+                          <Box paddingBlock="400">
+                            <InlineStack
+                              gap="100"
+                              align="center"
+                              blockAlign="center"
                             >
-                              {shop.plan_status === "active"
-                                ? "Subscribed"
-                                : "Subscribe"}
-                            </Button>
-                          </div>
+                              <InlineStack blockAlign="center">
+                                <Text variant="headingMd">$</Text>
+                                <Text variant="heading3xl">{plan.price}</Text>
+                              </InlineStack>
+                              <Text variant="headingMd">/ Month</Text>
+                            </InlineStack>
+                          </Box>
+                          <Divider />
+
+                          <Box paddingBlock="200">
+                            <Text variant="headingMd">Available:</Text>
+                            <List>
+                              <List.Item>feature</List.Item>
+                              {features?.map((feature, i) => (
+                                <List.Item key={i}>{feature}</List.Item>
+                              ))}
+                            </List>
+                          </Box>
+                        </BlockStack>
+                        <div
+                          style={{
+                            height: "100",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "end",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Button
+                            variant="primary"
+                            loading={btnLoading}
+                            disabled={shop.plan_status === "active"}
+                            onClick={() => subscribe()}
+                          >
+                            {shop.plan_status === "active"
+                              ? "Subscribed"
+                              : "Subscribe"}
+                          </Button>
                         </div>
-                      </Card>
-                    </>
+                      </div>
+                    </Card>
                   );
                 })}
               </InlineGrid>

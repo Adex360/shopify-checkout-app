@@ -597,6 +597,12 @@ const Hide = () => {
                   <Divider />
                   <InlineStack>
                     <Button
+                      disabled={formData.customizationRule.some(
+                        (rule) =>
+                          (Array.isArray(rule.value) &&
+                            rule.value.length === 0) ||
+                          rule.value.includes("")
+                      )}
                       onClick={handleAddCondition}
                       variant="primary"
                       icon={PlusCircleIcon}

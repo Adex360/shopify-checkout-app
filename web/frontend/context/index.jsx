@@ -9,7 +9,7 @@ const AppContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [shop, setShop] = useState({});
   const navigate = useNavigate();
-
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const getShop = async () => {
     try {
       setLoading(true);
@@ -19,7 +19,9 @@ const AppContextProvider = ({ children }) => {
         setShop(data);
         setLoading(false);
         console.log(data);
-        if (data.plan_status === "none") navigate("/plans");
+        data.plan_status === "active"
+          ? setIsSubscribed(true)
+          : navigate("/plans");
       }
     } catch (error) {
       console.error(error);
@@ -34,6 +36,7 @@ const AppContextProvider = ({ children }) => {
     shop,
     loading,
     setLoading,
+    isSubscribed,
   };
 
   return (

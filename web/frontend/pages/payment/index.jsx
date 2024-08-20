@@ -19,8 +19,7 @@ import { useAuthenticatedFetch } from "../../hooks";
 import { useAppContext } from "../../context";
 
 const Payment = () => {
-  const { shop } = useAppContext();
-  const isSubscribed = shop.plan_status === "active";
+  const { isSubscribed } = useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
