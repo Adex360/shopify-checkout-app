@@ -234,7 +234,7 @@ const CreateCustomFields = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const resp = await shopifyFetch("api/v1/custom-fields/create", {
+      const resp = await shopifyFetch("/api/v1/custom-fields/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +267,7 @@ const CreateCustomFields = () => {
           title="Custom Fields"
           backAction={{
             onAction: () => {
-              navigate("/custom-fields");
+              navigate("/custom-field");
             },
           }}
           primaryAction={{

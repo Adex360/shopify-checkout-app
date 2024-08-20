@@ -12,7 +12,6 @@ import {
   Text,
 } from "@shopify/polaris";
 import { PlanUpgradeWarning } from "../../components";
-import { data } from "@shopify/app-bridge/actions/Modal";
 
 const CustomFields = () => {
   const isSubscribed = true;
@@ -22,7 +21,6 @@ const CustomFields = () => {
 
   const [loading, setLoading] = useState(false);
   const [btnLoadingIndex, setBtnLoadingIndex] = useState(false);
-
   const [customFieldsData, setCustomFieldsData] = useState([]);
 
   const getCustomFields = async () => {
@@ -116,7 +114,7 @@ const CustomFields = () => {
               }}
               primaryAction={{
                 content: "Add Fields",
-                onAction: () => navigate("/custom-fields/create"),
+                onAction: () => navigate("/custom-field/create"),
               }}
             >
               <>
@@ -126,8 +124,7 @@ const CustomFields = () => {
                       heading="Add a custom fields to get started"
                       action={{
                         content: "Add Fields",
-                        onAction: () => navigate("/custom-fields/create"),
-                        // onAction: () => navigate("/payment-customization"),
+                        onAction: () => navigate("/custom-field/create"),
                       }}
                       image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
                     >

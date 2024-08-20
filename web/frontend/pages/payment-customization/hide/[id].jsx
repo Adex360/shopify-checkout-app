@@ -166,15 +166,53 @@ const Hide = () => {
 
   const getCustomizationData = async () => {
     try {
-      const resp = await shopifyFetch(
-        `https://website-combining-branches-mainly.trycloudflare.com/api/v1/payment-customization/=${id}`
-      );
+      const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
       const data = await resp.json();
       if (resp.ok) {
         console.log(data);
+        const { getByID } = data;
+        setFormData({
+          title: getByID.title,
+          ruleType: getByID.payment_rule ? "all" : "any",
+          status: getByID.rule_status ? ["active"] : ["Inactive"],
+          paymentMethodTitles: getByID.payment_name.title,
+          paymentMethodType: getByID.payment_name.match,
+          type: getByID.title,
+          customizationRule: getByID.conditions,
+        });
       }
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const updateCustomizationData = async () => {
+    setLoading(true);
+    const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: formData.title,
+        type: "hide",
+        rule_status: formData.status[0] === "active" ? true : false,
+        payment_rule: formData.ruleType === "all" ? true : false,
+        conditions: formData.customizationRule,
+        payment_name: {
+          match: formData.paymentMethodType,
+          title: formData.paymentMethodTitles,
+        },
+      }),
+    });
+
+    const data = await resp.json();
+    if (resp.ok) {
+      show("Added Successfully!", {
+        duration: 2000,
+      });
+      setLoading(false);
+      navigate("/payment-customization");
     }
   };
 
@@ -196,8 +234,12 @@ const Hide = () => {
         }}
         title="Advance Payment rules (Hide/Delete)"
         primaryAction={{
-          content: "Create",
-          onAction: handleCreateCustomization,
+          content: id !== "create" ? "Update" : "Create",
+          onAction: () => {
+            id !== "create"
+              ? updateCustomizationData()
+              : handleCreateCustomization();
+          },
           loading: loading,
           disabled:
             !formData.title || formData.paymentMethodTitles.length === 0,

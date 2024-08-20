@@ -1,6 +1,7 @@
 import { CustomField } from "../models/index.js";
 
 export const createCustomFields = async (req, res) => {
+  console.log("ss");
   const { id } = req.shop;
   const data = req.body;
 

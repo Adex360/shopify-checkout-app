@@ -37,7 +37,7 @@ export default function App() {
                   },
                   {
                     label: "Custom Fields",
-                    destination: "/custom-fields",
+                    destination: "/custom-field",
                   },
                   {
                     label: "Plans",

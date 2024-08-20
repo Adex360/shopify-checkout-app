@@ -45,8 +45,8 @@ export const getAllPaymentCustomization = async (req, res) => {
 
 export const getByIdPaymentCustomization = async (req, res) => {
   try {
-    console.log("by id ");
     const { id } = req.params;
+    console.log("by id ", id);
     const getByID = await PaymentCustomization.getByID(id);
     res.status(200).json({ getByID });
   } catch (error) {
