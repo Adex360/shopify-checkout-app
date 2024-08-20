@@ -18,14 +18,15 @@ export const createPaymentCustomization = async (req, res) => {
   const getFnId = await service.getShopifyFunctionId("payment-customization");
   await service.createPaymentCustomization(getFnId, data);
   res.status(200).json({
-    message: `Customization Setting for ${req.body.type} Created !! `,
+    message: `Payment Customization Setting for type :${req.body.type} Created !! `,
     createReOrder,
   });
 };
 
 export const getAllPaymentCustomization = async (req, res) => {
   try {
-    const getAll = await PaymentCustomization.findAll();
+    const shop = req.shop;
+    const getAll = await PaymentCustomization.findAll(shop.id);
 
     if (getAll.length >= 5) {
       return res.status(200).json({
@@ -37,7 +38,21 @@ export const getAllPaymentCustomization = async (req, res) => {
 
     res.status(200).json({ customizations: getAll });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Error Getting All Customizations:" });
+  }
+};
+
+export const getByIdPaymentCustomization = async (req, res) => {
+  try {
+    console.log("by id ");
+    const { id } = req.params;
+    const getByID = await PaymentCustomization.getByID(id);
+    res.status(200).json({ getByID });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Error Getting Payment Customization by Id:" });
   }
 };
 
@@ -60,9 +75,10 @@ export const updatePaymentCustomization = async (req, res) => {
       id,
       ...data,
     });
-    res
-      .status(200)
-      .json({ message: `Customization id: ${id} is Updated `, updatedReOrder });
+    res.status(200).json({
+      message: `Payment Customization  Updated Successfully`,
+      updatedReOrder,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error updating Customization :" });
   }
