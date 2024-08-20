@@ -40,6 +40,10 @@ export default function App() {
                     destination: "/custom-field",
                   },
                   {
+                    label: "Checkout Info Banner",
+                    destination: "/checkout-info-banner",
+                  },
+                  {
                     label: "Plans",
                     destination: "/plans",
                   },

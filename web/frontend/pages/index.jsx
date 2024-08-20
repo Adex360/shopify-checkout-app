@@ -6,15 +6,49 @@ import {
   InlineGrid,
   InlineStack,
   Layout,
+  Link,
   List,
   Page,
   Spinner,
   Text,
 } from "@shopify/polaris";
 import { useAppContext } from "../context";
+import { useAuthenticatedFetch } from "../hooks";
+import { useEffect, useState } from "react";
+import { useNavigate } from "@shopify/app-bridge-react";
 
 export default function HomePage() {
-  const { loading } = useAppContext();
+  const { loading, setLoading } = useAppContext();
+  const shopifyFetch = useAuthenticatedFetch();
+
+  const [customizationCount, setCustomizationCount] = useState({});
+  const { count, activeCountries, activeCount } = customizationCount;
+  const navigate = useNavigate();
+  console.log(activeCountries);
+
+  const getCustomizationCount = async () => {
+    try {
+      setLoading(true);
+      const resp = await shopifyFetch("/api/v1/payment-customization/count");
+      const data = await resp.json();
+      if (resp.ok) {
+        setLoading(false);
+        setCustomizationCount(data);
+        console.log(data);
+      } else {
+        console.log(data.error);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCustomizationCount();
+  }, []);
+
   return (
     <>
       {loading ? (
@@ -33,12 +67,17 @@ export default function HomePage() {
                         Active Payment Customizations
                       </Text>
                       <Box paddingBlockStart="200">
-                        <Text as="p" variant="bodyMd">
-                          0 / 5 acitve payment rule(s)
-                        </Text>
+                        <InlineStack gap="100">
+                          <Text variant="headingMd">{activeCount} / 5</Text>
+                          <Text as="p" variant="bodyMd">
+                            acitve payment rule(s)
+                          </Text>
+                        </InlineStack>
                       </Box>
                       <InlineStack align="end">
-                        <Button variant="plain">View all</Button>
+                        <Link onClick={() => navigate("/payment")}>
+                          View all
+                        </Link>
                       </InlineStack>
                     </Card>
                     <Card roundedAbove="sm">
@@ -49,15 +88,21 @@ export default function HomePage() {
                         <InlineStack align="space-evenly">
                           <BlockStack inlineAlign="center">
                             <Text variant="headingMd">Hide</Text>
-                            <Text variant="headingLg">0</Text>
+                            <Text variant="headingLg">
+                              {count && count.hide}
+                            </Text>
                           </BlockStack>
                           <BlockStack inlineAlign="center">
-                            <Text variant="headingMd">Hide</Text>
-                            <Text variant="headingLg">0</Text>
+                            <Text variant="headingMd">Sort</Text>
+                            <Text variant="headingLg">
+                              {count && count["re-order"]}
+                            </Text>
                           </BlockStack>
                           <BlockStack inlineAlign="center">
-                            <Text variant="headingMd">Hide</Text>
-                            <Text variant="headingLg">0</Text>
+                            <Text variant="headingMd">Rename</Text>
+                            <Text variant="headingLg">
+                              {count && count.rename}
+                            </Text>
                           </BlockStack>
                         </InlineStack>
                       </Box>

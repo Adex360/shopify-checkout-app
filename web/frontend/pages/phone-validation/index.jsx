@@ -29,6 +29,8 @@ const PhoneValidation = () => {
   const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingID, setEditingID] = useState("");
+  const [editingIndex, setEditingIndex] = useState("");
   const [loading, setLoading] = useState(false);
   const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
   const [validations, setValidations] = useState([]);
@@ -76,6 +78,7 @@ const PhoneValidation = () => {
 
   const tableRows = validations?.map((data, index) => {
     const { phone_validation } = data;
+    console.log(data.id);
     return [
       data.title,
       phone_validation.country_name,
@@ -89,7 +92,15 @@ const PhoneValidation = () => {
         <Badge tone="attention">Inactive</Badge>
       ),
       <ButtonGroup variant="segmented">
-        <Button>Edit</Button>
+        <Button
+          onClick={() => {
+            setModalOpen(true);
+            setEditingID(data.id);
+            setEditingIndex(index);
+          }}
+        >
+          Edit
+        </Button>
         <Button
           loading={btnLoadingIndex === index}
           variant="primary"
@@ -150,6 +161,16 @@ const PhoneValidation = () => {
                         return newArr;
                       });
                     }}
+                    onEditSuccess={(value) => {
+                      setValidations((prev) => {
+                        const newArr = [...prev];
+                        newArr[editingIndex] = value;
+                        return newArr;
+                      });
+                      setEditingID("");
+                      setEditingIndex("");
+                    }}
+                    editingID={editingID}
                     onClose={() => {
                       navigate("/phone-validation");
                       setModalOpen(false);

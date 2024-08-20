@@ -23,10 +23,12 @@ import {
 import { v4 } from "uuid";
 import { PlusIcon, EditIcon, DeleteIcon } from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../hooks";
+import { useParams } from "react-router-dom";
 
 const CreateCustomFields = () => {
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
+  const { id } = useParams();
 
   const isSubscribed = true;
 
@@ -125,8 +127,6 @@ const CreateCustomFields = () => {
       // prev[index][name] = value
     });
   };
-
-  console.log(customFields);
 
   const getFieldSettings = (typeName, index) => {
     return Object.keys(customFields[index]).map((key) => {
@@ -255,7 +255,18 @@ const CreateCustomFields = () => {
     }
   };
 
-  useEffect(() => {}, []);
+  const getCustomFieldData = async () => {
+    try {
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (id !== "create") {
+      getCustomFieldData();
+    }
+  }, []);
   return (
     <>
       {!isSubscribed ? (

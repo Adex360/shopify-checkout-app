@@ -11,9 +11,16 @@ import {
   Checkbox,
 } from "@shopify/polaris";
 
-const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
+const PhoneValidationModal = ({
+  open,
+  onClose,
+  onSuccess,
+  onEditSuccess,
+  editingID,
+}) => {
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
+  console.log(editingID);
   const [loading, setLoading] = useState({
     modalLoading: false,
     btnLoading: false,
@@ -84,7 +91,44 @@ const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
     });
   };
 
+  const handleClose = () => {
+    setFormData({
+      title: "",
+      enable: true,
+      country: [],
+      countryCode: "",
+      networkCodeLength: "",
+      phoneLength: "",
+      errorMessage: "",
+    });
+    onClose();
+  };
+
+  const getValidationData = async () => {
+    try {
+      changeLoading("modalLoading", true);
+      const resp = await shopifyFetch(`/api/v1/validation/${editingID}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        const { getByID } = data;
+        setFormData({
+          title: getByID.title,
+          enable: getByID.enabled,
+          country: [getByID.phone_validation.country_name],
+          countryCode: getByID.phone_validation.country_code,
+          networkCodeLength: getByID.phone_validation.network_code,
+          phoneLength: getByID.phone_validation.phone_no_length,
+          errorMessage: getByID.phone_validation.error_message,
+        });
+        changeLoading("modalLoading", false);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const setPhoneValidation = async () => {
+    console.log(formData.countryCode);
     const reqData = {
       title: formData.title,
       country_name: formData.country[0],
@@ -92,7 +136,7 @@ const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
       phone_validation: {
         type: "phone-validation",
         country_name: formData.country[0],
-        country_code: formData.countryCode.split(","),
+        country_code: formData.countryCode[0].split(","),
         network_code: formData.networkCodeLength,
         phone_no_length: formData.phoneLength,
         error_message: formData.errorMessage,
@@ -111,9 +155,8 @@ const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
       if (resp.ok) {
         show(data.message, { duration: 2000 });
         changeLoading("btnLoading", false);
-        console.log(data);
+        handleClose();
         onSuccess(data.createValidation);
-        onClose();
       } else {
         show(data.error.message, {
           isError: true,
@@ -126,6 +169,49 @@ const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
     }
   };
 
+  const updateValidationData = async () => {
+    changeLoading("btnLoading", true);
+    const reqData = {
+      title: formData.title,
+      country_name: formData.country[0],
+      enabled: formData.enable,
+      phone_validation: {
+        type: "phone-validation",
+        country_name: formData.country[0],
+        country_code: formData.countryCode[0].split(","),
+        network_code: formData.networkCodeLength,
+        phone_no_length: formData.phoneLength,
+        error_message: formData.errorMessage,
+      },
+    };
+
+    const resp = await shopifyFetch(`/api/v1/validation/${editingID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reqData),
+    });
+    const data = await resp.json();
+    if (resp.ok) {
+      show("Updated Successfully!", {
+        duration: 2000,
+      });
+      changeLoading("btnLoading", false);
+      handleClose();
+      onEditSuccess(data.updatedValidation);
+    } else {
+      show(data.error, { isError: true });
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (editingID !== "") {
+      getValidationData();
+    }
+  }, [open]);
+
   useEffect(() => {
     getCountries();
   }, []);
@@ -135,22 +221,14 @@ const PhoneValidationModal = ({ open, onClose, onSuccess }) => {
       <Modal
         open={open}
         onClose={() => {
-          setFormData({
-            title: "",
-            enable: true,
-            country: [],
-            countryCode: "",
-            networkCodeLength: "",
-            phoneLength: "",
-            errorMessage: "",
-          });
-          onClose();
+          handleClose();
         }}
         loading={loading.modalLoading}
         // size="medium"
         primaryAction={{
-          content: "Add",
-          onAction: setPhoneValidation,
+          content: editingID !== "" ? "Update" : "Add",
+          onAction: () =>
+            editingID !== "" ? updateValidationData() : setPhoneValidation(),
           disabled: !isFormDataValid(),
           loading: loading.btnLoading,
         }}

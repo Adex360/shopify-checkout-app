@@ -74,7 +74,14 @@ const CustomFields = () => {
             return ` ${index > 0 ? ", " : ""}${filedName.label} `;
           }),
       <ButtonGroup variant="segmented">
-        <Button>Edit</Button>
+        <Button
+          onClick={() => {
+            console.log("click");
+            navigate(`/custom-field/${field.id}`);
+          }}
+        >
+          Edit
+        </Button>
         <Button
           variant="primary"
           loading={index === btnLoadingIndex}
