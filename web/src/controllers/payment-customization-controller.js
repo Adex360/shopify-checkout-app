@@ -18,7 +18,7 @@ export const createPaymentCustomization = async (req, res) => {
   const getFnId = await service.getShopifyFunctionId("payment-customization");
   await service.createPaymentCustomization(getFnId, data);
   res.status(200).json({
-    message: `Payment Customization Setting for type :${req.body.type} Created !! `,
+    message: `Payment Customization Setting for Type :${req.body.type} Created !! `,
     createReOrder,
   });
 };
@@ -76,7 +76,7 @@ export const updatePaymentCustomization = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `Payment Customization  Updated Successfully`,
+      message: `Payment Customization Updated Successfully`,
       updatedReOrder,
     });
   } catch (error) {
@@ -97,7 +97,7 @@ export const deletePaymentCustomization = async (req, res) => {
 
     const deletedPaymentCustomization = await PaymentCustomization.delete(id);
     return res.status(200).json({
-      message: `${deletedPaymentCustomization.title} is successfully deleted`,
+      message: `${deletedPaymentCustomization.title} is Successfully Deleted`,
     });
   } catch (error) {
     res.status(500).json({ error: "Error Deleting PaymentCustomization:" });

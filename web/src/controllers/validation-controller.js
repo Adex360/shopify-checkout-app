@@ -20,7 +20,7 @@ export const createValidation = async (req, res) => {
   });
 
   res.status(200).json({
-    message: `Validation  Setting  Created Successfully !! `,
+    message: `Validation Setting  Created Successfully !! `,
     createValidation,
   });
 };
@@ -89,7 +89,7 @@ export const deleteValidation = async (req, res) => {
     const deletedValidation = await Validation.delete(id);
     return res
       .status(200)
-      .json({ message: `${deletedValidation.title} is successfully deleted` });
+      .json({ message: `${deletedValidation.title} is Successfully Deleted` });
   } catch (error) {
     res.status(500).json({ error: "Error Deleting Validation:" });
   }

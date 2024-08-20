@@ -9,20 +9,11 @@ export const createCityList = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `City list Created Successfully `,
+    message: `City list for Country:${data.country_name} Created Successfully `,
     createCityList,
   });
 };
 
-export const getAllCityLists = async (req, res) => {
-  try {
-    const shop = req.shop;
-    const getAll = await CityList.findAll(shop.id);
-    res.status(200).json({ getAll });
-  } catch (error) {
-    res.status(500).json({ error: "Error Getting City List" });
-  }
-};
 export const getAllCityList = async (req, res) => {
   try {
     let shopId;
@@ -71,7 +62,7 @@ export const deleteCityList = async (req, res) => {
     const { id } = req.params;
     const deletedCityList = await CityList.delete(id);
     res.status(200).json({
-      message: `City list for ${deletedCityList.country_name} successfully deleted`,
+      message: `City list for Country:${deletedCityList.country_name} successfully deleted`,
     });
   } catch (error) {
     res.status(500).json({ error: "Error creating City List" });

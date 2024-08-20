@@ -1,7 +1,6 @@
 import { CustomField, Shop } from "../models/index.js";
 
 export const createCustomFields = async (req, res) => {
-  console.log("ss");
   const { id } = req.shop;
   const data = req.body;
 
@@ -11,7 +10,7 @@ export const createCustomFields = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `CustomFields Created Successfully  !! `,
+    message: `CustomFields for Title:${data.title}  Created Successfully  !! `,
     createCustomFIeld,
   });
 };
@@ -53,7 +52,7 @@ export const updateCustomFields = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `Custom Field Updated Successfully  `,
+      message: `Custom Field Form for Title:${data.title} Updated Successfully  `,
       updatedCustomField,
     });
   } catch (error) {
@@ -63,11 +62,12 @@ export const updateCustomFields = async (req, res) => {
 export const deleteFields = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedCustomFields = await CustomField.delete(id);
+    const deletedForm = await CustomField.delete(id);
     res.status(200).json({
-      message: `${deletedCustomFields.title} is successfully deleted`,
+      message: `Custom Field Form for Title:${deletedForm.title} is deleted successfully `,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error creating Custom field" });
+    console.log(error);
+    res.status(500).json({ error: "Error deleting customField Form" });
   }
 };
