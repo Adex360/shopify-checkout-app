@@ -10,7 +10,7 @@ export const createCustomFields = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `CustomFields Created !! `,
+    message: `CustomFields Created Successfully  !! `,
     createCustomFIeld,
   });
 };
@@ -43,7 +43,7 @@ export const updateCustomFields = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `Custom Field id: ${id} is Updated `,
+      message: `Custom Field Updated Successfully  `,
       updatedCustomField,
     });
   } catch (error) {

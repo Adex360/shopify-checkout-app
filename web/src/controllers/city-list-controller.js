@@ -9,7 +9,7 @@ export const createCityList = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `City list Created !! `,
+    message: `City list Created Successfully `,
     createCityList,
   });
 };
@@ -42,7 +42,7 @@ export const updateCityList = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `City list for id: ${id} is Updated `,
+      message: `City list Updated Successfully  `,
       updatedCityList,
     });
   } catch (error) {

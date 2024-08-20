@@ -18,7 +18,7 @@ export const createPaymentCustomization = async (req, res) => {
   const getFnId = await service.getShopifyFunctionId("payment-customization");
   await service.createPaymentCustomization(getFnId, data);
   res.status(200).json({
-    message: `Customization Setting for ${req.body.type} Created !! `,
+    message: `Payment Customization Setting for type :${req.body.type} Created !! `,
     createReOrder,
   });
 };
@@ -62,7 +62,10 @@ export const updatePaymentCustomization = async (req, res) => {
     });
     res
       .status(200)
-      .json({ message: `Customization id: ${id} is Updated `, updatedReOrder });
+      .json({
+        message: `Payment Customization  Updated Successfully`,
+        updatedReOrder,
+      });
   } catch (error) {
     res.status(500).json({ error: "Error updating Customization :" });
   }
