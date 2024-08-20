@@ -16,6 +16,7 @@ import {
   Page,
   Popover,
   Select,
+  Spinner,
   Text,
   TextField,
 } from "@shopify/polaris";
@@ -33,6 +34,7 @@ const CreateCustomFields = () => {
   const isSubscribed = true;
 
   const [loading, setLoading] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
   const [formName, setFormName] = useState("");
   const [customFields, setCustomFields] = useState([]);
 
@@ -257,6 +259,46 @@ const CreateCustomFields = () => {
 
   const getCustomFieldData = async () => {
     try {
+      setPageLoading(true);
+      const resp = await shopifyFetch(`/api/v1/custom-fields/${id}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        console.log(data);
+        const { getByID } = data;
+        setFormName(getByID.title);
+        setCustomFields(getByID.fields);
+        setPageLoading(false);
+      } else {
+        show(data.error, {
+          isError: true,
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const updateCustomField = async () => {
+    try {
+      setLoading(true);
+
+      const resp = await shopifyFetch(`/api/v1/custom-fields/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: formName,
+          fields: customFields,
+        }),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        console.log(data);
+        show(data.message);
+        setLoading(false);
+        navigate("/custom-fields");
+      }
     } catch (e) {
       console.error(e);
     }
@@ -274,115 +316,128 @@ const CreateCustomFields = () => {
           <PlanUpgradeWarning />
         </Page>
       ) : (
-        <Page
-          title="Custom Fields"
-          backAction={{
-            onAction: () => {
-              navigate("/custom-field");
-            },
-          }}
-          primaryAction={{
-            disabled: !formName,
-            content: "Save",
-            onAction: handleSubmit,
-            loading: loading,
-          }}
-        >
-          <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
-            <BlockStack gap="400">
-              <Card>
-                <TextField
-                  value={formName}
-                  onChange={(value) => setFormName(value)}
-                  label={<Text variant="headingMd">Form Name</Text>}
-                  helpText="Unique form name to use it"
-                  placeholder="e.g Form 1"
-                />
-              </Card>
-              <Card>
-                <Text variant="headingMd">Form Fields</Text>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    minHeight: "200px",
-                  }}
-                >
-                  <Box paddingBlock="400">
-                    <BlockStack gap="200">
-                      {customFields &&
-                        customFields?.map((field, index) => {
-                          return (
-                            <Card padding="200" key={index}>
-                              <InlineStack
-                                align="space-between"
-                                blockAlign="center"
-                              >
-                                <Text variant="headingMd">{field.type}</Text>
-                                <InlineStack gap="200">
-                                  <Button
-                                    variant="tertiary"
-                                    icon={EditIcon}
-                                    onClick={() => {
-                                      showFiledEditor(index);
-                                    }}
-                                  />
-
-                                  <Button
-                                    variant="tertiary"
-                                    icon={DeleteIcon}
-                                    onClick={() => handleFieldDelete(index)}
-                                  />
-                                </InlineStack>
-                              </InlineStack>
-
-                              <Collapsible open={collapsibleIndex === index}>
-                                <Box paddingBlockStart="200">
-                                  <BlockStack gap="100">
-                                    {getFieldSettings(field.type, index)}
-                                  </BlockStack>
-                                </Box>
-                              </Collapsible>
-                            </Card>
-                          );
-                        })}
-                    </BlockStack>
-                  </Box>
-                  <div
-                    style={{
-                      alignSelf: "center",
-                    }}
-                  >
-                    <Popover
-                      activator={
-                        <Button
-                          variant="primary"
-                          icon={PlusIcon}
-                          onClick={togglePopoverActive}
-                        >
-                          Add Field
-                        </Button>
-                      }
-                      active={popoverActive}
+        <>
+          {pageLoading ? (
+            <div className="loading">
+              <Spinner />
+            </div>
+          ) : (
+            <Page
+              title="Custom Fields"
+              backAction={{
+                onAction: () => {
+                  navigate("/custom-fields");
+                },
+              }}
+              primaryAction={{
+                disabled: !formName,
+                content: id !== "" ? "Update" : "Save",
+                onAction: () =>
+                  id !== "" ? updateCustomField() : handleSubmit(),
+                loading: loading,
+              }}
+            >
+              <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
+                <BlockStack gap="400">
+                  <Card>
+                    <TextField
+                      value={formName}
+                      onChange={(value) => setFormName(value)}
+                      label={<Text variant="headingMd">Form Name</Text>}
+                      helpText="Unique form name to use it"
+                      placeholder="e.g Form 1"
+                    />
+                  </Card>
+                  <Card>
+                    <Text variant="headingMd">Form Fields</Text>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        minHeight: "200px",
+                      }}
                     >
-                      <ActionList
-                        actionRole="menuitem"
-                        items={customFieldsOptions}
-                      />
-                    </Popover>
-                  </div>
-                </div>
-              </Card>
-            </BlockStack>
-            <Card>
-              <BlockStack gap="300">
-                <Text variant="headingLg">Preview</Text>
-                <BlockStack gap="200">{fieldsPreviewMarkup}</BlockStack>
-              </BlockStack>
-            </Card>
-          </InlineGrid>
-        </Page>
+                      <Box paddingBlock="400">
+                        <BlockStack gap="200">
+                          {customFields &&
+                            customFields?.map((field, index) => {
+                              return (
+                                <Card padding="200" key={index}>
+                                  <InlineStack
+                                    align="space-between"
+                                    blockAlign="center"
+                                  >
+                                    <Text variant="headingMd">
+                                      {field.type}
+                                    </Text>
+                                    <InlineStack gap="200">
+                                      <Button
+                                        variant="tertiary"
+                                        icon={EditIcon}
+                                        onClick={() => {
+                                          showFiledEditor(index);
+                                        }}
+                                      />
+
+                                      <Button
+                                        variant="tertiary"
+                                        icon={DeleteIcon}
+                                        onClick={() => handleFieldDelete(index)}
+                                      />
+                                    </InlineStack>
+                                  </InlineStack>
+
+                                  <Collapsible
+                                    open={collapsibleIndex === index}
+                                  >
+                                    <Box paddingBlockStart="200">
+                                      <BlockStack gap="100">
+                                        {getFieldSettings(field.type, index)}
+                                      </BlockStack>
+                                    </Box>
+                                  </Collapsible>
+                                </Card>
+                              );
+                            })}
+                        </BlockStack>
+                      </Box>
+                      <div
+                        style={{
+                          alignSelf: "center",
+                        }}
+                      >
+                        <Popover
+                          activator={
+                            <Button
+                              variant="primary"
+                              icon={PlusIcon}
+                              onClick={togglePopoverActive}
+                            >
+                              Add Field
+                            </Button>
+                          }
+                          active={popoverActive}
+                        >
+                          <ActionList
+                            actionRole="menuitem"
+                            items={customFieldsOptions}
+                          />
+                        </Popover>
+                      </div>
+                    </div>
+                  </Card>
+                </BlockStack>
+                <Card>
+                  <BlockStack gap="300">
+                    <Text variant="headingLg">Preview</Text>
+                    <BlockStack gap="200">{fieldsPreviewMarkup}</BlockStack>
+                  </BlockStack>
+                </Card>
+              </InlineGrid>
+            </Page>
+          )}
+        </>
       )}
     </>
   );

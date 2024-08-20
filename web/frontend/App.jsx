@@ -27,17 +27,17 @@ export default function App() {
                     label: "Payment Customization",
                     destination: "/payment",
                   },
-                  {
-                    label: "Checkout City List ",
-                    destination: "/checkout-city",
-                  },
+                  // {
+                  //   label: "Checkout City List ",
+                  //   destination: "/checkout-city",
+                  // },
                   {
                     label: "Phone Validation",
                     destination: "/phone-validation",
                   },
                   {
                     label: "Custom Fields",
-                    destination: "/custom-field",
+                    destination: "/custom-fields",
                   },
                   {
                     label: "Checkout Info Banner",

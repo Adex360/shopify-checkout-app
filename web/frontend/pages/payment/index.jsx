@@ -16,12 +16,14 @@ import {
 import { PlanUpgradeWarning } from "../../components";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
+import { useAppContext } from "../../context";
 
 const Payment = () => {
+  const { shop } = useAppContext();
+  const isSubscribed = shop.plan_status === "active";
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  const isSubscribed = true;
   const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
   const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
@@ -101,7 +103,7 @@ const Payment = () => {
   });
 
   useEffect(() => {
-    getCustomization();
+    isSubscribed && getCustomization();
   }, []);
 
   return (

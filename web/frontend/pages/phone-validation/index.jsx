@@ -23,7 +23,7 @@ import { useAppContext } from "../../context";
 
 const PhoneValidation = () => {
   const { shop } = useAppContext();
-  const isSubscribed = true;
+  const isSubscribed = shop.plan_status === "active";
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const navigate = useNavigate();
@@ -124,7 +124,7 @@ const PhoneValidation = () => {
   ];
 
   useEffect(() => {
-    getPhoneValidations();
+    isSubscribed && getPhoneValidations();
   }, []);
 
   return (

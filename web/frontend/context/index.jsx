@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useAuthenticatedFetch } from "../hooks";
+import { useNavigate } from "@shopify/app-bridge-react";
 
 const AppContext = createContext();
 
@@ -7,6 +8,7 @@ const AppContextProvider = ({ children }) => {
   const shopifyFetch = useAuthenticatedFetch();
   const [loading, setLoading] = useState(false);
   const [shop, setShop] = useState({});
+  const navigate = useNavigate();
 
   const getShop = async () => {
     try {
@@ -17,6 +19,7 @@ const AppContextProvider = ({ children }) => {
         setShop(data);
         setLoading(false);
         console.log(data);
+        if (data.plan_status === "none") navigate("/plans");
       }
     } catch (error) {
       console.error(error);

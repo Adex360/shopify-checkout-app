@@ -1,24 +1,9 @@
 import React from "react";
-import {
-  Banner,
-  Box,
-  Button,
-  Card,
-  InlineStack,
-  Link,
-  Page,
-  Text,
-} from "@shopify/polaris";
+import { Banner, Box, Button, Card, Page, Text } from "@shopify/polaris";
 import { useAppContext } from "../../context";
-import { useNavigate } from "@shopify/app-bridge-react";
 
 const InfoBanner = () => {
   const { shop } = useAppContext();
-  const navigate = useNavigate();
-  // console.log(shop.name.toLowerCase());
-  console.log(
-    `https://admin.shopify.com/store/${shop.name.toLowerCase()}/settings/checkout`
-  );
   return (
     <>
       <Page>

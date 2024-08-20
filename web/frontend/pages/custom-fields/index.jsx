@@ -12,9 +12,11 @@ import {
   Text,
 } from "@shopify/polaris";
 import { PlanUpgradeWarning } from "../../components";
+import { useAppContext } from "../../context";
 
 const CustomFields = () => {
-  const isSubscribed = true;
+  const { shop } = useAppContext();
+  const isSubscribed = shop.plan_status === "active";
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -77,7 +79,7 @@ const CustomFields = () => {
         <Button
           onClick={() => {
             console.log("click");
-            navigate(`/custom-field/${field.id}`);
+            navigate(`/custom-fields/${field.id}`);
           }}
         >
           Edit
@@ -95,7 +97,7 @@ const CustomFields = () => {
     ];
   });
   useState(() => {
-    getCustomFields();
+    isSubscribed && getCustomFields();
   }, []);
   return (
     <>
@@ -121,7 +123,7 @@ const CustomFields = () => {
               }}
               primaryAction={{
                 content: "Add Fields",
-                onAction: () => navigate("/custom-field/create"),
+                onAction: () => navigate("/custom-fields/create"),
               }}
             >
               <>

@@ -1,4 +1,5 @@
 import {
+  Banner,
   BlockStack,
   Box,
   Button,
@@ -18,13 +19,13 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "@shopify/app-bridge-react";
 
 export default function HomePage() {
-  const { loading, setLoading } = useAppContext();
+  const { loading, setLoading, shop } = useAppContext();
+  console.log(shop);
   const shopifyFetch = useAuthenticatedFetch();
 
   const [customizationCount, setCustomizationCount] = useState({});
   const { count, activeCountries, activeCount } = customizationCount;
   const navigate = useNavigate();
-  console.log(activeCountries);
 
   const getCustomizationCount = async () => {
     try {
@@ -34,9 +35,7 @@ export default function HomePage() {
       if (resp.ok) {
         setLoading(false);
         setCustomizationCount(data);
-        console.log(data);
       } else {
-        console.log(data.error);
       }
     } catch (e) {
       console.error(e);
@@ -61,6 +60,16 @@ export default function HomePage() {
             <Layout.Section>
               <Page title="DashBoard">
                 <BlockStack>
+                  <Box paddingBlock="200">
+                    {shop.plan_status === "none" && (
+                      <Banner>
+                        Please Subscribe the plan to get started.
+                        <Link onClick={() => navigate("/plans")}>
+                          Subscribe Now
+                        </Link>
+                      </Banner>
+                    )}
+                  </Box>
                   <InlineGrid columns={2} gap="400">
                     <Card roundedAbove="sm">
                       <Text as="h2" variant="headingSm">
@@ -68,7 +77,9 @@ export default function HomePage() {
                       </Text>
                       <Box paddingBlockStart="200">
                         <InlineStack gap="100">
-                          <Text variant="headingMd">{activeCount} / 5</Text>
+                          <Text variant="headingMd">
+                            {activeCount ? activeCount : "0"} / 5
+                          </Text>
                           <Text as="p" variant="bodyMd">
                             acitve payment rule(s)
                           </Text>
@@ -89,19 +100,19 @@ export default function HomePage() {
                           <BlockStack inlineAlign="center">
                             <Text variant="headingMd">Hide</Text>
                             <Text variant="headingLg">
-                              {count && count.hide}
+                              {count ? count.hide : "-"}
                             </Text>
                           </BlockStack>
                           <BlockStack inlineAlign="center">
                             <Text variant="headingMd">Sort</Text>
                             <Text variant="headingLg">
-                              {count && count["re-order"]}
+                              {count ? count["re-order"] : "-"}
                             </Text>
                           </BlockStack>
                           <BlockStack inlineAlign="center">
                             <Text variant="headingMd">Rename</Text>
                             <Text variant="headingLg">
-                              {count && count.rename}
+                              {count ? count.rename : "-"}
                             </Text>
                           </BlockStack>
                         </InlineStack>

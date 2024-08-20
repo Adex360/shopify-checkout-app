@@ -79,7 +79,7 @@ const Plans = () => {
         <Page title="Plans">
           <Layout>
             <Layout.Section>
-              <InlineGrid columns={2} gap="300">
+              <InlineGrid key="aas" columns={2} alignItems="center" gap="300">
                 {plans?.map((plan, i) => {
                   return (
                     <>
