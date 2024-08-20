@@ -14,23 +14,25 @@ import {
   useAttributeValues,
   TextBlock,
   Heading,
+  useShop,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
-  <CustomFieldsExtension />
+  <CustomFields />
 ));
 
-function CustomFieldsExtension() {
+function CustomFields() {
+  const { myshopifyDomain } = useShop();
+  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/custom-fields/all/${myshopifyDomain}`;
   const { form_name } = useSettings();
   const [customFields, setCustomFields] = useState([]);
+  const [fieldValues, setFieldValues] = useState({});
+
   const attributeKeys = customFields.flatMap((form) =>
     form.fields.map((f) => f.name)
   );
   const attributeValues = useAttributeValues(attributeKeys);
   const applyAttributeChange = useApplyAttributeChange();
-
-  const CUSTOM_FIELDS_END_POINT =
-    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/custom-fields/all";
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -39,6 +41,7 @@ function CustomFieldsExtension() {
     medium: 2,
     small: 3,
   };
+
   const fetchCustomFields = async () => {
     try {
       const response = await fetch(`${CUSTOM_FIELDS_END_POINT}`, {
@@ -46,50 +49,34 @@ function CustomFieldsExtension() {
         headers: requestHeader,
       });
       const data = await response.json();
+      console.log("Fetched Custom Fields Data:", data);
       setCustomFields(Array.isArray(data.getAll) ? data.getAll : []);
     } catch (error) {
-      console.error("Error Fetching Custom Fields:", error);
+      console.error("Error Fetching Custom Fields", error);
     }
   };
-  // console.log("attributeValues[field.name]aaa", attributeValues);
 
   useEffect(() => {
     fetchCustomFields();
   }, []);
 
-  const renderField = (field) => {
-    const handleChange = (value) => {
-      applyAttributeChange({
-        key: field.name,
-        type: "updateAttribute",
-        value: value,
-      });
-    };
-    const fieldWidth = field.field_width === "half" ? "50%" : "100%";
-    switch (field.type) {
-      case "text":
-        return (
-          <BlockStack key={field.name} maxInlineSize={fieldWidth}>
-            <TextField
-              key={field.name}
-              label={field.label}
-              placeholder={field.placeholder}
-              onChange={handleChange}
-              value={attributeValues[field.name] || ""}
-            />
-          </BlockStack>
-        );
+  const handleChange = (field, value) => {
+    console.log("ew ");
+    setFieldValues((prevValues) => ({
+      ...prevValues,
+      [field.name]: value,
+    }));
 
-      case "checkbox":
-        return (
-          <Checkbox
-            key={field.name}
-            checked={attributeValues[field.name] === "true"}
-            onChange={(checked) => handleChange(checked ? "true" : "false")}
-          >
-            {field.label}
-          </Checkbox>
-        );
+    applyAttributeChange({
+      key: field.name,
+      type: "updateAttribute",
+      value: value,
+    });
+  };
+  const renderField = (field) => {
+    const fieldWidth = field.field_width === "half" ? "50%" : "100%";
+
+    switch (field.type) {
       case "divider":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
@@ -101,6 +88,18 @@ function CustomFieldsExtension() {
             />
           </BlockStack>
         );
+      case "text":
+        return (
+          <BlockStack key={field.name} maxInlineSize={fieldWidth}>
+            <TextField
+              key={field.name}
+              label={field.label}
+              placeholder={field.placeholder}
+              onChange={(value) => handleChange(field, value)}
+              value={attributeValues[field.name] || ""}
+            />
+          </BlockStack>
+        );
       case "number":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
@@ -108,10 +107,22 @@ function CustomFieldsExtension() {
               key={field.name}
               type="number"
               label={field.label}
-              onChange={handleChange}
+              onChange={(value) => handleChange(field, value)}
               value={attributeValues[field.name] || ""}
             />
           </BlockStack>
+        );
+      case "checkbox":
+        return (
+          <Checkbox
+            key={field.name}
+            checked={attributeValues[field.name] === "true"}
+            onChange={(checked) =>
+              handleChange(field, checked ? "true" : "false")
+            }
+          >
+            {field.label}
+          </Checkbox>
         );
       case "select":
         return (
@@ -122,8 +133,8 @@ function CustomFieldsExtension() {
               value: option,
               label: option,
             }))}
-            onChange={(value) => handleChange(value)}
-            value={attributeValues[field.name] || field.options[0]}
+            onChange={(value) => handleChange(field, value)}
+            value={fieldValues[field.name] || attributeValues[field.name] || ""}
           />
         );
       case "radio":
@@ -133,7 +144,7 @@ function CustomFieldsExtension() {
             name={field.name}
             variant="group"
             value={attributeValues[field.name] || ""}
-            onChange={(value) => handleChange(value)}
+            onChange={(value) => handleChange(field, value)}
           >
             {field.options.map((option) => (
               <Choice id={option} key={option}>
@@ -148,8 +159,10 @@ function CustomFieldsExtension() {
             <DateField
               key={field.name}
               label={field.label}
-              value={attributeValues[field.name] || ""}
-              onChange={(value) => handleChange(value)}
+              value={
+                fieldValues[field.name] || attributeValues[field.name] || ""
+              }
+              onChange={(value) => handleChange(field, value)}
             />
           </BlockStack>
         );
@@ -176,7 +189,6 @@ function CustomFieldsExtension() {
             {field.content}
           </Heading>
         );
-
       default:
         return null;
     }

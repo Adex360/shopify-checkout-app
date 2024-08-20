@@ -37,7 +37,8 @@ export const getByIdValidation = async (req, res) => {
 
 export const getAllValidation = async (req, res) => {
   try {
-    const getAll = await Validation.findAll();
+    const shop = req.shop;
+    const getAll = await Validation.findAll(shop.id);
     res.status(200).json({ getAll });
   } catch (error) {
     res.status(500).json({ error: "Error Getting All Validation:" });
@@ -63,12 +64,10 @@ export const updateValidation = async (req, res) => {
       id,
       ...data,
     });
-    res
-      .status(200)
-      .json({
-        message: `Validation  Updated Successfully `,
-        updatedValidation,
-      });
+    res.status(200).json({
+      message: `Validation  Updated Successfully `,
+      updatedValidation,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error updating Validation :" });
   }

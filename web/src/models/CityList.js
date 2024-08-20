@@ -36,8 +36,10 @@ export class CityList {
     return customFieldFound;
   }
 
-  static async findAll() {
-    const customFields = await prismaClient.city_list.findMany();
+  static async findAll(shop_id) {
+    const customFields = await prismaClient.city_list.findMany({
+      where: { shop_id },
+    });
     return customFields;
   }
 

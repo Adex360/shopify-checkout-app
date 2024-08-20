@@ -1,4 +1,4 @@
-import { CityList } from "../models/index.js";
+import { CityList, Shop } from "../models/index.js";
 
 export const createCityList = async (req, res) => {
   const { id } = req.shop;
@@ -14,12 +14,29 @@ export const createCityList = async (req, res) => {
   });
 };
 
-export const getAllCityList = async (req, res) => {
+export const getAllCityLists = async (req, res) => {
   try {
-    const getAll = await CityList.findAll();
+    const shop = req.shop;
+    const getAll = await CityList.findAll(shop.id);
     res.status(200).json({ getAll });
   } catch (error) {
     res.status(500).json({ error: "Error Getting City List" });
+  }
+};
+export const getAllCityList = async (req, res) => {
+  try {
+    let shopId;
+    if (req.shop) {
+      shopId = req.shop.id;
+    } else {
+      const { shop_name } = req.params;
+      const shop = await Shop.findByName(shop_name);
+      shopId = shop.id;
+    }
+    const getAll = await CityList.findAll(shopId);
+    res.status(200).json({ getAll });
+  } catch (error) {
+    res.status(500).json({ error: "Error Getting Custom Fields" });
   }
 };
 export const getByIdCityList = async (req, res) => {

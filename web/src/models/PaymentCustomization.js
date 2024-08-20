@@ -37,24 +37,14 @@ export class PaymentCustomization {
     return reOrderfound;
   }
 
-  static async findAll() {
-    const reOrders = await prismaClient.payment_customization.findMany();
+  static async findAll(shop_id) {
+    const reOrders = await prismaClient.payment_customization.findMany({
+      where: { shop_id },
+    });
     return reOrders;
   }
 
   static async update(reOrderData) {
-    // const upsertUser = await prisma.payment_customization.upsert({
-    //   where: {
-    //     shop_id: data.shop_id,
-    //   },
-    //   update: {
-    //     ...reOrderData,
-    //   },
-    //   create: {
-    //     ...reOrderData,
-    //   },
-    // });
-
     const updatedReorder = await prismaClient.payment_customization.update({
       where: { id: reOrderData.id },
       data: reOrderData,

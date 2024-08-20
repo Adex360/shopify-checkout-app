@@ -36,8 +36,10 @@ export class Validation {
     return validationFound;
   }
 
-  static async findAll() {
-    const validations = await prismaClient.validation.findMany();
+  static async findAll(shop_id) {
+    const validations = await prismaClient.validation.findMany({
+      where: { shop_id },
+    });
     return validations;
   }
 

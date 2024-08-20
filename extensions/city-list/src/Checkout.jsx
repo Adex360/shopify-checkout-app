@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
+  useShop,
   reactExtension,
   Select,
   TextField,
@@ -24,15 +25,13 @@ import {
   Pressable,
 } from "@shopify/ui-extensions-react/checkout";
 
-// 1. Choose an extension target
 export default reactExtension("purchase.checkout.block.render", () => (
   <CityDropdown />
 ));
 
 export function CityDropdown2() {
-  console.log("ok city dropdown ");
-  const CUSTOM_FIELDS_END_POINT =
-    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/city-list/all";
+  const { myshopifyDomain } = useShop();
+  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -86,7 +85,7 @@ export function CityDropdown2() {
     shippingAddress?.current.countryCode && cityList.length > 0
       ? cityList.find(
           (country) =>
-            country.country_name === shippingAddress.current.countryCode
+            country.country_code === shippingAddress.current.countryCode
         )?.city_list || []
       : [];
   console.log("filteredCities", filteredCities);
@@ -102,8 +101,8 @@ export function CityDropdown2() {
 }
 
 export function CityDropdown() {
-  const CUSTOM_FIELDS_END_POINT =
-    "https://joshua-alexandria-alerts-former.trycloudflare.com/api/v1/city-list/all";
+  const { myshopifyDomain } = useShop();
+  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);
@@ -123,10 +122,10 @@ export function CityDropdown() {
         headers: requestHeader,
       });
       const data = await response.json();
-      console.log("data", data);
+      console.log("Fetched City List Data:", data);
       setCityList(Array.isArray(data.getAll) ? data.getAll : []);
     } catch (error) {
-      console.error("Error fetching city list:", error);
+      console.error("Error fetching City list:", error);
     }
   };
 
@@ -139,9 +138,9 @@ export function CityDropdown() {
       const filteredCitiesValue =
         cityList.find(
           (country) =>
-            country.country_name === shippingAddress.current.countryCode
+            country.country_code === shippingAddress.current.countryCode
         )?.city_list || [];
-
+      console.log("filteredCitiesValue", filteredCitiesValue);
       setFilteredCities(filteredCitiesValue);
     }
   }, [shippingAddress, cityList]);
@@ -176,7 +175,7 @@ export function CityDropdown() {
   return (
     <BlockStack>
       <TextField
-        label="city ma"
+        label="city search"
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setDropdownVisible(true)}

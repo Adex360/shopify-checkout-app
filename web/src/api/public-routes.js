@@ -6,8 +6,11 @@ import * as CityListController from "../controllers/index.js";
 const router = new express.Router();
 
 router.get(
-  "/custom-fields/all",
+  "/custom-fields/all/:shop_name",
   errorHandler(CustomFieldController.getAllCustomFields)
 );
-router.get("/city-list/all", errorHandler(CityListController.getAllCityList));
+router.get(
+  "/city-list/all/:shop_name",
+  errorHandler(CityListController.getAllCityList)
+);
 export const publicRoutes = router;

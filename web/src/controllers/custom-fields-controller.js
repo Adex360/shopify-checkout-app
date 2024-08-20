@@ -1,4 +1,4 @@
-import { CustomField } from "../models/index.js";
+import { CustomField, Shop } from "../models/index.js";
 
 export const createCustomFields = async (req, res) => {
   const { id } = req.shop;
@@ -17,12 +17,21 @@ export const createCustomFields = async (req, res) => {
 
 export const getAllCustomFields = async (req, res) => {
   try {
-    const getAll = await CustomField.findAll();
+    let shopId;
+    if (req.shop) {
+      shopId = req.shop.id;
+    } else {
+      const { shop_name } = req.params;
+      const shop = await Shop.findByName(shop_name);
+      shopId = shop.id;
+    }
+    const getAll = await CustomField.findAll(shopId);
     res.status(200).json({ getAll });
   } catch (error) {
     res.status(500).json({ error: "Error Getting Custom Fields" });
   }
 };
+
 export const getByIdCustomFields = async (req, res) => {
   try {
     const { id } = req.params;
