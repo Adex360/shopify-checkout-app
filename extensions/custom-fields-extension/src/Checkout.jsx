@@ -1,3 +1,4 @@
+import { API_URL } from "./config/index.js";
 import React, { useState, useEffect } from "react";
 import {
   reactExtension,
@@ -23,7 +24,7 @@ export default reactExtension("purchase.checkout.block.render", () => (
 
 function CustomFields() {
   const { myshopifyDomain } = useShop();
-  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/custom-fields/all/${myshopifyDomain}`;
+  const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const { form_name } = useSettings();
   const [customFields, setCustomFields] = useState([]);
   const [fieldValues, setFieldValues] = useState({});

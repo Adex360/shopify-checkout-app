@@ -1,3 +1,4 @@
+import { API_URL } from "./config/index.js";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   useShop,
@@ -31,7 +32,8 @@ export default reactExtension("purchase.checkout.block.render", () => (
 
 export function CityDropdown2() {
   const { myshopifyDomain } = useShop();
-  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
+  const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
+  // const CUSTOM_FIELDS_END_POINT = `https://boat-facilities-elsewhere-pci.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -102,7 +104,7 @@ export function CityDropdown2() {
 
 export function CityDropdown() {
   const { myshopifyDomain } = useShop();
-  const CUSTOM_FIELDS_END_POINT = `https://conclusions-epinions-utilize-myself.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
+  const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);
