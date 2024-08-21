@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
 import {
+  Badge,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -64,15 +66,21 @@ const CustomFields = () => {
   };
 
   const tableRows = customFieldsData.map((field, index) => {
+    const fieldsName =
+      field.fields.length === 0 ? (
+        <Badge tone="critical-strong">No fields</Badge>
+      ) : (
+        field?.fields.map((filedName, index) => {
+          return ` ${index > 0 ? ", " : ""}${filedName.label} `;
+        })
+      );
     return [
       field.title,
       field?.fields.length,
 
-      field.fields.length === 0
-        ? "-"
-        : field?.fields.map((filedName, index) => {
-            return ` ${index > 0 ? ", " : ""}${filedName.label} `;
-          }),
+      <Box maxWidth="200px">
+        <Text truncate={true}>{fieldsName}</Text>
+      </Box>,
       <ButtonGroup variant="segmented">
         <Button
           onClick={() => {

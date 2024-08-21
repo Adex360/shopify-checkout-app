@@ -86,7 +86,7 @@ const CreateCustomFields = () => {
     setCustomFields((prev) => {
       return [
         ...prev,
-        { name: v4(), type: fieldType, ...exampleField[fieldType] },
+        { name: fieldType + v4(), type: fieldType, ...exampleField[fieldType] },
       ];
     });
 
@@ -255,6 +255,9 @@ const CreateCustomFields = () => {
         console.log(data);
         show(data.message);
         setLoading(false);
+        navigate("/custom-fields");
+      } else {
+        show(data.error, { isError: true });
       }
     } catch (e) {
       console.error(e);

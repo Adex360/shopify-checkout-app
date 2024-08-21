@@ -20,9 +20,10 @@ import { useNavigate } from "@shopify/app-bridge-react";
 import { PlanUpgradeWarning } from "../components";
 
 export default function HomePage() {
-  const { loading, setLoading, isSubscribed } = useAppContext();
+  const { loading, setLoading, isSubscribed, shop } = useAppContext();
   // const isSubscribed = shop.plan_status === "active";
 
+  console.log(shop);
   const shopifyFetch = useAuthenticatedFetch();
 
   const [customizationCount, setCustomizationCount] = useState({});
