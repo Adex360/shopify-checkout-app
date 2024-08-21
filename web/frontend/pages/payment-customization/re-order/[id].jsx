@@ -399,7 +399,7 @@ const ReOrder = () => {
                                           value
                                         );
                                       }}
-                                      placeholder="Search Tags"
+                                      placeholder="Search Country"
                                       selectionOption={countries}
                                     />
                                   ) : (
@@ -439,37 +439,6 @@ const ReOrder = () => {
               <Card roundedAbove="sm">
                 <BlockStack gap="400">
                   <BlockStack gap="200">
-                    {formData.paymentName.title.map((payment, index) => {
-                      return (
-                        <InlineStack key={index} gap="400" blockAlign="end">
-                          <Box
-                            style={{
-                              flexGrow: 1,
-                            }}
-                          >
-                            <TextField
-                              size="slim"
-                              label={
-                                <Text variant="headingSm">
-                                  Method {index + 1}
-                                </Text>
-                              }
-                              value={payment}
-                              onChange={(value) => {
-                                handlePaymentRuleChange(index, "title", value);
-                              }}
-                            />
-                          </Box>
-                          {index > 0 && (
-                            <Button
-                              icon={DeleteIcon}
-                              onClick={() => handleDeleteTitle(index)}
-                            />
-                          )}
-                        </InlineStack>
-                      );
-                    })}
-
                     <Box paddingBlockStart="200">
                       <SearchAndSelect
                         hideTags={true}

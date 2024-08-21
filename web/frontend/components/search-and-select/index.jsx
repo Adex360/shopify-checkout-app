@@ -109,7 +109,6 @@ const SearchAndSelect = ({
       selected={selectedOptions}
       textField={textField}
       onSelect={(value) => {
-        console.log(value);
         setSelectedOptions(value);
       }}
       listTitle="Suggested Tags"
