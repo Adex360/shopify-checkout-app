@@ -17,7 +17,11 @@ import {
   TextField,
   useBreakpoints,
 } from "@shopify/polaris";
-import { AddTag, SearchAndSelect } from "../../../components";
+import {
+  AddTag,
+  CustomAutoComplete,
+  SearchAndSelect,
+} from "../../../components";
 import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {
   customizationRuleForCountry,
@@ -258,6 +262,8 @@ const ReName = () => {
     getCountries();
   }, []);
 
+  const [paymentMethodOld, setPaymentMethodOld] = useState("");
+
   return (
     <>
       {pageLoading ? (
@@ -279,6 +285,7 @@ const ReName = () => {
             },
           }}
         >
+          <CustomAutoComplete />
           <BlockStack gap={{ xs: "800", sm: "400" }}>
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
               <Box
