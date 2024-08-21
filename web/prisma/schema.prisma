@@ -14,22 +14,21 @@ datasource db {
 }
 
 model Shop {
-  id          String   @id @default(uuid())
-  shop_name   String   @unique
-  accessToken String
-  scope       String
-  state       String
-  shop_id     String
-  name        String
-  session_id  String
-  currency    String?
-  status      String   @default("active")
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-
+  id                     String                  @id @default(uuid())
+  shop_name              String                  @unique
+  accessToken            String
+  scope                  String
+  state                  String
+  shop_id                String
+  name                   String
+  session_id             String
+  currency               String?
+  status                 String                  @default("active")
+  created_at             DateTime                @default(now())
+  updated_at             DateTime                @updatedAt
   plan_id                String?
   plan_price             Int                     @default(0)
-  plan_activated_date    Int                     @default(0)
+  plan_activated_date    BigInt                  @default(0)
   plan_status            String                  @default("none")
   shopify_charge_id      String?
   next_billing_date      DateTime                @default(now())
