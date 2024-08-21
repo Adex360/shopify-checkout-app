@@ -356,6 +356,7 @@ const ReOrder = () => {
                                   },
                                 ]}
                                 onChange={(value) => {
+                                  handleSortingRuleChange(index, "value", []);
                                   handleSortingRuleChange(index, "type", value);
                                 }}
                               />

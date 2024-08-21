@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Badge,
   Banner,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -11,6 +12,7 @@ import {
   Page,
   Spinner,
   Text,
+  Tooltip,
 } from "@shopify/polaris";
 import { PlanUpgradeWarning } from "../../components";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
@@ -66,13 +68,18 @@ const Payment = () => {
   };
 
   const tableRows = customizationRules?.map((data, index) => {
-    const ruleCondition = !data.payment_rule ? (
-      data.conditions?.map((condition, index) => {
-        return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
-      })
-    ) : (
-      <Badge tone="critical-strong">No Condition</Badge>
-    );
+    const ruleCondition =
+      data.type === "hide" ? (
+        data.conditions?.map((condition, index) => {
+          return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
+        })
+      ) : !data.payment_rule ? (
+        data.conditions?.map((condition, index) => {
+          return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
+        })
+      ) : (
+        <Badge tone="critical-strong">No Condition</Badge>
+      );
     return [
       data.title,
       data.type,
@@ -81,8 +88,9 @@ const Payment = () => {
       ) : (
         <Badge tone="attention-strong">Inactive</Badge>
       ),
-
-      ruleCondition,
+      <Box maxWidth="200px">
+        <Text truncate={true}>{ruleCondition}</Text>
+      </Box>,
       <ButtonGroup variant="segmented">
         <Button
           onClick={() =>

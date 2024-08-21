@@ -224,7 +224,12 @@ const CreateCustomFields = () => {
         );
 
       case "Date":
-        return <TextField label={field.label} type="date" />;
+        return (
+          <TextField
+            label={<Text variant="headingSm">{field.label}</Text>}
+            type="date"
+          />
+        );
 
       default:
         return null;

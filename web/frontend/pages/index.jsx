@@ -116,7 +116,7 @@ export default function HomePage() {
                             </InlineStack>
                           </Box>
                         </Card>
-                        <Card roundedAbove="sm">
+                        {/* <Card roundedAbove="sm">
                           <Text as="h2" variant="headingSm">
                             Active city list of countries
                           </Text>
@@ -125,7 +125,7 @@ export default function HomePage() {
                               <List.Item>No citylist added</List.Item>
                             </List>
                           </Box>
-                        </Card>
+                        </Card> */}
                       </InlineGrid>
                     </BlockStack>
                   </Page>

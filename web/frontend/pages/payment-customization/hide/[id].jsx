@@ -547,7 +547,7 @@ const Hide = () => {
                                 />
                               )}
                               <InlineStack align="end">
-                                {index > 0 && (
+                                {formData.customizationRule.length > 0 && (
                                   <Button
                                     variant="primary"
                                     icon={DeleteIcon}
