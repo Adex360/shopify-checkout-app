@@ -62,7 +62,6 @@ function CustomFields() {
   }, []);
 
   const handleChange = (field, value) => {
-    console.log("ew ");
     setFieldValues((prevValues) => ({
       ...prevValues,
       [field.name]: value,
