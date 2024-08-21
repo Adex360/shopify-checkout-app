@@ -170,6 +170,8 @@ const PhoneValidation = () => {
                     }}
                     editingID={editingID}
                     onClose={() => {
+                      setEditingID("");
+                      setEditingIndex("");
                       navigate("/phone-validation");
                       setModalOpen(false);
                     }}

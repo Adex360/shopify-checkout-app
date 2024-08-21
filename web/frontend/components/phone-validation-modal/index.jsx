@@ -20,7 +20,6 @@ const PhoneValidationModal = ({
 }) => {
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  console.log(editingID);
   const [loading, setLoading] = useState({
     modalLoading: false,
     btnLoading: false,
@@ -104,29 +103,6 @@ const PhoneValidationModal = ({
     onClose();
   };
 
-  const getValidationData = async () => {
-    try {
-      changeLoading("modalLoading", true);
-      const resp = await shopifyFetch(`/api/v1/validation/${editingID}`);
-      const data = await resp.json();
-      if (resp.ok) {
-        const { getByID } = data;
-        setFormData({
-          title: getByID.title,
-          enable: getByID.enabled,
-          country: [getByID.phone_validation.country_name],
-          countryCode: getByID.phone_validation.country_code,
-          networkCodeLength: getByID.phone_validation.network_code,
-          phoneLength: getByID.phone_validation.phone_no_length,
-          errorMessage: getByID.phone_validation.error_message,
-        });
-        changeLoading("modalLoading", false);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const setPhoneValidation = async () => {
     const reqData = {
       title: formData.title,
@@ -165,6 +141,31 @@ const PhoneValidationModal = ({
       console.error(e);
     } finally {
       changeLoading("btnLoading", false);
+    }
+  };
+
+  const getValidationData = async () => {
+    try {
+      changeLoading("modalLoading", true);
+      const resp = await shopifyFetch(`/api/v1/validation/${editingID}`);
+      const data = await resp.json();
+      if (resp.ok) {
+        const { getByID } = data;
+        console.log(getByID.phone_validation.country_code);
+        setFormData({
+          title: getByID.title,
+          enable: getByID.enabled,
+          country: [getByID.phone_validation.country_name],
+          countryCode: getByID.phone_validation.country_code.join(","),
+          networkCodeLength: getByID.phone_validation.network_code,
+          phoneLength: getByID.phone_validation.phone_no_length,
+          errorMessage: getByID.phone_validation.error_message,
+        });
+        console.log(formData);
+        changeLoading("modalLoading", false);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -221,6 +222,7 @@ const PhoneValidationModal = ({
         open={open}
         onClose={() => {
           handleClose();
+          console.log(formData);
         }}
         loading={loading.modalLoading}
         // size="medium"
