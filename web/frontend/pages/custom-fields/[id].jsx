@@ -41,12 +41,12 @@ const CreateCustomFields = () => {
   const exampleField = {
     Text: {
       label: "",
-      placeholder: "",
+      placeholder: "add placeholder here",
       width: "",
     },
     Number: {
       label: "",
-      placeholder: "",
+      placeholder: "add placeholder here",
       width: "",
     },
     Checkbox: {
@@ -175,7 +175,6 @@ const CreateCustomFields = () => {
           <TextField
             label={<Text variant="headingSm">{field.label}</Text>}
             placeholder={field.placeholder}
-            type="number"
             width={field.width}
           />
         );

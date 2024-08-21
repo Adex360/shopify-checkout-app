@@ -133,7 +133,7 @@ const CustomFields = () => {
                       heading="Add a custom fields to get started"
                       action={{
                         content: "Add Fields",
-                        onAction: () => navigate("/custom-field/create"),
+                        onAction: () => navigate("/custom-fields/create"),
                       }}
                       image="https://cdn.shopify.com/s/files/1/0262/4071/2726/files/emptystate-files.png"
                     >

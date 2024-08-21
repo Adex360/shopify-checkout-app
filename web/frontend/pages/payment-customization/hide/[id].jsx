@@ -173,8 +173,8 @@ const Hide = () => {
           title: getByID.title,
           type: getByID.type,
           ruleType: getByID.payment_rule ? "all" : "any",
-          status: getByID.rule_status ? ["active"] : ["inactive"],
-          paymentMethodTitles: setPaymentTitles(getByID.payment_name.title),
+          status: getByID.rule_status,
+          paymentMethodTitles: getByID.payment_name.title,
           paymentMethodType: getByID.payment_name.match,
           customizationRule: getByID.conditions,
         });

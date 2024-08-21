@@ -207,7 +207,7 @@ const ReName = () => {
         setFormData({
           title: getByID.title,
           type: getByID.type,
-          status: getByID.rule_status ? ["active"] : ["inactive"],
+          status: getByID.rule_status,
           ruleType: getByID.payment_rule ? "all" : "any",
           customizationRule: getByID.conditions,
           paymentName: getByID.payment_name,

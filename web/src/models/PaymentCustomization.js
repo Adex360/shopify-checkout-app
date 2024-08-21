@@ -60,7 +60,9 @@ export class PaymentCustomization {
   }
 
   static async count(options = {}) {
-    const whereClause = {};
+    const whereClause = {
+      shop_id: options.shop_id,
+    };
 
     if (options.type) {
       whereClause.type = options.type;

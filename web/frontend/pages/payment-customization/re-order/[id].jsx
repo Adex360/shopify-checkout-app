@@ -166,7 +166,7 @@ const ReOrder = () => {
         setFormData({
           title: getByID.title,
           type: getByID.type,
-          status: getByID.rule_status ? ["active"] : ["inactive"],
+          status: getByID.rule_status,
           paymentRule: getByID.payment_rule ? ["condition"] : ["always"],
           paymentRuleConditions: getByID.conditions,
           paymentName: getByID.payment_name,
