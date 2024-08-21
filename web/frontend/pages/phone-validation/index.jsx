@@ -61,7 +61,6 @@ const PhoneValidation = () => {
         },
       });
       const data = await resp.json();
-      console.log(data);
       if (resp.ok) {
         show("Validation Deleted!");
         setValidations((prev) => {
@@ -78,11 +77,10 @@ const PhoneValidation = () => {
 
   const tableRows = validations?.map((data, index) => {
     const { phone_validation } = data;
-    console.log(data.id);
     return [
       data.title,
       phone_validation.country_name,
-      phone_validation.country_code,
+      phone_validation.country_code.join(","),
       phone_validation.network_code,
       phone_validation.phone_no_length,
       phone_validation.error_message,

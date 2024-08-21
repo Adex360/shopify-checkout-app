@@ -128,7 +128,6 @@ const PhoneValidationModal = ({
   };
 
   const setPhoneValidation = async () => {
-    console.log(formData.countryCode);
     const reqData = {
       title: formData.title,
       country_name: formData.country[0],
@@ -136,7 +135,7 @@ const PhoneValidationModal = ({
       phone_validation: {
         type: "phone-validation",
         country_name: formData.country[0],
-        country_code: formData.countryCode[0].split(","),
+        country_code: formData.countryCode.split(","),
         network_code: formData.networkCodeLength,
         phone_no_length: formData.phoneLength,
         error_message: formData.errorMessage,
@@ -178,7 +177,7 @@ const PhoneValidationModal = ({
       phone_validation: {
         type: "phone-validation",
         country_name: formData.country[0],
-        country_code: formData.countryCode[0].split(","),
+        country_code: formData.countryCode.split(","),
         network_code: formData.networkCodeLength,
         phone_no_length: formData.phoneLength,
         error_message: formData.errorMessage,
