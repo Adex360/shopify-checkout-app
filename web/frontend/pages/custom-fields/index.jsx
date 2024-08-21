@@ -31,7 +31,6 @@ const CustomFields = () => {
       const resp = await shopifyFetch("api/v1/custom-fields");
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data.getAll);
         setCustomFieldsData(data.getAll);
         setLoading(false);
       }
@@ -50,7 +49,6 @@ const CustomFields = () => {
         },
       });
       const data = await resp.json();
-      console.log(data);
       if (resp.ok) {
         show(data.message);
         setCustomFieldsData((prev) => {
@@ -78,7 +76,6 @@ const CustomFields = () => {
       <ButtonGroup variant="segmented">
         <Button
           onClick={() => {
-            console.log("click");
             navigate(`/custom-fields/${field.id}`);
           }}
         >

@@ -40,17 +40,17 @@ const CreateCustomFields = () => {
 
   const exampleField = {
     Text: {
-      label: "",
+      label: "add label here",
       placeholder: "add placeholder here",
       width: "",
     },
     Number: {
-      label: "",
+      label: "add label here",
       placeholder: "add placeholder here",
       width: "",
     },
     Checkbox: {
-      label: "",
+      label: "add label here",
     },
     Divider: {
       size: "",
@@ -58,15 +58,15 @@ const CreateCustomFields = () => {
       color: "",
     },
     Select: {
-      label: "",
+      label: "add label here",
       options: "",
     },
     Radio: {
-      label: "",
+      label: "add label here",
       options: "",
     },
     Date: {
-      label: "",
+      label: "add label here",
     },
   };
 
@@ -417,6 +417,7 @@ const CreateCustomFields = () => {
                             </Button>
                           }
                           active={popoverActive}
+                          onClose={() => setPopoverActive(false)}
                         >
                           <ActionList
                             actionRole="menuitem"
