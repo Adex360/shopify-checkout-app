@@ -28,7 +28,7 @@ const Payment = () => {
   const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
   const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
-
+  const [message, setMessage] = useState("");
   const getCustomization = async () => {
     try {
       setLoading(true);
@@ -36,6 +36,7 @@ const Payment = () => {
       const data = await resp.json();
       if (resp.ok) {
         setCustomizationRules(data.customizations);
+        setMessage(data.message);
         setLoading(false);
       }
     } catch (e) {
@@ -60,6 +61,7 @@ const Payment = () => {
           prev.splice(index, 1);
           return prev;
         });
+        setMessage(data.message);
       }
     } catch (e) {
       console.error(e);
@@ -131,7 +133,7 @@ const Payment = () => {
             <Page
               title="All Payment Customizations"
               primaryAction={{
-                disabled: shop.activeCount >= 5,
+                disabled: customizationRules.length >= 5,
                 content: "Create payment customizations",
                 onAction: () => navigate("/payment-customization"),
               }}
@@ -141,8 +143,8 @@ const Payment = () => {
                   {customizationRules.length !== 0 ? (
                     <>
                       <Box paddingBlock="200">
-                        {shop.activeCount >= 5 && (
-                          <Banner title="Limit Reached">
+                        {customizationRules.length >= 5 && (
+                          <Banner tone="warning" title="Limit Reached">
                             You have 5/5 customization active. Deactivate or
                             delete customization to create new customizations
                           </Banner>
