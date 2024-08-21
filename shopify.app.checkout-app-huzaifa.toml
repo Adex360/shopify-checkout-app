@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "ac6bebf342d75edb2bddf8b1082493f3"
+name = "checkout-app-huzaifa"
+handle = "checkout-app-huzaifa"
+application_url = "https://accompanying-funeral-distributed-switch.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "test-store-melo.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,write_payment_customizations,write_products,write_validations"
+
+[auth]
+redirect_urls = [
+  "https://accompanying-funeral-distributed-switch.trycloudflare.com/auth/callback",
+  "https://accompanying-funeral-distributed-switch.trycloudflare.com/auth/shopify/callback",
+  "https://accompanying-funeral-distributed-switch.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+[pos]
+embedded = false
