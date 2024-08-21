@@ -433,6 +433,7 @@ const Hide = () => {
                     </InlineStack>
                   </Box>
                   {formData.customizationRule.map((rule, index) => {
+                    console.log(rule.type);
                     return (
                       <>
                         <Divider key={(index + 1) * 9} />
@@ -503,7 +504,11 @@ const Hide = () => {
                                           value
                                         );
                                       }}
-                                      placeholder="Search Tags"
+                                      placeholder={
+                                        rule.type === "country"
+                                          ? "Search Countries"
+                                          : "Search Tags"
+                                      }
                                       selectionOption={countries}
                                     />
                                   ) : (
@@ -519,6 +524,14 @@ const Hide = () => {
                                 // passing string into array due to server side validation
                                 <TextField
                                   value={rule.value[0]}
+                                  type={
+                                    rule.type === "title" ? "text" : "number"
+                                  }
+                                  placeholder={
+                                    rule.type === "title"
+                                      ? "Add shipping title"
+                                      : "Add amount "
+                                  }
                                   onChange={(value) => {
                                     console.log(formData);
                                     handleCustomizationRuleChange(
