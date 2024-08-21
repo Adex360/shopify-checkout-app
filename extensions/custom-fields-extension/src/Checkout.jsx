@@ -75,9 +75,9 @@ function CustomFields() {
   };
   const renderField = (field) => {
     const fieldWidth = field.field_width === "half" ? "50%" : "100%";
-
+    console.log("ield.type", field.type);
     switch (field.type) {
-      case "divider":
+      case "Divider":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <Divider
@@ -88,7 +88,7 @@ function CustomFields() {
             />
           </BlockStack>
         );
-      case "text":
+      case "Text":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <TextField
@@ -100,7 +100,7 @@ function CustomFields() {
             />
           </BlockStack>
         );
-      case "number":
+      case "Number":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <TextField
@@ -112,7 +112,7 @@ function CustomFields() {
             />
           </BlockStack>
         );
-      case "checkbox":
+      case "Checkbox":
         return (
           <Checkbox
             key={field.name}
@@ -124,7 +124,7 @@ function CustomFields() {
             {field.label}
           </Checkbox>
         );
-      case "select":
+      case "Select":
         return (
           <Select
             key={field.name}
@@ -137,7 +137,7 @@ function CustomFields() {
             value={fieldValues[field.name] || attributeValues[field.name] || ""}
           />
         );
-      case "radio":
+      case "Radio":
         return (
           <ChoiceList
             key={field.name}
@@ -153,7 +153,7 @@ function CustomFields() {
             ))}
           </ChoiceList>
         );
-      case "date":
+      case "Date":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <DateField
@@ -166,7 +166,7 @@ function CustomFields() {
             />
           </BlockStack>
         );
-      case "textBlock":
+      case "TextBlock":
         return (
           <TextBlock
             key={field.name}
@@ -178,7 +178,7 @@ function CustomFields() {
             {field.content}
           </TextBlock>
         );
-      case "heading":
+      case "Heading":
         return (
           <Heading
             key={field.name}

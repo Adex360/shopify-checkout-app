@@ -1,0 +1,57 @@
+// vite.config.js
+import { defineConfig } from "file:///C:/Users/Lenovo/Desktop/shopify_applications/checkout-app-main/web/frontend/node_modules/vite/dist/node/index.js";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+import react from "file:///C:/Users/Lenovo/Desktop/shopify_applications/checkout-app-main/web/frontend/node_modules/@vitejs/plugin-react/dist/index.mjs";
+var __vite_injected_original_import_meta_url = "file:///C:/Users/Lenovo/Desktop/shopify_applications/checkout-app-main/web/frontend/vite.config.js";
+if (process.env.npm_lifecycle_event === "build" && !process.env.CI && !process.env.SHOPIFY_API_KEY) {
+  console.warn(
+    "\nBuilding the frontend app without an API key. The frontend build will not run without an API key. Set the SHOPIFY_API_KEY environment variable when running the build command.\n"
+  );
+}
+var proxyOptions = {
+  target: `http://127.0.0.1:${process.env.BACKEND_PORT}`,
+  changeOrigin: false,
+  secure: true,
+  ws: false
+};
+var host = process.env.HOST ? process.env.HOST.replace(/https?:\/\//, "") : "localhost";
+var hmrConfig;
+if (host === "localhost") {
+  hmrConfig = {
+    protocol: "ws",
+    host: "localhost",
+    port: 64999,
+    clientPort: 64999
+  };
+} else {
+  hmrConfig = {
+    protocol: "wss",
+    host,
+    port: process.env.FRONTEND_PORT,
+    clientPort: 443
+  };
+}
+var vite_config_default = defineConfig({
+  root: dirname(fileURLToPath(__vite_injected_original_import_meta_url)),
+  plugins: [react()],
+  define: {
+    "process.env.SHOPIFY_API_KEY": JSON.stringify(process.env.SHOPIFY_API_KEY)
+  },
+  resolve: {
+    preserveSymlinks: true
+  },
+  server: {
+    host: "localhost",
+    port: process.env.FRONTEND_PORT,
+    hmr: hmrConfig,
+    proxy: {
+      "^/(\\?.*)?$": proxyOptions,
+      "^/api(/|(\\?.*)?$)": proxyOptions
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcuanMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCJDOlxcXFxVc2Vyc1xcXFxMZW5vdm9cXFxcRGVza3RvcFxcXFxzaG9waWZ5X2FwcGxpY2F0aW9uc1xcXFxjaGVja291dC1hcHAtbWFpblxcXFx3ZWJcXFxcZnJvbnRlbmRcIjtjb25zdCBfX3ZpdGVfaW5qZWN0ZWRfb3JpZ2luYWxfZmlsZW5hbWUgPSBcIkM6XFxcXFVzZXJzXFxcXExlbm92b1xcXFxEZXNrdG9wXFxcXHNob3BpZnlfYXBwbGljYXRpb25zXFxcXGNoZWNrb3V0LWFwcC1tYWluXFxcXHdlYlxcXFxmcm9udGVuZFxcXFx2aXRlLmNvbmZpZy5qc1wiO2NvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9pbXBvcnRfbWV0YV91cmwgPSBcImZpbGU6Ly8vQzovVXNlcnMvTGVub3ZvL0Rlc2t0b3Avc2hvcGlmeV9hcHBsaWNhdGlvbnMvY2hlY2tvdXQtYXBwLW1haW4vd2ViL2Zyb250ZW5kL3ZpdGUuY29uZmlnLmpzXCI7aW1wb3J0IHsgZGVmaW5lQ29uZmlnIH0gZnJvbSBcInZpdGVcIjtcclxuaW1wb3J0IHsgZGlybmFtZSB9IGZyb20gXCJwYXRoXCI7XHJcbmltcG9ydCB7IGZpbGVVUkxUb1BhdGggfSBmcm9tIFwidXJsXCI7XHJcbmltcG9ydCBodHRwcyBmcm9tIFwiaHR0cHNcIjtcclxuaW1wb3J0IHJlYWN0IGZyb20gXCJAdml0ZWpzL3BsdWdpbi1yZWFjdFwiO1xyXG5cclxuaWYgKFxyXG4gIHByb2Nlc3MuZW52Lm5wbV9saWZlY3ljbGVfZXZlbnQgPT09IFwiYnVpbGRcIiAmJlxyXG4gICFwcm9jZXNzLmVudi5DSSAmJlxyXG4gICFwcm9jZXNzLmVudi5TSE9QSUZZX0FQSV9LRVlcclxuKSB7XHJcbiAgY29uc29sZS53YXJuKFxyXG4gICAgXCJcXG5CdWlsZGluZyB0aGUgZnJvbnRlbmQgYXBwIHdpdGhvdXQgYW4gQVBJIGtleS4gVGhlIGZyb250ZW5kIGJ1aWxkIHdpbGwgbm90IHJ1biB3aXRob3V0IGFuIEFQSSBrZXkuIFNldCB0aGUgU0hPUElGWV9BUElfS0VZIGVudmlyb25tZW50IHZhcmlhYmxlIHdoZW4gcnVubmluZyB0aGUgYnVpbGQgY29tbWFuZC5cXG5cIixcclxuICApO1xyXG59XHJcblxyXG5jb25zdCBwcm94eU9wdGlvbnMgPSB7XHJcbiAgdGFyZ2V0OiBgaHR0cDovLzEyNy4wLjAuMToke3Byb2Nlc3MuZW52LkJBQ0tFTkRfUE9SVH1gLFxyXG4gIGNoYW5nZU9yaWdpbjogZmFsc2UsXHJcbiAgc2VjdXJlOiB0cnVlLFxyXG4gIHdzOiBmYWxzZSxcclxufTtcclxuXHJcbmNvbnN0IGhvc3QgPSBwcm9jZXNzLmVudi5IT1NUXHJcbiAgPyBwcm9jZXNzLmVudi5IT1NULnJlcGxhY2UoL2h0dHBzPzpcXC9cXC8vLCBcIlwiKVxyXG4gIDogXCJsb2NhbGhvc3RcIjtcclxuXHJcbmxldCBobXJDb25maWc7XHJcbmlmIChob3N0ID09PSBcImxvY2FsaG9zdFwiKSB7XHJcbiAgaG1yQ29uZmlnID0ge1xyXG4gICAgcHJvdG9jb2w6IFwid3NcIixcclxuICAgIGhvc3Q6IFwibG9jYWxob3N0XCIsXHJcbiAgICBwb3J0OiA2NDk5OSxcclxuICAgIGNsaWVudFBvcnQ6IDY0OTk5LFxyXG4gIH07XHJcbn0gZWxzZSB7XHJcbiAgaG1yQ29uZmlnID0ge1xyXG4gICAgcHJvdG9jb2w6IFwid3NzXCIsXHJcbiAgICBob3N0OiBob3N0LFxyXG4gICAgcG9ydDogcHJvY2Vzcy5lbnYuRlJPTlRFTkRfUE9SVCxcclxuICAgIGNsaWVudFBvcnQ6IDQ0MyxcclxuICB9O1xyXG59XHJcblxyXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xyXG4gIHJvb3Q6IGRpcm5hbWUoZmlsZVVSTFRvUGF0aChpbXBvcnQubWV0YS51cmwpKSxcclxuICBwbHVnaW5zOiBbcmVhY3QoKV0sXHJcbiAgZGVmaW5lOiB7XHJcbiAgICBcInByb2Nlc3MuZW52LlNIT1BJRllfQVBJX0tFWVwiOiBKU09OLnN0cmluZ2lmeShwcm9jZXNzLmVudi5TSE9QSUZZX0FQSV9LRVkpLFxyXG4gIH0sXHJcbiAgcmVzb2x2ZToge1xyXG4gICAgcHJlc2VydmVTeW1saW5rczogdHJ1ZSxcclxuICB9LFxyXG4gIHNlcnZlcjoge1xyXG4gICAgaG9zdDogXCJsb2NhbGhvc3RcIixcclxuICAgIHBvcnQ6IHByb2Nlc3MuZW52LkZST05URU5EX1BPUlQsXHJcbiAgICBobXI6IGhtckNvbmZpZyxcclxuICAgIHByb3h5OiB7XHJcbiAgICAgIFwiXi8oXFxcXD8uKik/JFwiOiBwcm94eU9wdGlvbnMsXHJcbiAgICAgIFwiXi9hcGkoL3woXFxcXD8uKik/JClcIjogcHJveHlPcHRpb25zLFxyXG4gICAgfSxcclxuICB9LFxyXG59KTtcclxuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUFtYSxTQUFTLG9CQUFvQjtBQUNoYyxTQUFTLGVBQWU7QUFDeEIsU0FBUyxxQkFBcUI7QUFFOUIsT0FBTyxXQUFXO0FBSjJQLElBQU0sMkNBQTJDO0FBTTlULElBQ0UsUUFBUSxJQUFJLHdCQUF3QixXQUNwQyxDQUFDLFFBQVEsSUFBSSxNQUNiLENBQUMsUUFBUSxJQUFJLGlCQUNiO0FBQ0EsVUFBUTtBQUFBLElBQ047QUFBQSxFQUNGO0FBQ0Y7QUFFQSxJQUFNLGVBQWU7QUFBQSxFQUNuQixRQUFRLG9CQUFvQixRQUFRLElBQUksWUFBWTtBQUFBLEVBQ3BELGNBQWM7QUFBQSxFQUNkLFFBQVE7QUFBQSxFQUNSLElBQUk7QUFDTjtBQUVBLElBQU0sT0FBTyxRQUFRLElBQUksT0FDckIsUUFBUSxJQUFJLEtBQUssUUFBUSxlQUFlLEVBQUUsSUFDMUM7QUFFSixJQUFJO0FBQ0osSUFBSSxTQUFTLGFBQWE7QUFDeEIsY0FBWTtBQUFBLElBQ1YsVUFBVTtBQUFBLElBQ1YsTUFBTTtBQUFBLElBQ04sTUFBTTtBQUFBLElBQ04sWUFBWTtBQUFBLEVBQ2Q7QUFDRixPQUFPO0FBQ0wsY0FBWTtBQUFBLElBQ1YsVUFBVTtBQUFBLElBQ1Y7QUFBQSxJQUNBLE1BQU0sUUFBUSxJQUFJO0FBQUEsSUFDbEIsWUFBWTtBQUFBLEVBQ2Q7QUFDRjtBQUVBLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLE1BQU0sUUFBUSxjQUFjLHdDQUFlLENBQUM7QUFBQSxFQUM1QyxTQUFTLENBQUMsTUFBTSxDQUFDO0FBQUEsRUFDakIsUUFBUTtBQUFBLElBQ04sK0JBQStCLEtBQUssVUFBVSxRQUFRLElBQUksZUFBZTtBQUFBLEVBQzNFO0FBQUEsRUFDQSxTQUFTO0FBQUEsSUFDUCxrQkFBa0I7QUFBQSxFQUNwQjtBQUFBLEVBQ0EsUUFBUTtBQUFBLElBQ04sTUFBTTtBQUFBLElBQ04sTUFBTSxRQUFRLElBQUk7QUFBQSxJQUNsQixLQUFLO0FBQUEsSUFDTCxPQUFPO0FBQUEsTUFDTCxlQUFlO0FBQUEsTUFDZixzQkFBc0I7QUFBQSxJQUN4QjtBQUFBLEVBQ0Y7QUFDRixDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=

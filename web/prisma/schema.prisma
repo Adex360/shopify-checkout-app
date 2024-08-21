@@ -88,13 +88,15 @@ model Custom_field {
 model City_list {
   id           String  @id @default(uuid())
   enabled      Boolean
-  country_name String  @unique
+  // country_name String  @unique
+  country_name String
   country_code String
   city_list    Json
 
   shop_id String
   shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@unique([shop_id, country_name])
   @@map("city_list")
 }
 

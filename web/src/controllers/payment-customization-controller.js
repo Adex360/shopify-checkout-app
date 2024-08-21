@@ -84,10 +84,8 @@ export const updatePaymentCustomization = async (req, res) => {
 };
 export const deletePaymentCustomization = async (req, res) => {
   try {
-    console.log("sdd");
     const { shop_name, accessToken } = req.shop;
     const { id } = req.params;
-    console.log(id);
     const service = new ShopifyService({
       shop_name,
       accessToken,
