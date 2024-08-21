@@ -103,11 +103,8 @@ const ReName = () => {
   };
 
   const handleDeleCondition = (index) => {
-    console.log(index, formData.customizationRule.length);
     const newConditions = [...formData.customizationRule];
-    console.log(newConditions, "before");
     newConditions?.splice(index, 1);
-    console.log(newConditions, formData.customizationRule.length, "after");
     setFormData((prev) => {
       return {
         ...prev,
@@ -119,7 +116,6 @@ const ReName = () => {
   const handlePaymentRuleChange = (index, name, value) => {
     setFormData((prev) => {
       const newRules = [...prev.paymentName];
-      console.log(newRules[index]);
       newRules[index][name] = value;
       return {
         ...prev,
@@ -206,17 +202,7 @@ const ReName = () => {
       const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         const { getByID } = data;
-        console.log(getByID);
-        // {
-        //   title: formData.title,
-        //   type: formData.type,
-        //   rule_status: formData.status[0] === "active" ? true : false,
-        //   payment_rule: formData.ruleType[0] === "all" ? true : false,
-        //   conditions: formData.customizationRule,
-        //   payment_name: formData.paymentName,
-        // }
 
         setFormData({
           title: getByID.title,
@@ -290,28 +276,6 @@ const ReName = () => {
               handleFormDataChange("status", !formData.status);
             },
           }}
-          // primaryAction={{
-          //   content: id !== "create" ? "Update" : "Create",
-          //   loading: loading,
-          //   disabled:
-          //     formData.title === "" ||
-          //     formData.paymentName.some((obj) =>
-          //       Object.values(obj).some((value) => value === "")
-          //     ) ||
-          //     formData.customizationRule.some(
-          //       (rule) => Array.isArray(rule.value) && rule.value.length === 0
-          //     ) ||
-          //     formData.customizationRule.some(
-          //       (rule) =>
-          //         (Array.isArray(rule.value) && rule.value.length === 0) ||
-          //         rule.value.includes("")
-          //     ),
-          //   onAction: () => {
-          //     id !== "create"
-          //       ? updateCustomizationData()
-          //       : handleCreateCustomization();
-          //   },
-          // }}
         >
           <BlockStack gap={{ xs: "800", sm: "400" }}>
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
@@ -358,47 +322,6 @@ const ReName = () => {
                 </Box>
               </Card>
             </InlineGrid>
-            {/* {smUp ? <Divider /> : null}
-            <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
-              <Box
-                as="section"
-                paddingInlineStart={{ xs: 400, sm: 0 }}
-                paddingInlineEnd={{ xs: 400, sm: 0 }}
-              >
-                <BlockStack gap="100">
-                  <Text as="h3" variant="headingMd">
-                    Customization Rule Status
-                  </Text>
-                </BlockStack>
-              </Box>
-              <Card roundedAbove="sm">
-                <BlockStack gap="400">
-                  <Box>
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Active",
-                          helpText:
-                            "Rule will be enabled on your store, this will affect checkout for all customers",
-                          value: "active",
-                        },
-                        {
-                          label: "Inactive",
-                          helpText:
-                            "Disable this rule without deleting it. Deactivating rules will not affect checkout for your customers",
-                          value: "inactive",
-                        },
-                      ]}
-                      onChange={(value) =>
-                        handleFormDataChange("status", value)
-                      }
-                      selected={formData.status}
-                    />
-                  </Box>
-                </BlockStack>
-              </Card>
-            </InlineGrid> */}
-
             {smUp ? <Divider /> : null}
 
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
@@ -543,7 +466,6 @@ const ReName = () => {
                                       : "Add amount "
                                   }
                                   onChange={(value) => {
-                                    console.log(formData);
                                     handleCustomizationRuleChange(
                                       index,
                                       "value",

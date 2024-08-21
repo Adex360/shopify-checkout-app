@@ -128,11 +128,8 @@ const Hide = () => {
   };
 
   const handleDeleCondition = (index) => {
-    console.log(index, formData.customizationRule.length);
     const newConditions = [...formData.customizationRule];
-    console.log(newConditions, "before");
     newConditions?.splice(index, 1);
-    console.log(newConditions, formData.customizationRule.length, "after");
     setFormData((prev) => {
       return {
         ...prev,
@@ -170,7 +167,6 @@ const Hide = () => {
       const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         const { getByID } = data;
         setFormData({
           title: getByID.title,
@@ -208,7 +204,6 @@ const Hide = () => {
       }),
     });
 
-    console.log(formData.type, "type....");
     const data = await resp.json();
     if (resp.ok) {
       show("Updated Successfully!", {
@@ -433,7 +428,6 @@ const Hide = () => {
                     </InlineStack>
                   </Box>
                   {formData.customizationRule.map((rule, index) => {
-                    console.log(rule.type);
                     return (
                       <>
                         <Divider key={(index + 1) * 9} />
@@ -533,7 +527,6 @@ const Hide = () => {
                                       : "Add amount "
                                   }
                                   onChange={(value) => {
-                                    console.log(formData);
                                     handleCustomizationRuleChange(
                                       index,
                                       "value",
