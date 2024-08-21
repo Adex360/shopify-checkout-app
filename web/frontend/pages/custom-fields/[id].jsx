@@ -330,9 +330,9 @@ const CreateCustomFields = () => {
               }}
               primaryAction={{
                 disabled: !formName,
-                content: id !== "" ? "Update" : "Save",
+                content: id !== "create" ? "Update" : "Save",
                 onAction: () =>
-                  id !== "" ? updateCustomField() : handleSubmit(),
+                  id === "create" ? handleSubmit() : updateCustomField(),
                 loading: loading,
               }}
             >
