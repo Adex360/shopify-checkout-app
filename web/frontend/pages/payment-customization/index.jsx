@@ -6,18 +6,6 @@ import { useAuthenticatedFetch } from "../../hooks";
 
 const PaymentCustomization = () => {
   const navigate = useNavigate();
-  // const fetch = useAuthenticatedFetch();
-  // const apitest = async () => {
-  //   try {
-  //     const resp = await fetch("api/v1/payment-customization");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   apitest();
-  // }, []);
   return (
     <>
       <Page

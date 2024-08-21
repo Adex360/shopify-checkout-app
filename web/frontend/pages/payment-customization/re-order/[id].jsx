@@ -7,8 +7,10 @@ import {
   Card,
   ChoiceList,
   Divider,
+  Icon,
   InlineGrid,
   InlineStack,
+  List,
   Page,
   Select,
   Spinner,
@@ -21,18 +23,18 @@ import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
+import { paymentMethods } from "../../../constants";
 
 const ReOrder = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
   const { id } = useParams();
   const { show } = useToast();
-
   const { smUp } = useBreakpoints();
-
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [countries, setCountries] = useState("");
+  const [paymentTitles, setPaymentTitles] = useState([]);
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
@@ -40,7 +42,7 @@ const ReOrder = () => {
   const [formData, setFormData] = useState({
     title: "",
     type: "re-order",
-    status: ["active"],
+    status: true,
     paymentRule: ["always"],
     paymentRuleConditions: [
       {
@@ -51,7 +53,7 @@ const ReOrder = () => {
     ],
     paymentName: {
       match: "contain",
-      title: [""],
+      title: paymentTitles,
     },
   });
 
@@ -85,10 +87,13 @@ const ReOrder = () => {
         body: JSON.stringify({
           title: formData.title,
           type: formData.type,
-          rule_status: formData.status[0] === "active" ? true : false,
+          rule_status: formData.status,
           payment_rule: formData.paymentRule[0] === "condition" ? true : false,
           conditions: formData.paymentRuleConditions,
-          payment_name: formData.paymentName,
+          payment_name: {
+            match: "contain",
+            title: paymentTitles,
+          },
         }),
       });
       const data = await resp.json();
@@ -102,20 +107,6 @@ const ReOrder = () => {
     } catch (error) {
       console.error(error);
     }
-  };
-
-  const addNewTitle = () => {
-    setFormData((prev) => {
-      const newArr = [...prev.paymentName.title];
-      newArr.push("");
-      return {
-        ...prev,
-        paymentName: {
-          ...prev.paymentName,
-          title: newArr,
-        },
-      };
-    });
   };
 
   const handleDeleteTitle = (index) => {
@@ -145,10 +136,10 @@ const ReOrder = () => {
     });
   };
 
-  const handlePaymentRuleChange = (index, name, value) => {
+  const handlePaymentRuleChange = (name, value) => {
     setFormData((prev) => {
       const newRules = { ...prev.paymentName };
-      newRules[name][index] = value;
+      newRules[name].push(value);
       return {
         ...prev,
         paymentName: newRules,
@@ -172,7 +163,6 @@ const ReOrder = () => {
       const data = await resp.json();
       if (resp.ok) {
         const { getByID } = data;
-        console.log(getByID);
         setFormData({
           title: getByID.title,
           type: getByID.type,
@@ -181,6 +171,8 @@ const ReOrder = () => {
           paymentRuleConditions: getByID.conditions,
           paymentName: getByID.payment_name,
         });
+        setPaymentTitles(getByID.payment_name.title);
+
         setPageLoading(false);
       }
     } catch (e) {
@@ -198,10 +190,13 @@ const ReOrder = () => {
       body: JSON.stringify({
         title: formData.title,
         type: formData.type,
-        rule_status: formData.status[0] === "active" ? true : false,
+        rule_status: formData.status,
         payment_rule: formData.paymentRule[0] === "condition" ? true : false,
         conditions: formData.paymentRuleConditions,
-        payment_name: formData.paymentName,
+        payment_name: {
+          match: "contain",
+          title: paymentTitles,
+        },
       }),
     });
 
@@ -217,7 +212,6 @@ const ReOrder = () => {
 
   useEffect(() => {
     if (id !== "create") {
-      console.log("editing.....");
       getCustomizationData();
     }
     getCountries();
@@ -236,16 +230,21 @@ const ReOrder = () => {
             onAction: () => navigate("/payment-customization"),
           }}
           title="Re-order Payment Methods"
+          // primaryAction={{
+          //   loading: loading,
+          //   disabled: paymentTitles.length === 0 || formData.title === "",
+          //   content: id !== "create" ? "Update" : "Create",
+          //   onAction: () => {
+          //     id !== "create"
+          //       ? updateCustomizationData()
+          //       : handleCreateCustomization();
+          //   },
+          // }}
           primaryAction={{
-            loading: loading,
-            disabled:
-              formData.paymentName?.title?.includes("") ||
-              formData.title === "",
-            content: id !== "create" ? "Update" : "Create",
+            content: formData.status === true ? "Turn off" : "Turn on",
+            destructive: formData.status === true,
             onAction: () => {
-              id !== "create"
-                ? updateCustomizationData()
-                : handleCreateCustomization();
+              handleFormDataChange("status", !formData.status);
             },
           }}
         >
@@ -258,10 +257,10 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization rules
+                    Customization Title
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    Shopify Payment Customization title (For internal use only )
+                    The title for this customization (only view by admin )
                   </Text>
                 </BlockStack>
               </Box>
@@ -294,46 +293,6 @@ const ReOrder = () => {
                 </Box>
               </Card>
             </InlineGrid>
-            {smUp ? <Divider /> : null}
-            <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
-              <Box
-                as="section"
-                paddingInlineStart={{ xs: 400, sm: 0 }}
-                paddingInlineEnd={{ xs: 400, sm: 0 }}
-              >
-                <BlockStack gap="100">
-                  <Text as="h3" variant="headingMd">
-                    Customization Rule Status
-                  </Text>
-                </BlockStack>
-              </Box>
-              <Card roundedAbove="sm">
-                <BlockStack gap="400">
-                  <Box>
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Active",
-                          helpText:
-                            "Rule will be enabled on your store, this will affect checkout for all customers",
-                          value: "active",
-                        },
-                        {
-                          label: "Inactive",
-                          helpText:
-                            "Disable this rule without deleting it. Deactivating rules will not affect checkout for your customers",
-                          value: "inactive",
-                        },
-                      ]}
-                      onChange={(value) =>
-                        handleFormDataChange("status", value)
-                      }
-                      selected={formData.status}
-                    />
-                  </Box>
-                </BlockStack>
-              </Card>
-            </InlineGrid>
 
             {smUp ? <Divider /> : null}
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
@@ -344,7 +303,7 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Enter Payment method
+                    Payment Rule
                   </Text>
                 </BlockStack>
               </Box>
@@ -361,7 +320,6 @@ const ReOrder = () => {
                         ]}
                         selected={formData.paymentRule}
                         onChange={(value) => {
-                          console.log(value);
                           handleFormDataChange("paymentRule", value);
                         }}
                       />
@@ -374,7 +332,6 @@ const ReOrder = () => {
                         ]}
                         selected={formData.paymentRule}
                         onChange={(value) => {
-                          console.log(value);
                           handleFormDataChange("paymentRule", value);
                         }}
                       />
@@ -382,27 +339,19 @@ const ReOrder = () => {
                   </Box>
                   {formData.paymentRule[0] === "condition" && (
                     <BlockStack gap="200">
-                      {/* {
-        type: "title",
-        rule: "contains",
-        value: ["Standard"],
-      }, */}
-
                       {formData.paymentRuleConditions.map(
                         (condition, index) => {
-                          console.log(condition.type);
-                          console.log(condition.rule);
                           return (
                             <>
                               <Select
                                 value={condition.type}
                                 options={[
                                   {
-                                    label: "title",
+                                    label: "Shipping Title",
                                     value: "title",
                                   },
                                   {
-                                    label: "country",
+                                    label: "Country",
                                     value: "country",
                                   },
                                 ]}
@@ -482,89 +431,29 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization Rules
+                    Payment Methods
                   </Text>
                 </BlockStack>
               </Box>
 
               <Card roundedAbove="sm">
                 <BlockStack gap="400">
-                  <InlineStack align="space-between">
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Contain",
-                          value: "contain",
-                        },
-                      ]}
-                      selected={formData.paymentName.match}
-                      onChange={(value) => {
-                        setFormData((prev) => {
-                          return {
-                            ...prev,
-                            paymentName: {
-                              ...prev.paymentName,
-                              match: value,
-                            },
-                          };
-                        });
-                      }}
-                    />
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Exact(Case Sensitive)",
-                          value: "exact_case_sensitive",
-                        },
-                      ]}
-                      selected={formData?.paymentName.match}
-                      onChange={(value) => {
-                        setFormData((prev) => {
-                          return {
-                            ...prev,
-                            paymentName: {
-                              ...prev.paymentName,
-                              match: value,
-                            },
-                          };
-                        });
-                      }}
-                    />
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Exact(No Case)",
-                          value: "exact_no_case",
-                        },
-                      ]}
-                      selected={formData?.paymentName.match}
-                      onChange={(value) => {
-                        setFormData((prev) => {
-                          return {
-                            ...prev,
-                            paymentName: {
-                              ...prev.paymentName,
-                              match: value,
-                            },
-                          };
-                        });
-                      }}
-
-                      // onChange={(value) =>
-                      //   handleFormDataChange("paymentName", value)
-                      // }
-                    />
-                  </InlineStack>
                   <BlockStack gap="200">
                     {formData.paymentName.title.map((payment, index) => {
                       return (
-                        <InlineStack key={index} gap="400">
+                        <InlineStack key={index} gap="400" blockAlign="end">
                           <Box
                             style={{
                               flexGrow: 1,
                             }}
                           >
                             <TextField
+                              size="slim"
+                              label={
+                                <Text variant="headingSm">
+                                  Method {index + 1}
+                                </Text>
+                              }
                               value={payment}
                               onChange={(value) => {
                                 handlePaymentRuleChange(index, "title", value);
@@ -580,22 +469,84 @@ const ReOrder = () => {
                         </InlineStack>
                       );
                     })}
+
                     <Box paddingBlockStart="200">
-                      <InlineStack align="end">
-                        <Button
-                          disabled={formData.paymentName.title.includes("")}
-                          onClick={addNewTitle}
-                          variant="primary"
-                          icon={PlusCircleIcon}
-                        >
-                          Add condition
-                        </Button>
-                      </InlineStack>
+                      <SearchAndSelect
+                        hideTags={true}
+                        allowMultiple={true}
+                        selectionOption={paymentMethods}
+                        selectedOptions={paymentTitles}
+                        setSelectedOptions={(value) => {
+                          setPaymentTitles(value);
+                        }}
+                        placeholder="Search Methods"
+                      />
+
+                      <Box paddingBlockStart="400">
+                        <BlockStack gap="200">
+                          {paymentTitles.length !== 0 && (
+                            <Text variant="headingMd">
+                              Reordering Payment Methods
+                            </Text>
+                          )}
+                          <List type="number">
+                            {paymentTitles.map((title, index) => {
+                              return (
+                                <List.Item key={index}>
+                                  <div
+                                    style={{
+                                      width: "200px",
+                                    }}
+                                  >
+                                    <InlineStack align="space-between">
+                                      <div
+                                        style={{
+                                          flexGrow: "1",
+                                        }}
+                                      >
+                                        <Text variant="bodyMd">{title}</Text>
+                                      </div>
+                                      <Button
+                                        icon={DeleteIcon}
+                                        onClick={() => {
+                                          setPaymentTitles((prev) => {
+                                            const newArr = [...prev];
+                                            newArr.splice(index, 1);
+                                            return newArr;
+                                          });
+                                        }}
+                                      />
+                                    </InlineStack>
+                                  </div>
+                                </List.Item>
+                              );
+                            })}
+                          </List>
+                        </BlockStack>
+                      </Box>
                     </Box>
                   </BlockStack>
                 </BlockStack>
               </Card>
             </InlineGrid>
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <Button
+                loading={loading}
+                disabled={paymentTitles.length === 0 || formData.title === ""}
+                onClick={() => {
+                  id !== "create"
+                    ? updateCustomizationData()
+                    : handleCreateCustomization();
+                }}
+              >
+                {id !== "create" ? "Update" : "Create"}
+              </Button>
+            </Box>
           </BlockStack>
         </Page>
       )}

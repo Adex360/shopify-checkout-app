@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://website-combining-branches-mainly.trycloudflare.com"
+application_url = "https://sam-fw-comprehensive-su.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://website-combining-branches-mainly.trycloudflare.com/auth/callback",
-  "https://website-combining-branches-mainly.trycloudflare.com/auth/shopify/callback",
-  "https://website-combining-branches-mainly.trycloudflare.com/api/auth/callback"
+  "https://sam-fw-comprehensive-su.trycloudflare.com/auth/callback",
+  "https://sam-fw-comprehensive-su.trycloudflare.com/auth/shopify/callback",
+  "https://sam-fw-comprehensive-su.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

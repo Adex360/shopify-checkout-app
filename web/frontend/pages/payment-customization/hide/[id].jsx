@@ -46,7 +46,7 @@ const Hide = () => {
   const [formData, setFormData] = useState({
     title: "",
     type: "hide",
-    status: ["active"],
+    status: true,
     paymentMethodType: "contain",
     paymentMethodTitles: [],
     ruleType: "all",
@@ -89,7 +89,7 @@ const Hide = () => {
         body: JSON.stringify({
           title: formData.title,
           type: formData.type,
-          rule_status: formData.status[0] === "active" ? true : false,
+          rule_status: formData.status,
           payment_rule: formData.ruleType === "all" ? true : false,
           conditions: formData.customizationRule,
           payment_name: {
@@ -128,11 +128,8 @@ const Hide = () => {
   };
 
   const handleDeleCondition = (index) => {
-    console.log(index, formData.customizationRule.length);
     const newConditions = [...formData.customizationRule];
-    console.log(newConditions, "before");
     newConditions?.splice(index, 1);
-    console.log(newConditions, formData.customizationRule.length, "after");
     setFormData((prev) => {
       return {
         ...prev,
@@ -170,7 +167,6 @@ const Hide = () => {
       const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`);
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         const { getByID } = data;
         setFormData({
           title: getByID.title,
@@ -198,7 +194,7 @@ const Hide = () => {
       body: JSON.stringify({
         title: formData.title,
         type: formData.type,
-        rule_status: formData.status[0] === "active" ? true : false,
+        rule_status: formData.status,
         payment_rule: formData.ruleType === "all" ? true : false,
         conditions: formData.customizationRule,
         payment_name: {
@@ -208,7 +204,6 @@ const Hide = () => {
       }),
     });
 
-    console.log(formData.type, "type....");
     const data = await resp.json();
     if (resp.ok) {
       show("Updated Successfully!", {
@@ -240,15 +235,11 @@ const Hide = () => {
           }}
           title="Advance Payment rules (Hide/Delete)"
           primaryAction={{
-            content: id !== "create" ? "Update" : "Create",
+            content: formData.status === true ? "Turn off" : "Turn on",
+            destructive: formData.status === true,
             onAction: () => {
-              id !== "create"
-                ? updateCustomizationData()
-                : handleCreateCustomization();
+              handleFormDataChange("status", !formData.status);
             },
-            loading: loading,
-            disabled:
-              !formData.title || formData.paymentMethodTitles.length === 0,
           }}
         >
           <BlockStack gap={{ xs: "800", sm: "400" }}>
@@ -291,7 +282,6 @@ const Hide = () => {
                     error={formError.title && "This field is required"}
                     value={formData.title}
                     onChange={(value) => {
-                      console.log(formData.type);
                       handleFormDataChange("title", value);
                     }}
                     placeholder="Ex. Hide COD when total cart price is 1000$ "
@@ -299,48 +289,6 @@ const Hide = () => {
                 </Box>
               </Card>
             </InlineGrid>
-            {smUp ? <Divider /> : null}
-            <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
-              <Box
-                as="section"
-                paddingInlineStart={{ xs: 400, sm: 0 }}
-                paddingInlineEnd={{ xs: 400, sm: 0 }}
-              >
-                <BlockStack gap="100">
-                  <Text as="h3" variant="headingMd">
-                    Customization Rule Status
-                  </Text>
-                </BlockStack>
-              </Box>
-              <Card roundedAbove="sm">
-                <BlockStack gap="400">
-                  <Box>
-                    <ChoiceList
-                      choices={[
-                        {
-                          label: "Active",
-                          helpText:
-                            "Rule will be enabled on your store, this will affect checkout for all customers",
-                          value: "active",
-                        },
-                        {
-                          label: "Inactive",
-                          helpText:
-                            "Disable this rule without deleting it. Deactivating rules will not affect checkout for your customers",
-                          value: "inactive",
-                        },
-                      ]}
-                      onChange={(value) => {
-                        console.log(formData.status);
-                        handleFormDataChange("status", value);
-                      }}
-                      selected={formData.status}
-                    />
-                  </Box>
-                </BlockStack>
-              </Card>
-            </InlineGrid>
-
             {smUp ? <Divider /> : null}
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
               <Box
@@ -403,7 +351,6 @@ const Hide = () => {
                     onBlur={() =>
                       formData.paymentMethodTitles.length === 0
                         ? setFormError((prev) => {
-                            console.log(formData.paymentMethodTitles.length);
                             return {
                               ...prev,
                               paymentMethodTitles: true,
@@ -551,7 +498,11 @@ const Hide = () => {
                                           value
                                         );
                                       }}
-                                      placeholder="Search Tags"
+                                      placeholder={
+                                        rule.type === "country"
+                                          ? "Search Countries"
+                                          : "Search Tags"
+                                      }
                                       selectionOption={countries}
                                     />
                                   ) : (
@@ -567,8 +518,15 @@ const Hide = () => {
                                 // passing string into array due to server side validation
                                 <TextField
                                   value={rule.value[0]}
+                                  type={
+                                    rule.type === "title" ? "text" : "number"
+                                  }
+                                  placeholder={
+                                    rule.type === "title"
+                                      ? "Add shipping title"
+                                      : "Add amount "
+                                  }
                                   onChange={(value) => {
-                                    console.log(formData);
                                     handleCustomizationRuleChange(
                                       index,
                                       "value",
@@ -613,6 +571,26 @@ const Hide = () => {
                 </BlockStack>
               </Card>
             </InlineGrid>
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "end",
+              }}
+            >
+              <Button
+                loading={loading}
+                disabled={
+                  !formData.title || formData.paymentMethodTitles.length === 0
+                }
+                onClick={() => {
+                  id !== "create"
+                    ? updateCustomizationData()
+                    : handleCreateCustomization();
+                }}
+              >
+                {id !== "create" ? "Update" : "Create"}
+              </Button>
+            </Box>
           </BlockStack>
         </Page>
       )}

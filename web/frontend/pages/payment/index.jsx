@@ -8,7 +8,6 @@ import {
   DataTable,
   EmptyState,
   Layout,
-  Link,
   Page,
   Spinner,
   Text,
@@ -52,7 +51,6 @@ const Payment = () => {
         },
       });
       const data = await resp.json();
-      console.log(data);
       if (resp.ok) {
         show("Payment Customization Deleted!");
         setCustomizationRules((prev) => {
@@ -68,7 +66,6 @@ const Payment = () => {
   };
 
   const tableRows = customizationRules?.map((data, index) => {
-    console.log(data);
     const ruleCondition = data.conditions?.map((condition, index) => {
       return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
     });
