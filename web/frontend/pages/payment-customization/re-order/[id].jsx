@@ -7,8 +7,10 @@ import {
   Card,
   ChoiceList,
   Divider,
+  Icon,
   InlineGrid,
   InlineStack,
+  List,
   Page,
   Select,
   Spinner,
@@ -21,6 +23,7 @@ import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
+import { paymentMethods } from "../../../constants";
 
 const ReOrder = () => {
   const shopifyFetch = useAuthenticatedFetch();
@@ -33,6 +36,7 @@ const ReOrder = () => {
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [countries, setCountries] = useState("");
+  const [paymentTitles, setPaymentTitles] = useState([]);
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
@@ -51,7 +55,7 @@ const ReOrder = () => {
     ],
     paymentName: {
       match: "contain",
-      title: [""],
+      title: paymentTitles,
     },
   });
 
@@ -145,10 +149,11 @@ const ReOrder = () => {
     });
   };
 
-  const handlePaymentRuleChange = (index, name, value) => {
+  const handlePaymentRuleChange = (name, value) => {
     setFormData((prev) => {
       const newRules = { ...prev.paymentName };
-      newRules[name][index] = value;
+      newRules[name].push(value);
+      console.log(newRules);
       return {
         ...prev,
         paymentName: newRules,
@@ -489,7 +494,6 @@ const ReOrder = () => {
 
               <Card roundedAbove="sm">
                 <BlockStack gap="400">
-                  <Text variant="headingMd">Payment methods name match :</Text>
                   {/* <InlineStack align="space-between">
                     <ChoiceList
                       choices={[
@@ -588,16 +592,71 @@ const ReOrder = () => {
                         </InlineStack>
                       );
                     })}
+
                     <Box paddingBlockStart="200">
+                      <SearchAndSelect
+                        hideTags={true}
+                        allowMultiple={true}
+                        selectionOption={paymentMethods}
+                        selectedOptions={paymentTitles}
+                        setSelectedOptions={(value) => {
+                          setPaymentTitles(value);
+                        }}
+                        placeholder="Search Methods"
+                      />
+
+                      <Box paddingBlockStart="400">
+                        <BlockStack gap="200">
+                          {paymentTitles.length !== 0 && (
+                            <Text variant="headingMd">
+                              Reordering Payment Methods
+                            </Text>
+                          )}
+                          <List type="number">
+                            {paymentTitles.map((title, index) => {
+                              return (
+                                <List.Item key={index}>
+                                  <div
+                                    style={{
+                                      width: "200px",
+                                    }}
+                                  >
+                                    <InlineStack align="space-between">
+                                      <div
+                                        style={{
+                                          flexGrow: "1",
+                                        }}
+                                      >
+                                        <Text variant="bodyMd">{title}</Text>
+                                      </div>
+                                      <Button
+                                        icon={DeleteIcon}
+                                        onClick={() => {
+                                          setPaymentTitles((prev) => {
+                                            const newArr = [...prev];
+                                            newArr.splice(index, 1);
+                                            return newArr;
+                                          });
+                                        }}
+                                      />
+                                    </InlineStack>
+                                  </div>
+                                </List.Item>
+                              );
+                            })}
+                          </List>
+                        </BlockStack>
+                      </Box>
+
                       <InlineStack align="end">
-                        <Button
+                        {/* <Button
                           disabled={formData.paymentName.title.includes("")}
                           onClick={addNewTitle}
                           variant="primary"
                           icon={PlusCircleIcon}
                         >
-                          Add More Method
-                        </Button>
+                          Add New Methods
+                        </Button> */}
                       </InlineStack>
                     </Box>
                   </BlockStack>
