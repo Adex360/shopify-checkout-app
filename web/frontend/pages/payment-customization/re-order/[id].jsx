@@ -88,7 +88,7 @@ const ReOrder = () => {
           title: formData.title,
           type: formData.type,
           rule_status: formData.status,
-          payment_rule: formData.paymentRule[0] === "condition" ? true : false,
+          payment_rule: formData.paymentRule[0] !== "condition" ? true : false,
           conditions: formData.paymentRuleConditions,
           payment_name: {
             match: "contain",
@@ -101,7 +101,7 @@ const ReOrder = () => {
         show("Added Successfully!", {
           duration: 2000,
         });
-        navigate("/payment-customization");
+        navigate("/payment");
         setLoading(false);
       }
     } catch (error) {
@@ -167,7 +167,7 @@ const ReOrder = () => {
           title: getByID.title,
           type: getByID.type,
           status: getByID.rule_status,
-          paymentRule: getByID.payment_rule ? ["condition"] : ["always"],
+          paymentRule: getByID.payment_rule ? ["always"] : ["condition"],
           paymentRuleConditions: getByID.conditions,
           paymentName: getByID.payment_name,
         });
@@ -191,7 +191,7 @@ const ReOrder = () => {
         title: formData.title,
         type: formData.type,
         rule_status: formData.status,
-        payment_rule: formData.paymentRule[0] === "condition" ? true : false,
+        payment_rule: formData.paymentRule[0] !== "condition" ? true : false,
         conditions: formData.paymentRuleConditions,
         payment_name: {
           match: "contain",
@@ -227,7 +227,7 @@ const ReOrder = () => {
         <Page
           backAction={{
             content: "",
-            onAction: () => navigate("/payment-customization"),
+            onAction: () => navigate("/payment"),
           }}
           title="Re-order Payment Methods"
           // primaryAction={{
@@ -506,7 +506,17 @@ const ReOrder = () => {
             >
               <Button
                 loading={loading}
-                disabled={paymentTitles.length === 0 || formData.title === ""}
+                disabled={
+                  paymentTitles.length === 0 ||
+                  formData.title === "" ||
+                  (formData.paymentRule[0] === "condition" &&
+                    formData.paymentRuleConditions.some(
+                      (rule) =>
+                        (Array.isArray(rule.value) &&
+                          rule.value.length === 0) ||
+                        rule.value.includes("")
+                    ))
+                }
                 onClick={() => {
                   id !== "create"
                     ? updateCustomizationData()

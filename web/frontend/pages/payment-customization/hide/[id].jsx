@@ -351,7 +351,6 @@ const Hide = () => {
                     selectedOptions={paymentTitles}
                     selectionOption={paymentMethods}
                     setSelectedOptions={(value) => {
-                      console.log(paymentTitles);
                       setPaymentTitles(value);
                     }}
                     placeholder="Search Methods"
@@ -591,7 +590,15 @@ const Hide = () => {
             >
               <Button
                 loading={loading}
-                disabled={!formData.title || paymentTitles.length === 0}
+                disabled={
+                  !formData.title ||
+                  paymentTitles.length === 0 ||
+                  formData.customizationRule.some(
+                    (rule) =>
+                      (Array.isArray(rule.value) && rule.value.length === 0) ||
+                      rule.value.includes("")
+                  )
+                }
                 onClick={() => {
                   id !== "create"
                     ? updateCustomizationData()

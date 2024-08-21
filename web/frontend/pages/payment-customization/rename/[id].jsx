@@ -46,7 +46,7 @@ const ReName = () => {
     type: "rename",
     status: true,
     paymentMethodType: "contain",
-    ruleType: ["all"],
+    ruleType: ["always"],
     customizationRule: [
       {
         type: "country",
@@ -178,7 +178,7 @@ const ReName = () => {
           title: formData.title,
           type: formData.type,
           rule_status: formData.status,
-          payment_rule: formData.ruleType[0] === "all" ? true : false,
+          payment_rule: formData.ruleType[0] === "always" ? true : false,
           conditions: formData.customizationRule,
           payment_name: formData.paymentName,
         }),
@@ -208,7 +208,7 @@ const ReName = () => {
           title: getByID.title,
           type: getByID.type,
           status: getByID.rule_status,
-          ruleType: getByID.payment_rule ? "all" : "any",
+          ruleType: getByID.payment_rule ? "always" : "condition",
           customizationRule: getByID.conditions,
           paymentName: getByID.payment_name,
         });
@@ -231,7 +231,7 @@ const ReName = () => {
         title: formData.title,
         type: formData.type,
         rule_status: formData.status,
-        payment_rule: formData.ruleType[0] === "all" ? true : false,
+        payment_rule: formData.ruleType[0] === "always" ? true : false,
         conditions: formData.customizationRule,
         payment_name: formData.paymentName,
       }),
@@ -248,6 +248,8 @@ const ReName = () => {
       setLoading(false);
     }
   };
+
+  console.log();
 
   useEffect(() => {
     if (id !== "create") {
@@ -347,8 +349,8 @@ const ReName = () => {
                       <ChoiceList
                         choices={[
                           {
-                            value: "all",
-                            label: "All Below",
+                            value: "always",
+                            label: "Rename Always",
                           },
                         ]}
                         selected={formData.ruleType}
@@ -359,8 +361,8 @@ const ReName = () => {
                       <ChoiceList
                         choices={[
                           {
-                            value: "any",
-                            label: "Any Below",
+                            value: "condition",
+                            label: "Conditionally",
                           },
                         ]}
                         selected={formData.ruleType}
@@ -373,121 +375,115 @@ const ReName = () => {
                   {formData.customizationRule.map((rule, index) => {
                     return (
                       <>
-                        <Divider key={(index + 1) * 9} />
-
-                        <Box key={index} paddingBlockEnd="1000">
-                          <Card background="bg-fill-disabled">
-                            <BlockStack gap="200">
-                              <InlineGrid columns={2} gap="200">
-                                <Select
-                                  placeholder="Select Option"
-                                  options={[
-                                    {
-                                      label: "Country",
-                                      value: "country",
-                                    },
-                                    {
-                                      label: "Shipping Title",
-                                      value: "title",
-                                    },
-                                    {
-                                      label: "Total Amount",
-                                      value: "total-amount",
-                                    },
-                                  ]}
-                                  value={rule.type}
-                                  onChange={(value) => {
-                                    // resetting value to empty array on change of rule option
-                                    handleCustomizationRuleChange(
-                                      index,
-                                      "value",
-                                      []
-                                    );
-                                    //
-                                    handleCustomizationRuleChange(
-                                      index,
-                                      "type",
-                                      value
-                                    );
-                                  }}
-                                />
-                                <Select
-                                  placeholder="Select Condition"
-                                  onChange={(value) => {
-                                    handleCustomizationRuleChange(
-                                      index,
-                                      "rule",
-                                      value
-                                    );
-                                  }}
-                                  options={
-                                    rule.type === "total-amount"
-                                      ? customizationRuleForPayment
-                                      : customizationRuleForCountry
-                                  }
-                                  value={rule.rule}
-                                />
-                              </InlineGrid>
-                              {rule.type === "country" ? (
-                                <>
-                                  {countries.length > 0 ? (
-                                    <SearchAndSelect
-                                      allowMultiple={true}
-                                      selectedOptions={rule.value}
-                                      setSelectedOptions={(value) => {
+                        {formData.ruleType[0] === "condition" && (
+                          <>
+                            <Divider key={(index + 1) * 9} />
+                            <Box key={index} paddingBlockEnd="1000">
+                              <Card background="bg-fill-disabled">
+                                <BlockStack gap="200">
+                                  <InlineGrid columns={2} gap="200">
+                                    <Select
+                                      placeholder="Select Option"
+                                      options={[
+                                        {
+                                          label: "Country",
+                                          value: "country",
+                                        },
+                                        {
+                                          label: "Shipping Title",
+                                          value: "title",
+                                        },
+                                        {
+                                          label: "Total Amount",
+                                          value: "total-amount",
+                                        },
+                                      ]}
+                                      value={rule.type}
+                                      onChange={(value) => {
+                                        // resetting value to empty array on change of rule option
                                         handleCustomizationRuleChange(
                                           index,
                                           "value",
+                                          []
+                                        );
+                                        //
+                                        handleCustomizationRuleChange(
+                                          index,
+                                          "type",
                                           value
                                         );
                                       }}
-                                      placeholder="Search Countries"
-                                      selectionOption={countries}
                                     />
+                                    <Select
+                                      placeholder="Select Condition"
+                                      onChange={(value) => {
+                                        handleCustomizationRuleChange(
+                                          index,
+                                          "rule",
+                                          value
+                                        );
+                                      }}
+                                      options={
+                                        rule.type === "total-amount"
+                                          ? customizationRuleForPayment
+                                          : customizationRuleForCountry
+                                      }
+                                      value={rule.rule}
+                                    />
+                                  </InlineGrid>
+                                  {rule.type === "country" ? (
+                                    <>
+                                      {countries.length > 0 ? (
+                                        <SearchAndSelect
+                                          allowMultiple={true}
+                                          selectedOptions={rule.value}
+                                          setSelectedOptions={(value) => {
+                                            handleCustomizationRuleChange(
+                                              index,
+                                              "value",
+                                              value
+                                            );
+                                          }}
+                                          placeholder="Search Countries"
+                                          selectionOption={countries}
+                                        />
+                                      ) : (
+                                        <BlockStack
+                                          align="center"
+                                          inlineAlign="center"
+                                        >
+                                          <Spinner size="small" />
+                                        </BlockStack>
+                                      )}
+                                    </>
                                   ) : (
-                                    <BlockStack
-                                      align="center"
-                                      inlineAlign="center"
-                                    >
-                                      <Spinner size="small" />
-                                    </BlockStack>
+                                    // passing string into array due to server side validation
+                                    <TextField
+                                      value={rule.value[0]}
+                                      type={
+                                        rule.type === "title"
+                                          ? "text"
+                                          : "number"
+                                      }
+                                      placeholder={
+                                        rule.type === "title"
+                                          ? "Add shipping title"
+                                          : "Add amount "
+                                      }
+                                      onChange={(value) => {
+                                        handleCustomizationRuleChange(
+                                          index,
+                                          "value",
+                                          [value]
+                                        );
+                                      }}
+                                    />
                                   )}
-                                </>
-                              ) : (
-                                // passing string into array due to server side validation
-                                <TextField
-                                  value={rule.value[0]}
-                                  type={
-                                    rule.type === "title" ? "text" : "number"
-                                  }
-                                  placeholder={
-                                    rule.type === "title"
-                                      ? "Add shipping title"
-                                      : "Add amount "
-                                  }
-                                  onChange={(value) => {
-                                    handleCustomizationRuleChange(
-                                      index,
-                                      "value",
-                                      [value]
-                                    );
-                                  }}
-                                />
-                              )}
-                              <InlineStack align="end">
-                                {index > 0 && (
-                                  <Button
-                                    variant="primary"
-                                    icon={DeleteIcon}
-                                    onClick={() => {
-                                      handleDeleCondition(index);
-                                    }}
-                                  />
-                                )}
-                              </InlineStack>
-                            </BlockStack>
-                          </Card>
-                        </Box>
+                                </BlockStack>
+                              </Card>
+                            </Box>
+                          </>
+                        )}
                       </>
                     );
                   })}
@@ -520,7 +516,7 @@ const ReName = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Enter Payment Methods 123
+                    Enter Payment Methods
                   </Text>
                 </BlockStack>
               </Box>
@@ -531,7 +527,11 @@ const ReName = () => {
                     {formData.paymentName.map((payment, index) => {
                       return (
                         <Card>
-                          <InlineStack key={index} gap="400">
+                          <InlineStack
+                            key={index}
+                            blockAlign="center"
+                            gap="400"
+                          >
                             <Box
                               style={{
                                 flexGrow: 1,
@@ -562,7 +562,7 @@ const ReName = () => {
                                 />
                               </BlockStack>
                             </Box>
-                            {index > 0 && (
+                            {formData.paymentName.length > 1 && (
                               <Button
                                 icon={DeleteIcon}
                                 onClick={() => handleDeleteTitle(index)}
@@ -572,6 +572,7 @@ const ReName = () => {
                         </Card>
                       );
                     })}
+
                     <Box paddingBlockStart="200">
                       <InlineStack align="end">
                         <Button
@@ -582,7 +583,7 @@ const ReName = () => {
                           variant="primary"
                           icon={PlusCircleIcon}
                         >
-                          Add condition
+                          Add More Methods
                         </Button>
                       </InlineStack>
                     </Box>
@@ -597,22 +598,18 @@ const ReName = () => {
               }}
             >
               <Button
-                loading={loading}
                 disabled={
                   formData.title === "" ||
                   formData.paymentName.some((obj) =>
                     Object.values(obj).some((value) => value === "")
                   ) ||
-                  formData.customizationRule.some(
-                    (rule) =>
-                      Array.isArray(rule.value) && rule.value.length === 0
-                  ) ||
-                  formData.customizationRule.some(
-                    (rule) =>
-                      (Array.isArray(rule.value) && rule.value.length === 0) ||
-                      rule.value.includes("")
-                  )
+                  (formData.ruleType[0] === "condition" &&
+                    formData.customizationRule.some(
+                      (rule) =>
+                        Array.isArray(rule.value) && rule.value.length === 0
+                    ))
                 }
+                loading={loading}
                 onClick={() => {
                   id !== "create"
                     ? updateCustomizationData()
