@@ -1,4 +1,3 @@
-// @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
@@ -20,6 +19,10 @@ const PORT = parseInt(
   process.env.BACKEND_PORT || process.env.PORT || "3000",
   10
 );
+
+BigInt.prototype.toJSON = function () {
+  return Number(this);
+};
 
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
