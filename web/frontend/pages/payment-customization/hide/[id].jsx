@@ -21,6 +21,7 @@ import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {
   customizationRuleForCountry,
   customizationRuleForPayment,
+  paymentMethods,
 } from "../../../constants";
 import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
@@ -36,9 +37,10 @@ const Hide = () => {
 
   const { smUp } = useBreakpoints();
   const [countries, setCountries] = useState([]);
+  const [paymentTitles, setPaymentTitles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pageLoading, setPageLoading] = useState(false);
 
+  const [pageLoading, setPageLoading] = useState(false);
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
@@ -48,7 +50,6 @@ const Hide = () => {
     type: "hide",
     status: true,
     paymentMethodType: "contain",
-    paymentMethodTitles: [],
     ruleType: "all",
     customizationRule: [
       {
@@ -94,7 +95,7 @@ const Hide = () => {
           conditions: formData.customizationRule,
           payment_name: {
             match: formData.paymentMethodType,
-            title: formData.paymentMethodTitles,
+            title: paymentTitles,
           },
         }),
       });
@@ -104,7 +105,9 @@ const Hide = () => {
           duration: 2000,
         });
         setLoading(false);
-        navigate("/payment-customization");
+        navigate("/payment");
+      } else {
+        show(data.error);
       }
     } catch (error) {
       console.error(error);
@@ -173,7 +176,7 @@ const Hide = () => {
           type: getByID.type,
           ruleType: getByID.payment_rule ? "all" : "any",
           status: getByID.rule_status,
-          paymentMethodTitles: getByID.payment_name.title,
+          paymentMethodTitles: setPaymentTitles(getByID.payment_name.title),
           paymentMethodType: getByID.payment_name.match,
           customizationRule: getByID.conditions,
         });
@@ -199,7 +202,7 @@ const Hide = () => {
         conditions: formData.customizationRule,
         payment_name: {
           match: formData.paymentMethodType,
-          title: formData.paymentMethodTitles,
+          title: paymentTitles,
         },
       }),
     });
@@ -210,7 +213,7 @@ const Hide = () => {
         duration: 2000,
       });
       setLoading(false);
-      navigate("/payment-customization");
+      navigate("/payment");
     }
   };
 
@@ -231,7 +234,7 @@ const Hide = () => {
         <Page
           backAction={{
             content: "",
-            onAction: () => navigate("/payment-customization"),
+            onAction: () => navigate("/payment"),
           }}
           title="Advance Payment rules (Hide/Delete)"
           primaryAction={{
@@ -304,7 +307,7 @@ const Hide = () => {
               </Box>
               <Card roundedAbove="sm">
                 <BlockStack gap="400">
-                  <InlineStack align="space-between">
+                  {/* <InlineStack align="space-between">
                     <ChoiceList
                       choices={[
                         {
@@ -341,10 +344,19 @@ const Hide = () => {
                         handleFormDataChange("paymentMethodType", value)
                       }
                     />
-                  </InlineStack>
-                  <Divider />
+                  </InlineStack> */}
 
-                  <AddTag
+                  <SearchAndSelect
+                    allowMultiple={true}
+                    selectedOptions={paymentTitles}
+                    selectionOption={paymentMethods}
+                    setSelectedOptions={(value) => {
+                      console.log(paymentTitles);
+                      setPaymentTitles(value);
+                    }}
+                    placeholder="Search Methods"
+                  />
+                  {/* <AddTag
                     error={
                       formError.paymentMethodTitles && "This field is required"
                     }
@@ -371,7 +383,7 @@ const Hide = () => {
                       handleFormDataChange("paymentMethodTitles", value);
                     }}
                     placeholder="Ex. Standard"
-                  />
+                  /> */}
                 </BlockStack>
                 <Text>
                   payment Method name that you have set up on the store's
@@ -579,9 +591,7 @@ const Hide = () => {
             >
               <Button
                 loading={loading}
-                disabled={
-                  !formData.title || formData.paymentMethodTitles.length === 0
-                }
+                disabled={!formData.title || paymentTitles.length === 0}
                 onClick={() => {
                   id !== "create"
                     ? updateCustomizationData()
