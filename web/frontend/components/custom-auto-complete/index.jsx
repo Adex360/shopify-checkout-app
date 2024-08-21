@@ -1,20 +1,17 @@
 import { Autocomplete, Icon } from "@shopify/polaris";
 import { SearchIcon } from "@shopify/polaris-icons";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 
-export function CustomAutoComplete() {
-  const deselectedOptions = useMemo(
-    () => [
-      { value: "rustic", label: "Rustic" },
-      { value: "antique", label: "Antique" },
-      { value: "vinyl", label: "Vinyl" },
-      { value: "vintage", label: "Vintage" },
-      { value: "refurbished", label: "Refurbished" },
-    ],
-    []
-  );
-  const [selectedOptions, setSelectedOptions] = useState([]);
+export function CustomAutoComplete({
+  label,
+  placeholder,
+  selectionOptions,
+  selectedOptions,
+  setSelectedOptions,
+}) {
+  // const [selectedOptions, setSelectedOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const deselectedOptions = useMemo(() => selectionOptions, []);
   const [options, setOptions] = useState(deselectedOptions);
 
   const updateText = useCallback(
@@ -44,7 +41,7 @@ export function CustomAutoComplete() {
         return matchedOption && matchedOption.label;
       });
 
-      setSelectedOptions(selected);
+      setSelectedOptions(selected[0]);
       setInputValue(selectedValue || "");
     },
     [options]
@@ -55,18 +52,27 @@ export function CustomAutoComplete() {
       onChange={(value) => {
         updateText(value);
       }}
-      label="Tags"
+      label={label}
       value={inputValue}
-      prefix={<Icon source={SearchIcon} tone="base" />}
-      placeholder="Search"
+      placeholder={placeholder}
       autoComplete="off"
     />
   );
+
+  useEffect(() => {
+    if (selectedOptions !== "") {
+      const selectedValue = deselectedOptions.find(
+        (option) => option.value === selectedOptions[0]
+      )?.label;
+      setInputValue(selectedValue || "");
+    }
+  }, []);
+
   return (
-    <div style={{ height: "225px" }}>
+    <div>
       <Autocomplete
         options={options}
-        selected={selectedOptions[0]}
+        selected={selectedOptions}
         onSelect={updateSelection}
         textField={textField}
       />

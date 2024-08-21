@@ -26,6 +26,7 @@ import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {
   customizationRuleForCountry,
   customizationRuleForPayment,
+  paymentMethods,
 } from "../../../constants";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
@@ -193,7 +194,7 @@ const ReName = () => {
         show("Added Successfully!", {
           duration: 2000,
         });
-        navigate("/payment-customization");
+        navigate("/payment");
       }
     } catch (error) {
       console.error(error);
@@ -208,6 +209,7 @@ const ReName = () => {
       if (resp.ok) {
         const { getByID } = data;
 
+        console.log(getByID);
         setFormData({
           title: getByID.title,
           type: getByID.type,
@@ -246,7 +248,7 @@ const ReName = () => {
         duration: 2000,
       });
       setLoading(false);
-      navigate("/payment-customization");
+      navigate("/payment");
     } else {
       show(data.error, { isError: true });
       setLoading(false);
@@ -262,8 +264,6 @@ const ReName = () => {
     getCountries();
   }, []);
 
-  const [paymentMethodOld, setPaymentMethodOld] = useState("");
-
   return (
     <>
       {pageLoading ? (
@@ -274,7 +274,7 @@ const ReName = () => {
         <Page
           backAction={{
             content: "",
-            onAction: () => navigate("/payment-customization"),
+            onAction: () => navigate("/payment"),
           }}
           title="Rename Payment Methods"
           primaryAction={{
@@ -285,7 +285,6 @@ const ReName = () => {
             },
           }}
         >
-          <CustomAutoComplete />
           <BlockStack gap={{ xs: "800", sm: "400" }}>
             <InlineGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="400">
               <Box
@@ -545,10 +544,11 @@ const ReName = () => {
                               }}
                             >
                               <BlockStack gap="200">
-                                <TextField
-                                  placeholder="Previous Method Name"
-                                  value={payment.old}
-                                  onChange={(value) => {
+                                <CustomAutoComplete
+                                  placeholder="Previous Payment Method"
+                                  selectionOptions={paymentMethods}
+                                  selectedOptions={payment.old}
+                                  setSelectedOptions={(value) => {
                                     handlePaymentRuleChange(
                                       index,
                                       "old",
@@ -556,6 +556,7 @@ const ReName = () => {
                                     );
                                   }}
                                 />
+
                                 <TextField
                                   placeholder="New Method Name"
                                   value={payment.new}
