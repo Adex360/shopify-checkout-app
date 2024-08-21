@@ -32,84 +32,14 @@ export default reactExtension("purchase.checkout.block.render", () => (
   <CityDropdown />
 ));
 
-export function CityDropdown2() {
-  // only text field
-  const { myshopifyDomain } = useShop();
-  const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
-  const requestHeader = {
-    "Content-Type": "application/json",
-  };
-
-  const [cityList, setCityList] = useState([]);
-  const [selectedCity, setSelectedCity] = useState("");
-  const attributeValues = useAttributeValues(["selectedCity"]);
-  const applyAttributeChange = useApplyAttributeChange();
-  const { shippingAddress, applyShippingAddressChange } = useExtensionApi();
-
-  const fetchCustomFields = async () => {
-    try {
-      const response = await fetch(CUSTOM_FIELDS_END_POINT, {
-        method: "GET",
-        headers: requestHeader,
-      });
-      const data = await response.json();
-      console.log("Fetched City List Data:", data);
-      setCityList(Array.isArray(data.getAll) ? data.getAll : []);
-    } catch (error) {
-      console.error("Error fetching city list:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomFields();
-  }, []);
-
-  const handleChange = async (value) => {
-    const update = {
-      type: "updateShippingAddress",
-      address: {
-        city: value,
-      },
-    };
-
-    try {
-      await applyShippingAddressChange(update);
-      setSelectedCity(value);
-      applyAttributeChange({
-        key: "selectedCity",
-        type: "updateAttribute",
-        value: value,
-      });
-    } catch (error) {
-      console.error("Error updating shipping address:", error);
-    }
-  };
-
-  const filteredCities =
-    shippingAddress?.current.countryCode && cityList.length > 0
-      ? cityList.find(
-          (country) =>
-            country.country_code === shippingAddress.current.countryCode
-        )?.city_list || []
-      : [];
-  console.log("filteredCities", filteredCities);
-
-  return (
-    <Select
-      label="Select your city aaa"
-      options={filteredCities.map((city) => ({ label: city, value: city }))}
-      onChange={handleChange}
-      value={selectedCity}
-    />
-  );
-}
-
 export function CityDropdown() {
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
 
   const [cityList, setCityList] = useState([]);
+  const [newCities, setNewCities] = useState([]);
+
   const [filteredCities, setFilteredCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
   const [inputValue, setInputValue] = useState("");
@@ -148,10 +78,17 @@ export function CityDropdown() {
       setFilteredCities(filteredCitiesValue);
     }
   }, [shippingAddress, cityList]);
-  console.log("filteredkk", filteredCities, isDropdownVisible);
+
+  // console.log("filteredkk", filteredCities, isDropdownVisible);
   const handleInputChange = (value) => {
     setInputValue(value);
+    console.log("value", value);
     setDropdownVisible(true);
+    setNewCities(
+      filteredCities.filter((data) =>
+        data.toLowerCase().includes(value.toLowerCase())
+      )
+    );
   };
 
   const handleCitySelect = async (city) => {
@@ -172,13 +109,24 @@ export function CityDropdown() {
       console.error("Error updating shipping address:", error);
     }
   };
+  useEffect(() => {
+    console.log("inputValue");
+    console.log(inputValue);
+    console.log(filteredCities);
+
+    console.log("newCities", newCities);
+  }, [inputValue]);
+  console.log("inputValue", inputValue);
 
   return (
     <BlockStack>
       <TextField
         label="city search"
         value={inputValue}
-        onChange={handleInputChange}
+        onChange={(value) => {
+          console.log(" testing input change........");
+          handleInputChange(value);
+        }}
         onFocus={() => setDropdownVisible(true)}
         // onBlur={() => setDropdownVisible(false)}
       />
@@ -202,13 +150,15 @@ export function CityDropdown() {
               handleCitySelect(value);
             }}
           >
-            {filteredCities.map((city, index) => (
-              <BlockStack>
-                <ToggleButton id={city} key={city}>
-                  <Text>{city}</Text>
-                </ToggleButton>
-              </BlockStack>
-            ))}
+            {(inputValue === "" ? filteredCities : newCities).map(
+              (city, index) => (
+                <BlockStack key={index}>
+                  <ToggleButton id={city} key={city}>
+                    <Text>{city}</Text>
+                  </ToggleButton>
+                </BlockStack>
+              )
+            )}
           </ToggleButtonGroup>
         </ScrollView>
       )}

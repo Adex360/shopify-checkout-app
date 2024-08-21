@@ -44,19 +44,13 @@ app.post(
 app.use(express.json());
 
 registerClientApi(app);
-// app.use("/api/*", commonMiddleware);
-// registerApi(app);
+
 // If you are adding routes outside of the /api path, remember to
 // also add a proxy rule for them in web/frontend/vite.config.js
 
 app.use("/api/*", shopify.validateAuthenticatedSession());
 app.use("/api/*", commonMiddleware);
 registerApi(app);
-
-app.get("/api/testing", async (req, res) => {
-  console.log("HELLO WORLD");
-  return res.status(200).send({ message: "HELLO" });
-});
 
 app.use(shopify.cspHeaders());
 app.use(serveStatic(STATIC_PATH, { index: false }));

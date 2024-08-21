@@ -33,15 +33,33 @@ export function run(input) {
    *   codAtTop: boolean
    * }}
    */
+  const PAYMENT_TYPE = {
+    RE_ORDER: "re-order",
+    RENAME: "rename",
+    HIDE: "hide",
+  };
+  const CONDITION = {
+    COUNTRY: "country",
+    TITLE: "title",
+    TOTAL_AMOUNT: "total-amount",
+  };
+  const RULES = {
+    CONTAINS: "contains",
+    DOES_NOT_CONTAINS: "does-not-contains",
+    TOTAL_AMOUNT: "total-amount",
+    GREATER_THAN: "greater-than",
+    LESS_THAN: "less-than",
+    EQUALS_TO: "equals-to",
+  };
 
   const configuration = JSON.parse(
     input?.paymentCustomization?.metafield?.value ?? "{}"
   );
-  const strin = JSON.stringify(configuration, null, 2);
-  console.log("metafields", strin);
+  const obj = JSON.stringify(configuration, null, 2);
+  console.log("metafields", obj);
 
   let operations = [];
-  if (configuration.type === "re-order") {
+  if (configuration.type === PAYMENT_TYPE.RE_ORDER) {
     if (!configuration.payment_rule && configuration.conditions) {
       const countryCodes = input.cart.deliveryGroups.map((group) => {
         return group?.deliveryAddress?.countryCode;
@@ -54,35 +72,41 @@ export function run(input) {
       const totalAmount = parseFloat(input.cart.cost.totalAmount.amount); // Convert amount to number
 
       const conditionsMet = configuration.conditions.every((condition) => {
-        if (condition.type === "country" && condition.rule === "contains") {
+        if (
+          condition.type === CONDITION.COUNTRY &&
+          condition.rule === RULES.CONTAINS
+        ) {
           return countryCodes.some((code) => condition.value.includes(code));
         }
         if (
-          condition.type === "country" &&
-          condition.rule === "does-not-contains"
+          condition.type === CONDITION.COUNTRY &&
+          condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
           return !countryCodes.some((code) => condition.value.includes(code));
         }
-        if (condition.type === "title" && condition.rule === "contains") {
+        if (
+          condition.type === CONDITION.TITLE &&
+          condition.rule === RULES.CONTAINS
+        ) {
           return deliveryTitles.some((title) =>
             condition.value.includes(title)
           );
         }
         if (
-          condition.type === "title" &&
-          condition.rule === "does-not-contains"
+          condition.type === CONDITION.TITLE &&
+          condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
           return !deliveryTitles.some((name) => condition.value.includes(name));
         }
-        if (condition.type === "total-amount") {
+        if (condition.type === CONDITION.TOTAL_AMOUNT) {
           const value = parseFloat(condition.value);
-          if (condition.rule === "greater-than") {
+          if (condition.rule === RULES.GREATER_THAN) {
             return totalAmount > value;
           }
-          if (condition.rule === "less-than") {
+          if (condition.rule === RULES.LESS_THAN) {
             return totalAmount < value;
           }
-          if (condition.rule === "equals-to") {
+          if (condition.rule === RULES.EQUALS_TO) {
             return totalAmount === value;
           }
         } else {
@@ -91,36 +115,14 @@ export function run(input) {
       });
 
       if (conditionsMet) {
-        console.log("Condition met: Execute your code here.");
-
+        console.log("CONDITION MET ");
         const paymentNames = configuration.payment_name.title;
-        const matchType = configuration.payment_name.match;
         paymentNames.forEach((name, index) => {
           let paymentMethod;
-          switch (matchType) {
-            case "exact-case-sensitive":
-              paymentMethod = input.paymentMethods.find(
-                (method) => method.name === name
-              );
-              break;
 
-            case "exact-none-case":
-              paymentMethod = input.paymentMethods.find(
-                (method) => method.name.toLowerCase() === name.toLowerCase()
-              );
-              break;
-
-            case "contain":
-              paymentMethod = input.paymentMethods.find((method) =>
-                method.name.includes(name)
-              );
-              break;
-
-            default:
-              console.log("Unknown match type:", matchType);
-              return;
-          }
-
+          paymentMethod = input.paymentMethods.find((method) =>
+            method.name.includes(name)
+          );
           if (paymentMethod) {
             operations.push({
               move: {
@@ -132,35 +134,14 @@ export function run(input) {
         });
       }
     } else {
-      console.log("sort without condition ");
-
+      console.log("WITHOUT CONDITION");
       const paymentNames = configuration.payment_name.title;
-      const matchType = configuration.payment_name.match;
       paymentNames.forEach((name, index) => {
         let paymentMethod;
-        switch (matchType) {
-          case "exact-case-sensitive":
-            paymentMethod = input.paymentMethods.find(
-              (method) => method.name === name
-            );
-            break;
 
-          case "exact-none-case":
-            paymentMethod = input.paymentMethods.find(
-              (method) => method.name.toLowerCase() === name.toLowerCase()
-            );
-            break;
-
-          case "contain":
-            paymentMethod = input.paymentMethods.find((method) =>
-              method.name.includes(name)
-            );
-            break;
-
-          default:
-            console.log("Unknown match type:", matchType);
-            return;
-        }
+        paymentMethod = input.paymentMethods.find(
+          (method) => method.name === name
+        );
 
         if (paymentMethod) {
           operations.push({
@@ -174,7 +155,7 @@ export function run(input) {
     }
   }
 
-  if (configuration.type === "rename") {
+  if (configuration.type === PAYMENT_TYPE.RENAME) {
     const countryCodes = input.cart.deliveryGroups.map((group) => {
       return group?.deliveryAddress?.countryCode;
     });
@@ -189,33 +170,39 @@ export function run(input) {
       ? (callback) => configuration.conditions.every(callback)
       : (callback) => configuration.conditions.some(callback);
     const conditionsMet = checkConditions((condition) => {
-      if (condition.type === "country" && condition.rule === "contains") {
+      if (
+        condition.type === CONDITION.COUNTRY &&
+        condition.rule === RULES.CONTAINS
+      ) {
         return countryCodes.some((code) => condition.value.includes(code));
       }
       if (
-        condition.type === "country" &&
-        condition.rule === "does-not-contains"
+        condition.type === CONDITION.COUNTRY &&
+        condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
         return !countryCodes.some((code) => condition.value.includes(code));
       }
-      if (condition.type === "title" && condition.rule === "contains") {
+      if (
+        condition.type === CONDITION.TITLE &&
+        condition.rule === RULES.CONTAINS
+      ) {
         return deliveryTitles.some((title) => condition.value.includes(title));
       }
       if (
-        condition.type === "title" &&
-        condition.rule === "does-not-contains"
+        condition.type === CONDITION.TITLE &&
+        condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
         return !deliveryTitles.some((name) => condition.value.includes(name));
       }
-      if (condition.type === "total-amount") {
+      if (condition.type === CONDITION.TOTAL_AMOUNT) {
         const value = parseFloat(condition.value);
-        if (condition.rule === "greater-than") {
+        if (condition.rule === RULES.GREATER_THAN) {
           return totalAmount > value;
         }
-        if (condition.rule === "less-than") {
+        if (condition.rule === RULES.LESS_THAN) {
           return totalAmount < value;
         }
-        if (condition.rule === "equals-to") {
+        if (condition.rule === RULES.EQUALS_TO) {
           return totalAmount === value;
         }
       }
@@ -223,7 +210,7 @@ export function run(input) {
     });
 
     if (conditionsMet) {
-      console.log("Condition met: .");
+      console.log("CONDITION MET");
       configuration.payment_name.forEach((name) => {
         const renamePaymentMethod = input.paymentMethods.find(
           (method) => method.name === name.old
@@ -240,24 +227,10 @@ export function run(input) {
       });
     } else {
       console.log("NO CONDITION: no change ");
-      // configuration.payment_name.forEach((name) => {
-      //   const renamePaymentMethod = input.paymentMethods.find(
-      //     (method) => method.name === name.old
-      //   );
-
-      //   if (renamePaymentMethod) {
-      //     operations.push({
-      //       rename: {
-      //         paymentMethodId: renamePaymentMethod.id,
-      //         name: name.new,
-      //       },
-      //     });
-      //   }
-      // });
     }
   }
 
-  if (configuration.type === "hide") {
+  if (configuration.type === PAYMENT_TYPE.HIDE) {
     const countryCodes = input.cart.deliveryGroups.map((group) => {
       return group?.deliveryAddress?.countryCode;
     });
@@ -273,33 +246,39 @@ export function run(input) {
       : (callback) => configuration.conditions.some(callback);
 
     const conditionsMet = checkConditions((condition) => {
-      if (condition.type === "country" && condition.rule === "contains") {
+      if (
+        condition.type === CONDITION.COUNTRY &&
+        condition.rule === RULES.CONTAINS
+      ) {
         return countryCodes.some((code) => condition.value.includes(code));
       }
       if (
-        condition.type === "country" &&
-        condition.rule === "does-not-contains"
+        condition.type === CONDITION.COUNTRY &&
+        condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
         return !countryCodes.some((code) => condition.value.includes(code));
       }
-      if (condition.type === "title" && condition.rule === "contains") {
+      if (
+        condition.type === CONDITION.TITLE &&
+        condition.rule === RULES.CONTAINS
+      ) {
         return deliveryTitles.some((title) => condition.value.includes(title));
       }
       if (
-        condition.type === "title" &&
-        condition.rule === "does-not-contains"
+        condition.type === CONDITION.TITLE &&
+        condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
         return !deliveryTitles.some((name) => condition.value.includes(name));
       }
-      if (condition.type === "total-amount") {
+      if (condition.type === CONDITION.TOTAL_AMOUNT) {
         const value = parseFloat(condition.value);
-        if (condition.rule === "greater-than") {
+        if (condition.rule === RULES.GREATER_THAN) {
           return totalAmount > value;
         }
-        if (condition.rule === "less-than") {
+        if (condition.rule === RULES.LESS_THAN) {
           return totalAmount < value;
         }
-        if (condition.rule === "equals-to") {
+        if (condition.rule === RULES.EQUALS_TO) {
           return totalAmount === value;
         }
       }
@@ -307,35 +286,12 @@ export function run(input) {
     });
     if (conditionsMet) {
       const paymentNames = configuration.payment_name.title;
-      const matchType = configuration.payment_name.match;
-
       paymentNames.forEach((name) => {
         let hidePaymentMethod;
 
-        switch (matchType) {
-          case "exact-case-sensitive":
-            hidePaymentMethod = input.paymentMethods.find(
-              (method) => method.name === name
-            );
-            break;
-
-          case "exact-none-case":
-            hidePaymentMethod = input.paymentMethods.find(
-              (method) => method.name.toLowerCase() === name.toLowerCase()
-            );
-            break;
-
-          case "contain":
-            hidePaymentMethod = input.paymentMethods.find((method) =>
-              method.name.includes(name)
-            );
-            break;
-
-          default:
-            console.log("Unknown match type:", matchType);
-            return;
-        }
-
+        hidePaymentMethod = input.paymentMethods.find((method) =>
+          method.name.includes(name)
+        );
         if (hidePaymentMethod) {
           operations.push({
             hide: {
@@ -346,41 +302,6 @@ export function run(input) {
       });
     } else {
       console.log("no condition");
-      // const paymentNames = configuration.payment_name.title;
-      // const matchType = configuration.payment_name.match;
-      // paymentNames.forEach((name) => {
-      //   let hidePaymentMethod;
-      //   switch (matchType) {
-      //     case "exact-case-sensitive":
-      //       hidePaymentMethod = input.paymentMethods.find(
-      //         (method) => method.name === name
-      //       );
-      //       break;
-
-      //     case "exact-none-case":
-      //       hidePaymentMethod = input.paymentMethods.find(
-      //         (method) => method.name.toLowerCase() === name.toLowerCase()
-      //       );
-      //       break;
-
-      //     case "contain":
-      //       hidePaymentMethod = input.paymentMethods.find((method) =>
-      //         method.name.includes(name)
-      //       );
-      //       break;
-
-      //     default:
-      //       console.log("Unknown match type:", matchType);
-      //       return;
-      //   }
-      //   if (hidePaymentMethod) {
-      //     operations.push({
-      //       hide: {
-      //         paymentMethodId: hidePaymentMethod.id,
-      //       },
-      //     });
-      //   }
-      // });
     }
   }
 
