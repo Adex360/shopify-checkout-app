@@ -24,6 +24,8 @@ import {
   ScrollView,
   View,
   Pressable,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -31,9 +33,9 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 export function CityDropdown2() {
+  // only text field
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
-  // const CUSTOM_FIELDS_END_POINT = `https://boat-facilities-elsewhere-pci.trycloudflare.com/api/v1/city-list/all/${myshopifyDomain}`;
   const requestHeader = {
     "Content-Type": "application/json",
   };
@@ -51,7 +53,7 @@ export function CityDropdown2() {
         headers: requestHeader,
       });
       const data = await response.json();
-      console.log("data???", data);
+      console.log("Fetched City List Data:", data);
       setCityList(Array.isArray(data.getAll) ? data.getAll : []);
     } catch (error) {
       console.error("Error fetching city list:", error);
@@ -146,15 +148,12 @@ export function CityDropdown() {
       setFilteredCities(filteredCitiesValue);
     }
   }, [shippingAddress, cityList]);
-  console.log("filtered", filteredCities, isDropdownVisible);
+  console.log("filteredkk", filteredCities, isDropdownVisible);
   const handleInputChange = (value) => {
     setInputValue(value);
     setDropdownVisible(true);
   };
 
-  const handlePress = () => {
-    console.log("Pressable clicked");
-  };
   const handleCitySelect = async (city) => {
     console.log("selectedd@@@", city);
     setInputValue(city);
@@ -184,41 +183,85 @@ export function CityDropdown() {
         // onBlur={() => setDropdownVisible(false)}
       />
       {isDropdownVisible && filteredCities.length > 0 && (
-        // <ScrollView
-        //   maxBlockSize="200px"
-        //   border="base"
-        //   cornerRadius="base"
-        //   padding="base"
-        //   background="light"
-        //   onScroll={() => console.log("Scrolling...")}
-        //   onScrolledToEdge={(event) => console.log("Reached edge@kk:", event)}
-        // >
-        <BlockStack>
-          {filteredCities.map((city) => (
-            // <Pressable
-            //   key={city}
-            //   onPress={
-            //     // () => console.log("Pressable clicked")
-            //     handlePress
-            //     //  handleCitySelect(city)
-            //   }
-            // >
-            //   <ListItem value={city}>{city}</ListItem>
-            // </Pressable>
-            <Button
-              key={city}
-              onClick={() => {
-                console.log("Button clicked", city);
-                handleCitySelect(city);
-              }}
-              style={{ padding: 10, borderBottom: "1px solid #ccc" }}
-            >
-              {city}
-            </Button>
-          ))}
-        </BlockStack>
-        // </ScrollView>
+        <ScrollView
+          maxBlockSize={200}
+          border="base"
+          cornerRadius="base"
+          padding="base"
+          background="transparent"
+          direction="block"
+          display="auto"
+          hint="innerShadow"
+          onScroll={() => console.log("Scrolling...")}
+          onScrolledToEdge={(event) => console.log("Reached edge@kk:", event)}
+        >
+          <ToggleButtonGroup
+            value={selectedCity}
+            onChange={(value) => {
+              console.log("togglebutton clicked", value);
+              handleCitySelect(value);
+            }}
+          >
+            {filteredCities.map((city, index) => (
+              <BlockStack>
+                <ToggleButton id={city} key={city}>
+                  <Text>{city}</Text>
+                </ToggleButton>
+              </BlockStack>
+            ))}
+          </ToggleButtonGroup>
+        </ScrollView>
       )}
     </BlockStack>
   );
+  // return (
+  //   <BlockStack>
+  //     <TextField
+  //       label="city search"
+  //       value={inputValue}
+  //       onChange={handleInputChange}
+  //       onFocus={() => setDropdownVisible(true)}
+  //       // onBlur={() => setDropdownVisible(false)}
+  //     />
+  //     {isDropdownVisible && filteredCities.length > 0 && (
+  //       <ScrollView
+  //         maxBlockSize="200px"
+  //         border="base"
+  //         cornerRadius="base"
+  //         padding="base"
+  //         background="transparent"
+  //         direction="block"
+  //         display="auto"
+  //         hint="innerShadow"
+  //         onScroll={() => console.log("Scrolling...")}
+  //         onScrolledToEdge={(event) => console.log("Reached edge@kk:", event)}
+  //       >
+  //         <BlockStack>
+  //           {filteredCities.map((city) => (
+  //             // <Pressable
+  //             //   key={city}
+  //             //   onPress={
+  //             //     // () => console.log("Pressable clicked")
+  //             //     handlePress
+  //             //     //  handleCitySelect(city)
+  //             //   }
+  //             // >
+  //             //   <ListItem value={city}>{city}</ListItem>
+  //             // </Pressable>
+  //             <Button
+  //               key={city}
+  //               onClick={() => {
+  //                 console.log("Button clicked", city);
+  //                 handleCitySelect(city);
+  //               }}
+  //               style={{ padding: 10, borderBottom: "1px solid #ccc" }}
+  //             >
+  //               {city}
+  //             </Button>
+  //           ))}
+  //         </BlockStack>
+  //       </ScrollView>
+  //     )}
+  //   </BlockStack>
+  // );
 }

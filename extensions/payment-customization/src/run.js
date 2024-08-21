@@ -110,7 +110,7 @@ export function run(input) {
               );
               break;
 
-            case "contains":
+            case "contain":
               paymentMethod = input.paymentMethods.find((method) =>
                 method.name.includes(name)
               );
@@ -151,7 +151,7 @@ export function run(input) {
             );
             break;
 
-          case "contains":
+          case "contain":
             paymentMethod = input.paymentMethods.find((method) =>
               method.name.includes(name)
             );
@@ -239,21 +239,21 @@ export function run(input) {
         }
       });
     } else {
-      console.log("NO CONDITION");
-      configuration.payment_name.forEach((name) => {
-        const renamePaymentMethod = input.paymentMethods.find(
-          (method) => method.name === name.old
-        );
+      console.log("NO CONDITION: no change ");
+      // configuration.payment_name.forEach((name) => {
+      //   const renamePaymentMethod = input.paymentMethods.find(
+      //     (method) => method.name === name.old
+      //   );
 
-        if (renamePaymentMethod) {
-          operations.push({
-            rename: {
-              paymentMethodId: renamePaymentMethod.id,
-              name: name.new,
-            },
-          });
-        }
-      });
+      //   if (renamePaymentMethod) {
+      //     operations.push({
+      //       rename: {
+      //         paymentMethodId: renamePaymentMethod.id,
+      //         name: name.new,
+      //       },
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -325,7 +325,7 @@ export function run(input) {
             );
             break;
 
-          case "contains":
+          case "contain":
             hidePaymentMethod = input.paymentMethods.find((method) =>
               method.name.includes(name)
             );
@@ -346,45 +346,45 @@ export function run(input) {
       });
     } else {
       console.log("no condition");
-      const paymentNames = configuration.payment_name.title;
-      const matchType = configuration.payment_name.match;
-      paymentNames.forEach((name) => {
-        let hidePaymentMethod;
-        switch (matchType) {
-          case "exact-case-sensitive":
-            hidePaymentMethod = input.paymentMethods.find(
-              (method) => method.name === name
-            );
-            break;
+      // const paymentNames = configuration.payment_name.title;
+      // const matchType = configuration.payment_name.match;
+      // paymentNames.forEach((name) => {
+      //   let hidePaymentMethod;
+      //   switch (matchType) {
+      //     case "exact-case-sensitive":
+      //       hidePaymentMethod = input.paymentMethods.find(
+      //         (method) => method.name === name
+      //       );
+      //       break;
 
-          case "exact-none-case":
-            hidePaymentMethod = input.paymentMethods.find(
-              (method) => method.name.toLowerCase() === name.toLowerCase()
-            );
-            break;
+      //     case "exact-none-case":
+      //       hidePaymentMethod = input.paymentMethods.find(
+      //         (method) => method.name.toLowerCase() === name.toLowerCase()
+      //       );
+      //       break;
 
-          case "contains":
-            hidePaymentMethod = input.paymentMethods.find((method) =>
-              method.name.includes(name)
-            );
-            break;
+      //     case "contain":
+      //       hidePaymentMethod = input.paymentMethods.find((method) =>
+      //         method.name.includes(name)
+      //       );
+      //       break;
 
-          default:
-            console.log("Unknown match type:", matchType);
-            return;
-        }
-        if (hidePaymentMethod) {
-          operations.push({
-            hide: {
-              paymentMethodId: hidePaymentMethod.id,
-            },
-          });
-        }
-      });
+      //     default:
+      //       console.log("Unknown match type:", matchType);
+      //       return;
+      //   }
+      //   if (hidePaymentMethod) {
+      //     operations.push({
+      //       hide: {
+      //         paymentMethodId: hidePaymentMethod.id,
+      //       },
+      //     });
+      //   }
+      // });
     }
   }
 
-  console.log("operation @@@ ", operations);
+  console.log("operation  ", operations);
 
   // If no operations were added, return NO_CHANGES
   if (operations.length === 0) {

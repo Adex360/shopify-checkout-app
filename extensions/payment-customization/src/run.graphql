@@ -9,8 +9,6 @@ query RunInput {
       deliveryAddress {
         countryCode
       }
-    }
-    deliveryGroups {
       deliveryOptions {
         title
       }
