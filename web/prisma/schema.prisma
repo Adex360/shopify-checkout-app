@@ -27,23 +27,21 @@ model Shop {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  plan_id             String?
-  plan_price          Int     @default(0)
-  plan_activated_date Int     @default(0)
-  plan_status         String  @default("none")
-  shopify_charge_id   String?
-  next_billing_date   Int     @default(0)
-
-  payment_modification   Boolean @default(false)
-  advanced_city_dropdown Boolean @default(false)
-  field_validation       Boolean @default(false)
-  custom_field           Boolean @default(false)
-
-  plan                  Plan?                   @relation(fields: [plan_id], references: [id])
-  payment_customization Payment_customization[]
-  validation            Validation[]
-  custom_fields         Custom_field[]
-  city_list             City_list[]
+  plan_id                String?
+  plan_price             Int                     @default(0)
+  plan_activated_date    Int                     @default(0)
+  plan_status            String                  @default("none")
+  shopify_charge_id      String?
+  next_billing_date      DateTime                @default(now())
+  payment_modification   Boolean                 @default(false)
+  advanced_city_dropdown Boolean                 @default(false)
+  field_validation       Boolean                 @default(false)
+  custom_field           Boolean                 @default(false)
+  plan                   Plan?                   @relation(fields: [plan_id], references: [id])
+  payment_customization  Payment_customization[]
+  validation             Validation[]
+  custom_fields          Custom_field[]
+  city_list              City_list[]
 }
 
 model Payment_customization {

@@ -72,7 +72,7 @@ export class PaymentCustomization {
       whereClause.rule_status = options.rule_status;
     }
 
-    const count = await prisma.payment_customization.count({
+    const count = await prismaClient.payment_customization.count({
       where: whereClause,
     });
 

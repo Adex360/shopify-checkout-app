@@ -1,0 +1,38 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "9e5724137b1c602ee4c4e9e908686ada"
+name = "Smart Way"
+handle = "smart-checkout-3"
+application_url = "https://smart-checkout-new.ozeefy.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+
+[auth]
+redirect_urls = [
+  "https://smart-checkout-new.ozeefy.com/auth/callback",
+  "https://smart-checkout-new.ozeefy.com/auth/shopify/callback",
+  "https://smart-checkout-new.ozeefy.com/api/auth/callback",
+]
+
+[access_scopes]
+scopes = "write_payment_customizations,write_products,write_validations"
+
+[webhooks]
+api_version = "2023-10"
+
+[[webhooks.subscriptions]]
+uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+compliance_topics = ["customers/data_request"]
+
+[[webhooks.subscriptions]]
+uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+compliance_topics = ["customers/redact"]
+
+[[webhooks.subscriptions]]
+uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+compliance_topics = ["shop/redact"]
+
+[pos]
+embedded = false

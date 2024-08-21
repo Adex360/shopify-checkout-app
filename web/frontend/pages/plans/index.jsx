@@ -113,7 +113,6 @@ const Plans = () => {
                           <Box paddingBlock="200">
                             <Text variant="headingMd">Available:</Text>
                             <List>
-                              <List.Item>feature</List.Item>
                               {features?.map((feature, i) => (
                                 <List.Item key={i}>{feature}</List.Item>
                               ))}
