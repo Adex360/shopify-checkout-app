@@ -2,7 +2,6 @@ import prismaClient from "../db/prisma/index.js";
 import { DEFAULT_CITY_LIST } from "../constants/index.js";
 export class CityList {
   static async create(cityFields) {
-    console.log("cityFields", cityFields);
     const newCityField = await prismaClient.city_list.create({
       data: {
         ...cityFields,
