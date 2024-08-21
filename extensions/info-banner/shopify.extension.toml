@@ -32,7 +32,7 @@ network_access = true
   key = "title_size"
   type = "single_line_text_field"
   name = "Title Size"
-  description = "It only allows values from this list: extraSmall' , 'small' , 'base' , 'large' , 'extraLarge','medium'"
+  description = "If 'Banner Only' is set to 'False':It only allows values from this list: extraSmall' , 'small' , 'base' , 'large' , 'extraLarge','medium'"
   [[extensions.settings.fields]]
   key = "description"
   type = "single_line_text_field"
@@ -47,6 +47,7 @@ network_access = true
   key = "status"
   type = "single_line_text_field"
   name = "Banner status"
+    description = "If 'Banner Only' is set to 'True'"
     [[extensions.settings.fields.validations]]
     name = "choices"
     value = "[\"info\", \"success\", \"warning\", \"critical\"]"
@@ -55,5 +56,4 @@ network_access = true
   type = "boolean"
   name = "Show collapsible description."
   description = "If 'Banner Only' is set to 'True':Display controls to expand or collapse the banner description."
-
 
