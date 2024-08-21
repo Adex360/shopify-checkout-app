@@ -3,7 +3,7 @@ import { CityList, Shop } from "../models/index.js";
 export const createCityList = async (req, res) => {
   const { id } = req.shop;
   const data = req.body;
-  const t = await CityList.getByTitle(data.country_name);
+  await CityList.getByTitle(data.country_name, id);
   const createCityList = await CityList.create({
     shop_id: id,
     ...data,
