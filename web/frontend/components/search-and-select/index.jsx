@@ -9,6 +9,7 @@ const SearchAndSelect = ({
   selectedOptions,
   setSelectedOptions,
   allowMultiple,
+  hideTags,
 }) => {
   const deselectedOptions = useMemo(() => selectionOption, []);
   const [inputValue, setInputValue] = useState("");
@@ -62,7 +63,6 @@ const SearchAndSelect = ({
             (option) => option.value === selectedValue
           );
           const tagLabel = option ? option.label : selectedValue;
-
           return (
             <Tag
               key={`option${selectedValue}`}
@@ -97,7 +97,7 @@ const SearchAndSelect = ({
       label={label}
       value={inputValue}
       placeholder={placeholder}
-      verticalContent={verticalContentMarkup}
+      verticalContent={!hideTags && verticalContentMarkup}
       autoComplete="off"
     />
   );
