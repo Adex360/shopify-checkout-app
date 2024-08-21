@@ -1,19 +1,23 @@
 import prismaClient from "../db/prisma/index.js";
 import { DEFAULT_CITY_LIST } from "../constants/index.js";
 export class CityList {
-  static async create(CityFields) {
+  static async create(cityFields) {
+    console.log("cityFields", cityFields);
     const newCityField = await prismaClient.city_list.create({
       data: {
-        ...CityFields,
+        ...cityFields,
       },
     });
     return newCityField;
   }
 
-  static async getByTitle(name) {
+  static async getByTitle(name, id) {
     const titleFound = await prismaClient.city_list.findUnique({
       where: {
-        country_name: name,
+        shop_id_country_name: {
+          shop_id: id,
+          country_name: name,
+        },
       },
     });
     if (titleFound) {
