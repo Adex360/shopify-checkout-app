@@ -36,7 +36,7 @@ export class CustomField {
     return customFieldFound;
   }
 
-  static async findAll() {
+  static async findAll(shop_id) {
     const customFields = await prismaClient.custom_field.findMany({
       where: { shop_id },
     });

@@ -106,16 +106,23 @@ export const deletePaymentCustomization = async (req, res) => {
 
 export const countByTypesAndActive = async (req, res) => {
   try {
+    const { id } = req.shop;
     const types = ["rename", "hide", "re-order"];
 
     const counts = {};
     for (const type of types) {
-      const typeCount = await PaymentCustomization.count({ type: type });
+      const typeCount = await PaymentCustomization.count({
+        type: type,
+        shop_id: id,
+      });
 
       counts[type] = typeCount;
     }
 
-    const activeCount = await PaymentCustomization.count({ rule_status: true });
+    const activeCount = await PaymentCustomization.count({
+      rule_status: true,
+      shop_id: id,
+    });
     const activeCountries = await CityList.activeCountries();
     const countryNames = activeCountries.map((country) => country.country_name);
     res.json({
