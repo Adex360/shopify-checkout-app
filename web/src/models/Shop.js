@@ -112,7 +112,7 @@ export class Shop {
     if (!plan) throw new Error("Plan not found", plan_id);
     const shop = await this.findByName(shop_name);
     if (!shop) throw new Error("Shop Not Found [Plan.js]");
-    const next_billing_date = getNextBillingDate();
+    const next_billing_date = new Date();
     const updatedValues = {
       plan_id: plan.id,
       next_billing_date,
