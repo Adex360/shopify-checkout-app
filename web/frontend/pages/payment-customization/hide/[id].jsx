@@ -105,7 +105,9 @@ const Hide = () => {
           duration: 2000,
         });
         setLoading(false);
-        navigate("/payment-customization");
+        navigate("/payment");
+      } else {
+        show(data.error);
       }
     } catch (error) {
       console.error(error);
@@ -174,7 +176,7 @@ const Hide = () => {
           type: getByID.type,
           ruleType: getByID.payment_rule ? "all" : "any",
           status: getByID.rule_status,
-          paymentMethodTitles: getByID.payment_name.title,
+          paymentMethodTitles: setPaymentTitles(getByID.payment_name.title),
           paymentMethodType: getByID.payment_name.match,
           customizationRule: getByID.conditions,
         });
@@ -211,7 +213,7 @@ const Hide = () => {
         duration: 2000,
       });
       setLoading(false);
-      navigate("/payment-customization");
+      navigate("/payment");
     }
   };
 
@@ -232,7 +234,7 @@ const Hide = () => {
         <Page
           backAction={{
             content: "",
-            onAction: () => navigate("/payment-customization"),
+            onAction: () => navigate("/payment"),
           }}
           title="Advance Payment rules (Hide/Delete)"
           primaryAction={{
