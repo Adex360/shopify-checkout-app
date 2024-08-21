@@ -258,10 +258,10 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization rules
+                    Customization Title
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    Shopify Payment Customization title (For internal use only )
+                    The title for this customization (only view by admin )
                   </Text>
                 </BlockStack>
               </Box>
@@ -344,7 +344,7 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Enter Payment method
+                    Payment Rule
                   </Text>
                 </BlockStack>
               </Box>
@@ -398,11 +398,11 @@ const ReOrder = () => {
                                 value={condition.type}
                                 options={[
                                   {
-                                    label: "title",
+                                    label: "Shipping Title",
                                     value: "title",
                                   },
                                   {
-                                    label: "country",
+                                    label: "Country",
                                     value: "country",
                                   },
                                 ]}
@@ -482,14 +482,15 @@ const ReOrder = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization Rules
+                    Payment Methods
                   </Text>
                 </BlockStack>
               </Box>
 
               <Card roundedAbove="sm">
                 <BlockStack gap="400">
-                  <InlineStack align="space-between">
+                  <Text variant="headingMd">Payment methods name match :</Text>
+                  {/* <InlineStack align="space-between">
                     <ChoiceList
                       choices={[
                         {
@@ -554,17 +555,24 @@ const ReOrder = () => {
                       //   handleFormDataChange("paymentName", value)
                       // }
                     />
-                  </InlineStack>
+                  </InlineStack> */}
                   <BlockStack gap="200">
+                    {/* <Text variant="headingMd">Payment Title: </Text> */}
                     {formData.paymentName.title.map((payment, index) => {
                       return (
-                        <InlineStack key={index} gap="400">
+                        <InlineStack key={index} gap="400" blockAlign="end">
                           <Box
                             style={{
                               flexGrow: 1,
                             }}
                           >
                             <TextField
+                              size="slim"
+                              label={
+                                <Text variant="headingSm">
+                                  Method {index + 1}
+                                </Text>
+                              }
                               value={payment}
                               onChange={(value) => {
                                 handlePaymentRuleChange(index, "title", value);
@@ -588,7 +596,7 @@ const ReOrder = () => {
                           variant="primary"
                           icon={PlusCircleIcon}
                         >
-                          Add condition
+                          Add More Method
                         </Button>
                       </InlineStack>
                     </Box>

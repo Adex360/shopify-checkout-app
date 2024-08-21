@@ -315,10 +315,10 @@ const ReName = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization rules
+                    Customization Title
                   </Text>
                   <Text as="p" variant="bodyMd">
-                    Shopify Payment Customization title (For internal use only )
+                    The title for this customization (only view by admin )
                   </Text>
                 </BlockStack>
               </Box>
@@ -402,7 +402,7 @@ const ReName = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization Rules
+                    Payment methods name match
                   </Text>
                 </BlockStack>
               </Box>
@@ -583,7 +583,7 @@ const ReName = () => {
               >
                 <BlockStack gap="100">
                   <Text as="h3" variant="headingMd">
-                    Customization Rules
+                    Enter Payment Methods 123
                   </Text>
                 </BlockStack>
               </Box>
