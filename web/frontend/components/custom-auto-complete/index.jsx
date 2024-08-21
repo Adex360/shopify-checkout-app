@@ -60,12 +60,7 @@ export function CustomAutoComplete({
   );
 
   useEffect(() => {
-    if (selectedOptions !== "") {
-      const selectedValue = deselectedOptions.find(
-        (option) => option.value === selectedOptions[0]
-      )?.label;
-      setInputValue(selectedValue || "");
-    }
+    setInputValue(selectedOptions);
   }, []);
 
   return (

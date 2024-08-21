@@ -66,9 +66,13 @@ const Payment = () => {
   };
 
   const tableRows = customizationRules?.map((data, index) => {
-    const ruleCondition = data.conditions?.map((condition, index) => {
-      return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
-    });
+    const ruleCondition = !data.payment_rule ? (
+      data.conditions?.map((condition, index) => {
+        return ` ${index > 0 ? ", " : ""}${condition.type} ${condition.rule} ${condition.value}`;
+      })
+    ) : (
+      <Badge tone="critical-strong">No Condition</Badge>
+    );
     return [
       data.title,
       data.type,
