@@ -3,7 +3,6 @@ import { useAuthenticatedFetch } from "../hooks";
 import { useNavigate } from "@shopify/app-bridge-react";
 
 const AppContext = createContext();
-
 const AppContextProvider = ({ children }) => {
   const shopifyFetch = useAuthenticatedFetch();
   const [loading, setLoading] = useState(false);

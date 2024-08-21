@@ -20,7 +20,8 @@ import { useAuthenticatedFetch } from "../../hooks";
 import { useAppContext } from "../../context";
 
 const Payment = () => {
-  const { isSubscribed } = useAppContext();
+  const { isSubscribed, shop } = useAppContext();
+  console.log(shop.activeCount);
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -130,6 +131,7 @@ const Payment = () => {
             <Page
               title="All Payment Customizations"
               primaryAction={{
+                disabled: shop.activeCount >= 5,
                 content: "Create payment customizations",
                 onAction: () => navigate("/payment-customization"),
               }}
@@ -138,6 +140,14 @@ const Payment = () => {
                 <Layout.Section>
                   {customizationRules.length !== 0 ? (
                     <>
+                      <Box paddingBlock="200">
+                        {shop.activeCount >= 5 && (
+                          <Banner title="Limit Reached">
+                            You have 5/5 customization active. Deactivate or
+                            delete customization to create new customizations
+                          </Banner>
+                        )}
+                      </Box>
                       <Card padding="0">
                         <DataTable
                           columnContentTypes={["text", "text", "text", "text"]}

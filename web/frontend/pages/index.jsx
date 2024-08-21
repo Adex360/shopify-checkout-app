@@ -21,35 +21,13 @@ import { PlanUpgradeWarning } from "../components";
 
 export default function HomePage() {
   const { loading, setLoading, isSubscribed, shop } = useAppContext();
+  const { count, activeCount } = shop;
   // const isSubscribed = shop.plan_status === "active";
 
   console.log(shop);
   const shopifyFetch = useAuthenticatedFetch();
 
-  const [customizationCount, setCustomizationCount] = useState({});
-  const { count, activeCountries, activeCount } = customizationCount;
   const navigate = useNavigate();
-
-  const getCustomizationCount = async () => {
-    try {
-      setLoading(true);
-      const resp = await shopifyFetch("/api/v1/payment-customization/count");
-      const data = await resp.json();
-      if (resp.ok) {
-        setLoading(false);
-        setCustomizationCount(data);
-      } else {
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getCustomizationCount();
-  }, []);
 
   return (
     <>

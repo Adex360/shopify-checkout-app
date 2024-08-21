@@ -1,7 +1,13 @@
 import { Card, InlineStack, Badge, BlockStack, Text } from "@shopify/polaris";
 import React from "react";
 
-const CustomActionCard = ({ title, description, action, status }) => {
+const CustomActionCard = ({
+  title,
+  description,
+  action,
+  status,
+  activeNumbers,
+}) => {
   return (
     <>
       <Card roundedAbove="sm">
@@ -11,7 +17,7 @@ const CustomActionCard = ({ title, description, action, status }) => {
               <Text variant="headingMd">{title}</Text>
               {status}
             </InlineStack>
-            <Text variant="headingMd"> 0 / 5</Text>
+            <Text variant="headingMd"> {activeNumbers} / 5</Text>
           </InlineStack>
           <Text variant="bodyMd">{description}</Text>
           <InlineStack align="end">{action}</InlineStack>
