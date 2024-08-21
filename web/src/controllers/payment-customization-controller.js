@@ -25,14 +25,35 @@ export const createPaymentCustomization = async (req, res) => {
 
 export const getAllPaymentCustomization = async (req, res) => {
   try {
-    const shop = req.shop;
-    const getAll = await PaymentCustomization.findAll(shop.id);
+    const { id } = req.shop;
+    const getAll = await PaymentCustomization.findAll(id);
+    const types = ["rename", "hide", "re-order"];
+
+    const counts = {};
+    for (const type of types) {
+      const typeCount = await PaymentCustomization.count({
+        type: type,
+        shop_id: id,
+      });
+
+      counts[type] = typeCount;
+    }
+
+    const activeCount = await PaymentCustomization.count({
+      rule_status: true,
+      shop_id: id,
+    });
+    const activeCountries = await CityList.activeCountries();
+    const countryNames = activeCountries.map((country) => country.country_name);
 
     if (getAll.length >= 5) {
       return res.status(200).json({
         message:
           "You have reached the maximum limit of 5 payment customizations. No additional customizations can be added.",
         customizations: getAll,
+        count: counts,
+        activeCount: activeCount,
+        activeCountries: countryNames,
       });
     }
 
