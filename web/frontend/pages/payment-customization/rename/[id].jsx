@@ -209,7 +209,6 @@ const ReName = () => {
       if (resp.ok) {
         const { getByID } = data;
 
-        console.log(getByID);
         setFormData({
           title: getByID.title,
           type: getByID.type,
@@ -254,8 +253,6 @@ const ReName = () => {
       setLoading(false);
     }
   };
-
-  console.log();
 
   useEffect(() => {
     if (id !== "create") {

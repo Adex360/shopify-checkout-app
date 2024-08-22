@@ -20,8 +20,6 @@ const AddTag = ({ placeholder, tags, setTags, error, ...props }) => {
     if (trimmedValue !== "" && !tags.includes(trimmedValue)) {
       setTags([...tags, trimmedValue]);
       setInputValue("");
-
-      console.log(tags);
     }
   };
 

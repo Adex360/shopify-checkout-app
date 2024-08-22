@@ -36,7 +36,6 @@ const Plans = () => {
       if (resp.ok) {
         setPlans(data.plans);
         setLoading(false);
-        console.log(data);
       }
     } catch (error) {
       console.error(error);

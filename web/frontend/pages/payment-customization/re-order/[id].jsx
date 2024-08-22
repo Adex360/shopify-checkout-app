@@ -380,9 +380,6 @@ const ReOrder = () => {
                                       ? "equal-to"
                                       : "contain"
                                   );
-                                  console.log(
-                                    formData.paymentRuleConditions[index].rule
-                                  );
                                   handleSortingRuleChange(index, "type", value);
                                 }}
                               />

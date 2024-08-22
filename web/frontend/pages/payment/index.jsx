@@ -21,8 +21,6 @@ import { useAppContext } from "../../context";
 
 const Payment = () => {
   const { isSubscribed, shop, loading, setLoading } = useAppContext();
-  console.log(isSubscribed);
-  console.log(shop.activeCount);
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
