@@ -123,7 +123,7 @@ const PhoneValidation = () => {
 
   useEffect(() => {
     isSubscribed && getPhoneValidations();
-  }, []);
+  }, [isSubscribed]);
 
   return (
     <>

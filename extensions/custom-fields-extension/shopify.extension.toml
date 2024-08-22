@@ -22,4 +22,4 @@ network_access = true
   key = "form_name"
   type = "single_line_text_field"
   name = "Form Name"
-  description = "Enter form name that you created on app"
+  description = "Enter FORM NAME that you created on app"
