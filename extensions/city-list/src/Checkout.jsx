@@ -51,10 +51,13 @@ export function CityDropdown() {
 
   const fetchCustomFields = async () => {
     try {
-      const response = await fetch(CUSTOM_FIELDS_END_POINT, {
-        method: "GET",
-        headers: requestHeader,
-      });
+      const response = await fetch(
+        `/apps/api/v1/city-list/all/${myshopifyDomain}`,
+        {
+          method: "GET",
+          headers: requestHeader,
+        }
+      );
       const data = await response.json();
       console.log("Fetched City List Data:", data);
       setCityList(Array.isArray(data.getAll) ? data.getAll : []);
