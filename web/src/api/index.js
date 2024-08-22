@@ -20,10 +20,10 @@ export const registerApi = (app) => {
 };
 
 export const registerClientApi = (app) => {
-  app.use(`${API_PREFIX}`, publicRoutes);
   app.use("/api/admin", adminRoutes);
 };
 
 export const registerConfirmationApi = (app) => {
+  app.use(`${API_PREFIX}`, publicRoutes);
   app.use(`${API_PREFIX}/confirmation`, confirmationRoutes);
 };
