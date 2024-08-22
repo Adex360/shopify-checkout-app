@@ -20,13 +20,14 @@ import { useAuthenticatedFetch } from "../../hooks";
 import { useAppContext } from "../../context";
 
 const Payment = () => {
-  const { isSubscribed, shop } = useAppContext();
+  const { isSubscribed, shop, loading, setLoading } = useAppContext();
+  console.log(isSubscribed);
   console.log(shop.activeCount);
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
   const [message, setMessage] = useState("");
   const getCustomization = async () => {
@@ -115,7 +116,7 @@ const Payment = () => {
 
   useEffect(() => {
     isSubscribed && getCustomization();
-  }, []);
+  }, [isSubscribed]);
 
   return (
     <>
