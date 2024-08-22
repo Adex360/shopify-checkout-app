@@ -45,7 +45,6 @@ app.post(
 );
 
 app.use(express.json());
-
 registerClientApi(app);
 
 // If you are adding routes outside of the /api path, remember to
