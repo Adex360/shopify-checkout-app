@@ -12,11 +12,7 @@ import {
   Spinner,
   Text,
 } from "@shopify/polaris";
-import {
-  ActionTable,
-  PhoneValidationModal,
-  PlanUpgradeWarning,
-} from "../../components";
+import { PhoneValidationModal, PlanUpgradeWarning } from "../../components";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../context";

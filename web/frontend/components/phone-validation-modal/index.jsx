@@ -151,7 +151,6 @@ const PhoneValidationModal = ({
       const data = await resp.json();
       if (resp.ok) {
         const { getByID } = data;
-        console.log(getByID.phone_validation.country_code);
         setFormData({
           title: getByID.title,
           enable: getByID.enabled,
@@ -161,7 +160,6 @@ const PhoneValidationModal = ({
           phoneLength: getByID.phone_validation.phone_no_length,
           errorMessage: getByID.phone_validation.error_message,
         });
-        console.log(formData);
         changeLoading("modalLoading", false);
       }
     } catch (e) {
@@ -222,7 +220,6 @@ const PhoneValidationModal = ({
         open={open}
         onClose={() => {
           handleClose();
-          console.log(formData);
         }}
         loading={loading.modalLoading}
         // size="medium"

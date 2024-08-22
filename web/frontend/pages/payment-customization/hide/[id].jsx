@@ -30,9 +30,7 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 const Hide = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
-
   const { id } = useParams();
-
   const { show } = useToast();
 
   const { smUp } = useBreakpoints();
@@ -355,34 +353,6 @@ const Hide = () => {
                     }}
                     placeholder="Search Methods"
                   />
-                  {/* <AddTag
-                    error={
-                      formError.paymentMethodTitles && "This field is required"
-                    }
-                    onBlur={() =>
-                      formData.paymentMethodTitles.length === 0
-                        ? setFormError((prev) => {
-                            return {
-                              ...prev,
-                              paymentMethodTitles: true,
-                            };
-                          })
-                        : null
-                    }
-                    onFocus={() =>
-                      setFormError((prev) => {
-                        return {
-                          ...prev,
-                          paymentMethodTitles: false,
-                        };
-                      })
-                    }
-                    tags={formData.paymentMethodTitles}
-                    setTags={(value) => {
-                      handleFormDataChange("paymentMethodTitles", value);
-                    }}
-                    placeholder="Ex. Standard"
-                  /> */}
                 </BlockStack>
                 <Text>
                   payment Method name that you have set up on the store's
@@ -462,6 +432,14 @@ const Hide = () => {
                                       label: "Total Amount",
                                       value: "total-amount",
                                     },
+                                    {
+                                      label: "SKU",
+                                      value: "sku",
+                                    },
+                                    {
+                                      label: "City",
+                                      value: "city",
+                                    },
                                   ]}
                                   value={rule.type}
                                   onChange={(value) => {
@@ -472,10 +450,18 @@ const Hide = () => {
                                       []
                                     );
                                     //
+
                                     handleCustomizationRuleChange(
                                       index,
                                       "type",
                                       value
+                                    );
+                                    handleCustomizationRuleChange(
+                                      index,
+                                      "rule",
+                                      value === "total-amount"
+                                        ? "equal-to"
+                                        : "contain"
                                     );
                                   }}
                                 />
@@ -489,9 +475,9 @@ const Hide = () => {
                                     );
                                   }}
                                   options={
-                                    rule.type === "total-amount"
-                                      ? customizationRuleForPayment
-                                      : customizationRuleForCountry
+                                    rule.type !== "total-amount"
+                                      ? customizationRuleForCountry
+                                      : customizationRuleForPayment
                                   }
                                   value={rule.rule}
                                 />
@@ -525,8 +511,26 @@ const Hide = () => {
                                     </BlockStack>
                                   )}
                                 </>
+                              ) : rule.type === "city" ||
+                                rule.type === "sku" ? (
+                                <>
+                                  <AddTag
+                                    tags={rule.value}
+                                    setTags={(value) => {
+                                      handleCustomizationRuleChange(
+                                        index,
+                                        "value",
+                                        value
+                                      );
+                                    }}
+                                    placeholder={
+                                      rule.type === "city"
+                                        ? "Enter Cities"
+                                        : "Enter SKU"
+                                    }
+                                  />
+                                </>
                               ) : (
-                                // passing string into array due to server side validation
                                 <TextField
                                   value={rule.value[0]}
                                   type={
@@ -547,7 +551,7 @@ const Hide = () => {
                                 />
                               )}
                               <InlineStack align="end">
-                                {formData.customizationRule.length > 0 && (
+                                {formData.customizationRule.length > 1 && (
                                   <Button
                                     variant="primary"
                                     icon={DeleteIcon}
@@ -576,7 +580,7 @@ const Hide = () => {
                       variant="primary"
                       icon={PlusCircleIcon}
                     >
-                      Add Condition
+                      Add New Condition
                     </Button>
                   </InlineStack>
                 </BlockStack>
@@ -588,25 +592,28 @@ const Hide = () => {
                 justifyContent: "end",
               }}
             >
-              <Button
-                loading={loading}
-                disabled={
-                  !formData.title ||
-                  paymentTitles.length === 0 ||
-                  formData.customizationRule.some(
-                    (rule) =>
-                      (Array.isArray(rule.value) && rule.value.length === 0) ||
-                      rule.value.includes("")
-                  )
-                }
-                onClick={() => {
-                  id !== "create"
-                    ? updateCustomizationData()
-                    : handleCreateCustomization();
-                }}
-              >
-                {id !== "create" ? "Update" : "Create"}
-              </Button>
+              <Box paddingBlockEnd="800">
+                <Button
+                  loading={loading}
+                  disabled={
+                    !formData.title ||
+                    paymentTitles.length === 0 ||
+                    formData.customizationRule.some(
+                      (rule) =>
+                        (Array.isArray(rule.value) &&
+                          rule.value.length === 0) ||
+                        rule.value.includes("")
+                    )
+                  }
+                  onClick={() => {
+                    id !== "create"
+                      ? updateCustomizationData()
+                      : handleCreateCustomization();
+                  }}
+                >
+                  {id !== "create" ? "Update" : "Create"}
+                </Button>
+              </Box>
             </Box>
           </BlockStack>
         </Page>

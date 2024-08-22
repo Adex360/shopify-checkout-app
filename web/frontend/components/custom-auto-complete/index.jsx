@@ -1,5 +1,4 @@
-import { Autocomplete, Icon } from "@shopify/polaris";
-import { SearchIcon } from "@shopify/polaris-icons";
+import { Autocomplete } from "@shopify/polaris";
 import { useState, useCallback, useMemo, useEffect } from "react";
 
 export function CustomAutoComplete({
@@ -9,11 +8,13 @@ export function CustomAutoComplete({
   selectedOptions,
   setSelectedOptions,
 }) {
-  // const [selectedOptions, setSelectedOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const deselectedOptions = useMemo(() => selectionOptions, []);
+
+  // Memoize deselected options to avoid unnecessary recalculations
+  const deselectedOptions = useMemo(() => selectionOptions, [selectionOptions]);
   const [options, setOptions] = useState(deselectedOptions);
 
+  // Update the input value based on the text typed by the user
   const updateText = useCallback(
     (value) => {
       setInputValue(value);
@@ -23,7 +24,8 @@ export function CustomAutoComplete({
         return;
       }
 
-      const filterRegex = new RegExp(value, "i");
+      const escapedValue = value.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      const filterRegex = new RegExp(escapedValue, "i");
       const resultOptions = deselectedOptions.filter((option) =>
         option.label.match(filterRegex)
       );
@@ -32,26 +34,34 @@ export function CustomAutoComplete({
     [deselectedOptions]
   );
 
+  // Update the selection based on the user's choice
   const updateSelection = useCallback(
     (selected) => {
-      const selectedValue = selected.map((selectedItem) => {
-        const matchedOption = options.find((option) => {
-          return option.value.match(selectedItem);
-        });
-        return matchedOption && matchedOption.label;
-      });
+      const selectedOption = options.find(
+        (option) => option.value === selected[0]
+      );
 
-      setSelectedOptions(selected[0]);
-      setInputValue(selectedValue || "");
+      if (selectedOption) {
+        setSelectedOptions([selectedOption.value]);
+        setInputValue(selectedOption.label);
+      }
     },
-    [options]
+    [options, setSelectedOptions]
   );
+
+  // Ensure input value is updated when `selectedOptions` changes
+  useEffect(() => {
+    const selectedOption = deselectedOptions.find(
+      (option) => option.value === selectedOptions[0]
+    );
+    if (selectedOption) {
+      setInputValue(selectedOption.label);
+    }
+  }, [selectedOptions, deselectedOptions]);
 
   const textField = (
     <Autocomplete.TextField
-      onChange={(value) => {
-        updateText(value);
-      }}
+      onChange={(value) => updateText(value)}
       label={label}
       value={inputValue}
       placeholder={placeholder}
@@ -59,18 +69,12 @@ export function CustomAutoComplete({
     />
   );
 
-  useEffect(() => {
-    setInputValue(selectedOptions);
-  }, []);
-
   return (
-    <div>
-      <Autocomplete
-        options={options}
-        selected={selectedOptions}
-        onSelect={updateSelection}
-        textField={textField}
-      />
-    </div>
+    <Autocomplete
+      options={options}
+      selected={selectedOptions}
+      onSelect={updateSelection}
+      textField={textField}
+    />
   );
 }
