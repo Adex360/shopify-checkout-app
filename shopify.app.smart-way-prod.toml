@@ -23,16 +23,21 @@ scopes = "write_payment_customizations,write_products,write_validations"
 api_version = "2023-10"
 
 [[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
 compliance_topics = ["customers/data_request"]
 
 [[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
 compliance_topics = ["customers/redact"]
 
 [[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com//api/webhooks"
+uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
 compliance_topics = ["shop/redact"]
 
 [pos]
 embedded = false
+
+[app_proxy]
+url = "https://smart-checkout-new.ozeefy.com/"
+subpath = "api"
+prefix = "apps"
