@@ -12,8 +12,6 @@ target = "purchase.checkout.block.render"
 
 [extensions.capabilities]
 api_access = true
-
-
 network_access = true
 
 

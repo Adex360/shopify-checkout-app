@@ -7,6 +7,7 @@
     "shopify": "shopify",
     "build": "shopify app build",
     "dev": "shopify app dev",
+    "typegen":"shopify app function typegen",
     "info": "shopify app info",
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
