@@ -51,7 +51,8 @@ export function CityDropdown() {
 
   const fetchCustomFields = async () => {
     try {
-      let url = `https://${myshopifyDomain}/apps/api/api/v1/city-list/all/${myshopifyDomain}`;
+      // let url = `/apps/api/api/v1/city-list/all/${myshopifyDomain}`;
+      let url = CUSTOM_FIELDS_END_POINT;
       console.log({ url });
 
       const response = await fetch(url, {

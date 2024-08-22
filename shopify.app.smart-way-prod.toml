@@ -9,35 +9,28 @@ embedded = true
 [build]
 include_config_on_deploy = true
 
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_payment_customizations,write_products,write_validations"
+
 [auth]
 redirect_urls = [
   "https://smart-checkout-new.ozeefy.com/auth/callback",
   "https://smart-checkout-new.ozeefy.com/auth/shopify/callback",
-  "https://smart-checkout-new.ozeefy.com/api/auth/callback",
+  "https://smart-checkout-new.ozeefy.com/api/auth/callback"
 ]
-
-[access_scopes]
-scopes = "write_payment_customizations,write_products,write_validations"
 
 [webhooks]
 api_version = "2023-10"
 
-[[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
-compliance_topics = ["customers/data_request"]
-
-[[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
-compliance_topics = ["customers/redact"]
-
-[[webhooks.subscriptions]]
-uri = "https://smart-checkout-new.ozeefy.com/api/webhooks"
-compliance_topics = ["shop/redact"]
-
-[pos]
-embedded = false
+  [[webhooks.subscriptions]]
+  uri = "/api/webhooks"
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
 
 [app_proxy]
 url = "https://smart-checkout-new.ozeefy.com/"
 subpath = "api"
 prefix = "apps"
+
+[pos]
+embedded = false

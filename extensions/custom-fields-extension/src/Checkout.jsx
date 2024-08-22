@@ -45,13 +45,10 @@ function CustomFields() {
 
   const fetchCustomFields = async () => {
     try {
-      const response = await fetch(
-        `/apps/api/api/v1/custom-fields/all/${myshopifyDomain}`,
-        {
-          method: "GET",
-          headers: requestHeader,
-        }
-      );
+      const response = await fetch(`${CUSTOM_FIELDS_END_POINT}`, {
+        method: "GET",
+        headers: requestHeader,
+      });
       const data = await response.json();
       console.log("Fetched Custom Fields Data:", data);
       setCustomFields(Array.isArray(data.getAll) ? data.getAll : []);
