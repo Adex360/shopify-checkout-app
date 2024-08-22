@@ -103,7 +103,7 @@ const CustomFields = () => {
   });
   useState(() => {
     isSubscribed && getCustomFields();
-  }, []);
+  }, [isSubscribed]);
   return (
     <>
       {!isSubscribed ? (

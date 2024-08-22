@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://taking-billy-talking-matched.trycloudflare.com"
+application_url = "https://nw-include-tommy-acquired.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://taking-billy-talking-matched.trycloudflare.com/auth/callback",
-  "https://taking-billy-talking-matched.trycloudflare.com/auth/shopify/callback",
-  "https://taking-billy-talking-matched.trycloudflare.com/api/auth/callback"
+  "https://nw-include-tommy-acquired.trycloudflare.com/auth/callback",
+  "https://nw-include-tommy-acquired.trycloudflare.com/auth/shopify/callback",
+  "https://nw-include-tommy-acquired.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
