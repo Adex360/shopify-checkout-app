@@ -24,7 +24,6 @@ const Plans = () => {
   const { shop, loading, setLoading } = useAppContext();
   const shopifyFetch = useAuthenticatedFetch();
   const [plans, setPlans] = useState([]);
-  // const [loading, setLoading] = useState(false);
   const [btnLoading, setBtnLoading] = useState(false);
   const navigate = useNavigate();
 
