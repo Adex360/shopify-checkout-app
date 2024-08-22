@@ -556,27 +556,29 @@ const ReOrder = () => {
                 justifyContent: "end",
               }}
             >
-              <Button
-                loading={loading}
-                disabled={
-                  paymentTitles.length === 0 ||
-                  formData.title === "" ||
-                  (formData.paymentRule[0] === "condition" &&
-                    formData.paymentRuleConditions.some(
-                      (rule) =>
-                        (Array.isArray(rule.value) &&
-                          rule.value.length === 0) ||
-                        rule.value.includes("")
-                    ))
-                }
-                onClick={() => {
-                  id !== "create"
-                    ? updateCustomizationData()
-                    : handleCreateCustomization();
-                }}
-              >
-                {id !== "create" ? "Update" : "Create"}
-              </Button>
+              <Box paddingBlockEnd="800">
+                <Button
+                  loading={loading}
+                  disabled={
+                    paymentTitles.length === 0 ||
+                    formData.title === "" ||
+                    (formData.paymentRule[0] === "condition" &&
+                      formData.paymentRuleConditions.some(
+                        (rule) =>
+                          (Array.isArray(rule.value) &&
+                            rule.value.length === 0) ||
+                          rule.value.includes("")
+                      ))
+                  }
+                  onClick={() => {
+                    id !== "create"
+                      ? updateCustomizationData()
+                      : handleCreateCustomization();
+                  }}
+                >
+                  {id !== "create" ? "Update" : "Create"}
+                </Button>
+              </Box>
             </Box>
           </BlockStack>
         </Page>

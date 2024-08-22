@@ -26,7 +26,7 @@ const Payment = () => {
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
+  const [btnLoadingIndex, setBtnLoadingIndex] = useState(-1);
   // const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
   const [message, setMessage] = useState("");
@@ -67,7 +67,7 @@ const Payment = () => {
     } catch (e) {
       console.error(e);
     } finally {
-      setBtnLoadingIndex("");
+      setBtnLoadingIndex(-1);
     }
   };
 
@@ -104,7 +104,7 @@ const Payment = () => {
           Edit
         </Button>
         <Button
-          disabled={btnLoadingIndex > 0}
+          disabled={btnLoadingIndex > -1}
           variant="primary"
           loading={btnLoadingIndex === index}
           onClick={() => handleDeleteCustomization(data.id, index)}
