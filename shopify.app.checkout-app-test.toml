@@ -3,7 +3,7 @@
 client_id = "8bfa5c9a03d85943ff39537757b47a7c"
 name = "checkout-app-test"
 handle = "checkout-app-test-30"
-application_url = "https://lease-base-sterling-latin.trycloudflare.com"
+application_url = "https://groups-ppc-addressing-welsh.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://lease-base-sterling-latin.trycloudflare.com/auth/callback",
-  "https://lease-base-sterling-latin.trycloudflare.com/auth/shopify/callback",
-  "https://lease-base-sterling-latin.trycloudflare.com/api/auth/callback"
+  "https://groups-ppc-addressing-welsh.trycloudflare.com/auth/callback",
+  "https://groups-ppc-addressing-welsh.trycloudflare.com/auth/shopify/callback",
+  "https://groups-ppc-addressing-welsh.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -3,12 +3,12 @@ import prismaClient from "../db/prisma/index.js";
 
 export class PaymentCustomization {
   static async create(reOrderData) {
-    const newReorder = await prismaClient.payment_customization.create({
+    const newCustomization = await prismaClient.payment_customization.create({
       data: {
         ...reOrderData,
       },
     });
-    return newReorder;
+    return newCustomization;
   }
 
   static async getByTitle(title) {
@@ -24,17 +24,18 @@ export class PaymentCustomization {
     return titleFound;
   }
   static async getByID(id) {
-    const reOrderfound = await prismaClient.payment_customization.findUnique({
-      where: {
-        id,
-      },
-    });
+    const customizationFound =
+      await prismaClient.payment_customization.findUnique({
+        where: {
+          id,
+        },
+      });
 
-    if (!reOrderfound) {
+    if (!customizationFound) {
       throw new Error(`No reOrder found by this ID: ${id} `);
     }
 
-    return reOrderfound;
+    return customizationFound;
   }
 
   static async findAll(shop_id) {
@@ -72,7 +73,7 @@ export class PaymentCustomization {
       whereClause.rule_status = options.rule_status;
     }
 
-    const count = await prisma.payment_customization.count({
+    const count = await prismaClient.payment_customization.count({
       where: whereClause,
     });
 

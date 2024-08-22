@@ -8,9 +8,17 @@ query RunInput {
     deliveryGroups {
       deliveryAddress {
         countryCode
+        city
       }
       deliveryOptions {
         title
+      }
+    }
+    lines {
+      merchandise {
+        ... on ProductVariant {
+          sku
+        }
       }
     }
   }

@@ -1,4 +1,3 @@
-// @ts-check
 import { join } from "path";
 import { readFileSync } from "fs";
 import express from "express";
@@ -21,6 +20,10 @@ const PORT = parseInt(
   10
 );
 
+BigInt.prototype.toJSON = function () {
+  return Number(this);
+};
+
 const STATIC_PATH =
   process.env.NODE_ENV === "production"
     ? `${process.cwd()}/frontend/dist`
@@ -42,7 +45,6 @@ app.post(
 );
 
 app.use(express.json());
-
 registerClientApi(app);
 
 // If you are adding routes outside of the /api path, remember to
