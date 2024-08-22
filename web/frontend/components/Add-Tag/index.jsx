@@ -41,6 +41,7 @@ const AddTag = ({ placeholder, tags, setTags, error, ...props }) => {
             }}
           >
             <TextField
+              size="slim"
               {...props}
               error={tags?.length === 0 && error}
               value={inputValue}

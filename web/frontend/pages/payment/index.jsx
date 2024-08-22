@@ -92,7 +92,7 @@ const Payment = () => {
       ) : (
         <Badge tone="attention-strong">Inactive</Badge>
       ),
-      <Box maxWidth="200px">
+      <Box width="200px">
         <Text truncate={true}>{ruleCondition}</Text>
       </Box>,
       <ButtonGroup variant="segmented">
@@ -104,6 +104,7 @@ const Payment = () => {
           Edit
         </Button>
         <Button
+          disabled={btnLoadingIndex > 0}
           variant="primary"
           loading={btnLoadingIndex === index}
           onClick={() => handleDeleteCustomization(data.id, index)}

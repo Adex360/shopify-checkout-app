@@ -23,7 +23,11 @@ import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 import {} from "@shopify/polaris-icons";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
-import { paymentMethods } from "../../../constants";
+import {
+  customizationRuleForCountry,
+  customizationRuleForPayment,
+  paymentMethods,
+} from "../../../constants";
 
 const ReOrder = () => {
   const shopifyFetch = useAuthenticatedFetch();
@@ -354,40 +358,47 @@ const ReOrder = () => {
                                     label: "Country",
                                     value: "country",
                                   },
+                                  {
+                                    label: "Total Amount",
+                                    value: "total-amount",
+                                  },
+                                  {
+                                    label: "SKU",
+                                    value: "sku",
+                                  },
+                                  {
+                                    label: "City",
+                                    value: "city",
+                                  },
                                 ]}
                                 onChange={(value) => {
                                   handleSortingRuleChange(index, "value", []);
+                                  handleSortingRuleChange(
+                                    index,
+                                    "rule",
+                                    value === "total-amount"
+                                      ? "equal-to"
+                                      : "contain"
+                                  );
+                                  console.log(
+                                    formData.paymentRuleConditions[index].rule
+                                  );
                                   handleSortingRuleChange(index, "type", value);
                                 }}
                               />
                               <Select
                                 value={condition.rule}
-                                options={[
-                                  {
-                                    label: "Contain",
-                                    value: "contain",
-                                  },
-                                  {
-                                    label: "Does not contain",
-                                    value: "does-not-contains",
-                                  },
-                                ]}
+                                options={
+                                  condition.type !== "total-amount"
+                                    ? customizationRuleForCountry
+                                    : customizationRuleForPayment
+                                }
                                 onChange={(value) => {
                                   handleSortingRuleChange(index, "rule", value);
                                 }}
                               />
-                              {condition.type === "title" ? (
-                                <AddTag
-                                  setTags={(value) =>
-                                    handleSortingRuleChange(
-                                      index,
-                                      "value",
-                                      value
-                                    )
-                                  }
-                                  tags={condition.value}
-                                />
-                              ) : (
+                              {}
+                              {condition.type === "country" ? (
                                 <>
                                   {countries.length > 0 ? (
                                     <SearchAndSelect
@@ -411,6 +422,46 @@ const ReOrder = () => {
                                       <Spinner size="small" />
                                     </BlockStack>
                                   )}
+                                </>
+                              ) : condition.type === "city" ||
+                                condition.type === "sku" ? (
+                                <>
+                                  <AddTag
+                                    setTags={(value) =>
+                                      handleSortingRuleChange(
+                                        index,
+                                        "value",
+                                        value
+                                      )
+                                    }
+                                    placeholder={
+                                      condition.type === "city"
+                                        ? "Enter Cities"
+                                        : "Enter SKU"
+                                    }
+                                    tags={condition.value}
+                                  />
+                                </>
+                              ) : (
+                                <>
+                                  <TextField
+                                    value={condition.value[0]}
+                                    type={
+                                      condition.type === "title"
+                                        ? "text"
+                                        : "number"
+                                    }
+                                    placeholder={
+                                      condition.type === "title"
+                                        ? "Add shipping title"
+                                        : "Add amount "
+                                    }
+                                    onChange={(value) => {
+                                      handleSortingRuleChange(index, "value", [
+                                        value,
+                                      ]);
+                                    }}
+                                  />
                                 </>
                               )}
                             </>
