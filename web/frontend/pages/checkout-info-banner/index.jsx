@@ -19,7 +19,7 @@ const InfoBanner = () => {
             </Text>
             <Box paddingBlockStart="400">
               <Button
-                url={`https://admin.shopify.com/store/${shop.name.toLowerCase()}/settings/checkout`}
+                url={`https://admin.shopify.com/store/${shop.shop_name.split(".myshopify.com")[0]}/settings/checkout`}
               >
                 Go to Checkout Settings
               </Button>

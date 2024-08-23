@@ -20,8 +20,6 @@ const AddTag = ({ placeholder, tags, setTags, error, ...props }) => {
     if (trimmedValue !== "" && !tags.includes(trimmedValue)) {
       setTags([...tags, trimmedValue]);
       setInputValue("");
-
-      console.log(tags);
     }
   };
 
@@ -41,6 +39,7 @@ const AddTag = ({ placeholder, tags, setTags, error, ...props }) => {
             }}
           >
             <TextField
+              size="slim"
               {...props}
               error={tags?.length === 0 && error}
               value={inputValue}

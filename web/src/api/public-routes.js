@@ -3,7 +3,11 @@ import { errorHandler } from "../middleware/index.js";
 import * as CustomFieldController from "../controllers/index.js";
 import * as CityListController from "../controllers/index.js";
 
+import cors from "cors";
+
 const router = new express.Router();
+
+router.use(cors());
 
 router.get(
   "/custom-fields/all/:shop_name",

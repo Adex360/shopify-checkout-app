@@ -24,7 +24,6 @@ export default function HomePage() {
   const { count, activeCount } = shop;
   // const isSubscribed = shop.plan_status === "active";
 
-  console.log(shop);
   const shopifyFetch = useAuthenticatedFetch();
 
   const navigate = useNavigate();
