@@ -31,11 +31,12 @@ export function CityDropdown() {
   const [selectedCity, setSelectedCity] = useState("");
 
   const applyAttributeChange = useApplyAttributeChange();
-  const { shippingAddress, applyShippingAddressChange } = useApi();
-
+  const { shippingAddress, applyShippingAddressChange, billingAddress } =
+    useApi();
   const fetchCityList = async () => {
     try {
       const response = await fetch(
+        // CUSTOM_FIELDS_END_POINT,
         `/apps/api/v1/city-list/all/${myshopifyDomain}`,
         {
           method: "GET",
@@ -56,7 +57,7 @@ export function CityDropdown() {
   useEffect(() => {
     if (shippingAddress?.current?.countryCode && cityList.length > 0) {
       const selectedCountry = cityList.find(
-        (country) => country.country_code === billing.countryCode
+        (country) => country.country_code === billingAddress.current.countryCode
       );
 
       if (selectedCountry) {
