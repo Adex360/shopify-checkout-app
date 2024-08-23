@@ -271,6 +271,7 @@ export function run(input) {
           const renamePaymentMethod = input.paymentMethods.find(
             (method) => method.name === name.old
           );
+          console.log("renamePaymentMethod", renamePaymentMethod);
 
           if (renamePaymentMethod) {
             operations.push({

@@ -10,7 +10,6 @@ import {
   ScrollView,
   ToggleButton,
   ToggleButtonGroup,
-  useBillingAddress,
   useApi,
 } from "@shopify/ui-extensions-react/checkout";
 
@@ -19,7 +18,6 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 export function CityDropdown() {
-  const billing = useBillingAddress();
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };

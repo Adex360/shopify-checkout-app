@@ -3,7 +3,7 @@
 client_id = "8bfa5c9a03d85943ff39537757b47a7c"
 name = "checkout-app-test"
 handle = "checkout-app-test-30"
-application_url = "https://supervision-barbara-guitar-workshop.trycloudflare.com"
+application_url = "https://3a2d-39-58-102-216.ngrok-free.app"
 embedded = true
 
 [build]
@@ -17,13 +17,18 @@ scopes = "read_products,write_payment_customizations,write_products,write_valida
 
 [auth]
 redirect_urls = [
-  "https://supervision-barbara-guitar-workshop.trycloudflare.com/auth/callback",
-  "https://supervision-barbara-guitar-workshop.trycloudflare.com/auth/shopify/callback",
-  "https://supervision-barbara-guitar-workshop.trycloudflare.com/api/auth/callback"
+  "https://3a2d-39-58-102-216.ngrok-free.app/auth/callback",
+  "https://3a2d-39-58-102-216.ngrok-free.app/auth/shopify/callback",
+  "https://3a2d-39-58-102-216.ngrok-free.app/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
+
+[app_proxy]
+url = "https://3a2d-39-58-102-216.ngrok-free.app"
+subpath = "api"
+prefix = "apps"
 
 [pos]
 embedded = false
