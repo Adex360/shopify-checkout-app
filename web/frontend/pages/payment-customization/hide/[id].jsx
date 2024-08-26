@@ -52,7 +52,7 @@ const Hide = () => {
     customizationRule: [
       {
         type: "country",
-        rule: "equal-to",
+        rule: "contains",
         value: [],
       },
     ],
@@ -120,7 +120,7 @@ const Hide = () => {
           ...prev.customizationRule,
           {
             type: "country",
-            rule: "equal-to",
+            rule: "contains",
             value: [],
           },
         ],
@@ -154,10 +154,11 @@ const Hide = () => {
   };
 
   const handleFormDataChange = (name, value) => {
+    const selectedValue = Array.isArray(value) ? value[0] : value;
     setFormData((prev) => {
       return {
         ...prev,
-        [name]: value,
+        [name]: selectedValue,
       };
     });
   };
@@ -204,7 +205,6 @@ const Hide = () => {
         },
       }),
     });
-
     const data = await resp.json();
     if (resp.ok) {
       show("Updated Successfully!", {

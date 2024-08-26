@@ -55,7 +55,7 @@ const ReName = () => {
     customizationRule: [
       {
         type: "country",
-        rule: "equal-to",
+        rule: "contains",
         value: [],
       },
     ],
@@ -128,7 +128,6 @@ const ReName = () => {
       };
     });
   };
-
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {
@@ -428,7 +427,7 @@ const ReName = () => {
                                           "rule",
                                           value === "total-amount"
                                             ? "equal-to"
-                                            : "contain"
+                                            : "contains"
                                         );
                                       }}
                                     />
@@ -593,14 +592,27 @@ const ReName = () => {
                                 <CustomAutoComplete
                                   placeholder="Previous Payment Method"
                                   selectionOptions={paymentMethods}
-                                  selectedOptions={payment.old}
+                                  // selectedOptions={payment.old}
+                                  selectedOptions={
+                                    payment.old ? [payment.old] : []
+                                  }
                                   setSelectedOptions={(value) => {
+                                    const selectedValue = Array.isArray(value)
+                                      ? value[0]
+                                      : value;
                                     handlePaymentRuleChange(
                                       index,
                                       "old",
-                                      value
+                                      selectedValue
                                     );
                                   }}
+                                  // setSelectedOptions={(value) => {
+                                  //   handlePaymentRuleChange(
+                                  //     index,
+                                  //     "old",
+                                  //     value
+                                  //   );
+                                  // }}
                                 />
 
                                 <TextField
