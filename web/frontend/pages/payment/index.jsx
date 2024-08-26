@@ -21,12 +21,10 @@ import { useAppContext } from "../../context";
 
 const Payment = () => {
   const { isSubscribed, shop, loading, setLoading } = useAppContext();
-  console.log(isSubscribed);
-  console.log(shop.activeCount);
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
+  const [btnLoadingIndex, setBtnLoadingIndex] = useState(-1);
   // const [loading, setLoading] = useState(false);
   const [customizationRules, setCustomizationRules] = useState([]);
   const [message, setMessage] = useState("");
@@ -67,7 +65,7 @@ const Payment = () => {
     } catch (e) {
       console.error(e);
     } finally {
-      setBtnLoadingIndex("");
+      setBtnLoadingIndex(-1);
     }
   };
 
@@ -92,7 +90,7 @@ const Payment = () => {
       ) : (
         <Badge tone="attention-strong">Inactive</Badge>
       ),
-      <Box maxWidth="200px">
+      <Box width="200px">
         <Text truncate={true}>{ruleCondition}</Text>
       </Box>,
       <ButtonGroup variant="segmented">
@@ -104,6 +102,7 @@ const Payment = () => {
           Edit
         </Button>
         <Button
+          disabled={btnLoadingIndex > -1}
           variant="primary"
           loading={btnLoadingIndex === index}
           onClick={() => handleDeleteCustomization(data.id, index)}

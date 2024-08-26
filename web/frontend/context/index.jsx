@@ -17,7 +17,6 @@ const AppContextProvider = ({ children }) => {
       if (resp.ok) {
         setShop(data);
         setLoading(false);
-        console.log(data);
         data.plan_status === "active"
           ? setIsSubscribed(true)
           : navigate("/plans");

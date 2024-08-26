@@ -113,7 +113,6 @@ const CreateCustomFields = () => {
   const handleSettingFieldsChange = (name, value, index) => {
     if (name === "options") {
       const newValue = value.split(",").map((item) => item);
-      console.log(newValue);
       setCustomFields((prev) => {
         const tempArr = [...prev];
         tempArr[index][name] = newValue;
@@ -158,7 +157,6 @@ const CreateCustomFields = () => {
               options={options[key]}
               value={customFields[index][key]}
               onChange={(value) => {
-                console.log(value);
                 handleSettingFieldsChange(key, value, index);
               }}
             />
@@ -208,7 +206,6 @@ const CreateCustomFields = () => {
         );
 
       case "Radio":
-        console.log(field, "optionlist................................");
         return (
           <>
             <ChoiceList
@@ -252,7 +249,6 @@ const CreateCustomFields = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         show(data.message);
         setLoading(false);
         navigate("/custom-fields");
@@ -270,7 +266,6 @@ const CreateCustomFields = () => {
       const resp = await shopifyFetch(`/api/v1/custom-fields/${id}`);
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         const { getByID } = data;
         setFormName(getByID.title);
         setCustomFields(getByID.fields);
@@ -301,7 +296,6 @@ const CreateCustomFields = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
         show(data.message);
         setLoading(false);
         navigate("/custom-fields");

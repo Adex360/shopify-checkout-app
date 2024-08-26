@@ -10,7 +10,6 @@ import {
   ScrollView,
   ToggleButton,
   ToggleButtonGroup,
-  useBillingAddress,
   useApi,
 } from "@shopify/ui-extensions-react/checkout";
 
@@ -19,7 +18,6 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 export function CityDropdown() {
-  const billing = useBillingAddress();
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
@@ -31,8 +29,8 @@ export function CityDropdown() {
   const [selectedCity, setSelectedCity] = useState("");
 
   const applyAttributeChange = useApplyAttributeChange();
-  const { shippingAddress, applyShippingAddressChange } = useApi();
-
+  const { shippingAddress, applyShippingAddressChange, billingAddress } =
+    useApi();
   const fetchCityList = async () => {
     try {
       // let url = `/apps/api/api/v1/city-list/all/${myshopifyDomain}`;
@@ -57,7 +55,7 @@ export function CityDropdown() {
   useEffect(() => {
     if (shippingAddress?.current?.countryCode && cityList.length > 0) {
       const selectedCountry = cityList.find(
-        (country) => country.country_code === billing.countryCode
+        (country) => country.country_code === billingAddress.current.countryCode
       );
 
       if (selectedCountry) {

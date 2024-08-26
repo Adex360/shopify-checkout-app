@@ -112,39 +112,34 @@ export function run(input) {
     if (setting.phone_validation) {
       const phoneValidation = setting.phone_validation;
 
-      // Check if the phone starts with any of the allowed country codes
       const isCountryCodeValid = phoneValidation.country_code.some((code) =>
         phone.startsWith(code)
       );
-
       if (!isCountryCodeValid) {
         errors.push({
           localizedMessage: phoneValidation.error_message,
           target: "$.cart.deliveryGroups[0].deliveryAddress.phone",
         });
       } else {
-        // Find the matching country code to calculate where the network code starts
         const matchedCountryCode = phoneValidation.country_code.find((code) =>
           phone.startsWith(code)
         );
         const startOfNetworkCode = matchedCountryCode.length;
-        console.log("startOfNetworkCode", startOfNetworkCode);
+        const networkCodeLength = Number(phoneValidation.network_code);
+        const phoneNoLength = Number(phoneValidation.phone_no_length);
         const networkCode = phone.slice(
           startOfNetworkCode,
-          startOfNetworkCode + phoneValidation.network_code
+          startOfNetworkCode + networkCodeLength
         );
-
-        if (networkCode.length !== phoneValidation.network_code) {
+        if (networkCode.length !== networkCodeLength) {
           errors.push({
             localizedMessage: phoneValidation.error_message,
             target: "$.cart.deliveryGroups[0].deliveryAddress.phone",
           });
         }
-
-        const startOfPhoneNo =
-          startOfNetworkCode + phoneValidation.network_code;
-        const phoneNoLength = phone.slice(startOfPhoneNo).length;
-        if (phoneNoLength !== phoneValidation.phone_no_length) {
+        const startOfPhoneNo = startOfNetworkCode + networkCodeLength;
+        const actualPhoneNoLength = phone.slice(startOfPhoneNo).length;
+        if (actualPhoneNoLength !== phoneNoLength) {
           errors.push({
             localizedMessage: phoneValidation.error_message,
             target: "$.cart.deliveryGroups[0].deliveryAddress.phone",

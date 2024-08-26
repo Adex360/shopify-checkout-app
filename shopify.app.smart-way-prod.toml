@@ -20,6 +20,9 @@ redirect_urls = [
   "https://smart-checkout-new.ozeefy.com/api/auth/callback"
 ]
 
+[access_scopes]
+scopes = "write_payment_customizations,write_products,write_validations,read_customers"
+
 [webhooks]
 api_version = "2023-10"
 

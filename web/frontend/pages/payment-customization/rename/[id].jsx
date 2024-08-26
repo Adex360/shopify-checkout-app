@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   BlockStack,
   Box,
@@ -55,7 +55,7 @@ const ReName = () => {
     customizationRule: [
       {
         type: "country",
-        rule: "equal-to",
+        rule: "contains",
         value: [],
       },
     ],
@@ -128,7 +128,6 @@ const ReName = () => {
       };
     });
   };
-
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {
@@ -209,7 +208,6 @@ const ReName = () => {
       if (resp.ok) {
         const { getByID } = data;
 
-        console.log(getByID);
         setFormData({
           title: getByID.title,
           type: getByID.type,
@@ -254,8 +252,6 @@ const ReName = () => {
       setLoading(false);
     }
   };
-
-  console.log();
 
   useEffect(() => {
     if (id !== "create") {
@@ -403,6 +399,14 @@ const ReName = () => {
                                           label: "Total Amount",
                                           value: "total-amount",
                                         },
+                                        {
+                                          label: "SKU",
+                                          value: "sku",
+                                        },
+                                        {
+                                          label: "City",
+                                          value: "city",
+                                        },
                                       ]}
                                       value={rule.type}
                                       onChange={(value) => {
@@ -418,6 +422,13 @@ const ReName = () => {
                                           "type",
                                           value
                                         );
+                                        handleCustomizationRuleChange(
+                                          index,
+                                          "rule",
+                                          value === "total-amount"
+                                            ? "equal-to"
+                                            : "contains"
+                                        );
                                       }}
                                     />
                                     <Select
@@ -430,9 +441,9 @@ const ReName = () => {
                                         );
                                       }}
                                       options={
-                                        rule.type === "total-amount"
-                                          ? customizationRuleForPayment
-                                          : customizationRuleForCountry
+                                        rule.type !== "total-amount"
+                                          ? customizationRuleForCountry
+                                          : customizationRuleForPayment
                                       }
                                       value={rule.rule}
                                     />
@@ -450,7 +461,11 @@ const ReName = () => {
                                               value
                                             );
                                           }}
-                                          placeholder="Search Countries"
+                                          placeholder={
+                                            rule.type === "country"
+                                              ? "Search Countries"
+                                              : "Search Tags"
+                                          }
                                           selectionOption={countries}
                                         />
                                       ) : (
@@ -462,8 +477,26 @@ const ReName = () => {
                                         </BlockStack>
                                       )}
                                     </>
+                                  ) : rule.type === "city" ||
+                                    rule.type === "sku" ? (
+                                    <>
+                                      <AddTag
+                                        tags={rule.value}
+                                        setTags={(value) => {
+                                          handleCustomizationRuleChange(
+                                            index,
+                                            "value",
+                                            value
+                                          );
+                                        }}
+                                        placeholder={
+                                          rule.type === "city"
+                                            ? "Enter Cities"
+                                            : "Enter SKU"
+                                        }
+                                      />
+                                    </>
                                   ) : (
-                                    // passing string into array due to server side validation
                                     <TextField
                                       value={rule.value[0]}
                                       type={
@@ -485,6 +518,18 @@ const ReName = () => {
                                       }}
                                     />
                                   )}
+
+                                  <InlineStack align="end">
+                                    {formData.customizationRule.length > 1 && (
+                                      <Button
+                                        variant="primary"
+                                        icon={DeleteIcon}
+                                        onClick={() => {
+                                          handleDeleCondition(index);
+                                        }}
+                                      />
+                                    )}
+                                  </InlineStack>
                                 </BlockStack>
                               </Card>
                             </Box>
@@ -506,7 +551,7 @@ const ReName = () => {
                       variant="primary"
                       icon={PlusCircleIcon}
                     >
-                      Add Condition
+                      Add New Condition
                     </Button>
                   </InlineStack>
                 </BlockStack>
@@ -547,14 +592,27 @@ const ReName = () => {
                                 <CustomAutoComplete
                                   placeholder="Previous Payment Method"
                                   selectionOptions={paymentMethods}
-                                  selectedOptions={payment.old}
+                                  // selectedOptions={payment.old}
+                                  selectedOptions={
+                                    payment.old ? [payment.old] : []
+                                  }
                                   setSelectedOptions={(value) => {
+                                    const selectedValue = Array.isArray(value)
+                                      ? value[0]
+                                      : value;
                                     handlePaymentRuleChange(
                                       index,
                                       "old",
-                                      value
+                                      selectedValue
                                     );
                                   }}
+                                  // setSelectedOptions={(value) => {
+                                  //   handlePaymentRuleChange(
+                                  //     index,
+                                  //     "old",
+                                  //     value
+                                  //   );
+                                  // }}
                                 />
 
                                 <TextField
@@ -605,27 +663,29 @@ const ReName = () => {
                 justifyContent: "end",
               }}
             >
-              <Button
-                disabled={
-                  formData.title === "" ||
-                  formData.paymentName.some((obj) =>
-                    Object.values(obj).some((value) => value === "")
-                  ) ||
-                  (formData.ruleType[0] === "condition" &&
-                    formData.customizationRule.some(
-                      (rule) =>
-                        Array.isArray(rule.value) && rule.value.length === 0
-                    ))
-                }
-                loading={loading}
-                onClick={() => {
-                  id !== "create"
-                    ? updateCustomizationData()
-                    : handleCreateCustomization();
-                }}
-              >
-                {id !== "create" ? "Update" : "Create"}
-              </Button>
+              <Box paddingBlockEnd="800">
+                <Button
+                  disabled={
+                    formData.title === "" ||
+                    formData.paymentName.some((obj) =>
+                      Object.values(obj).some((value) => value === "")
+                    ) ||
+                    (formData.ruleType[0] === "condition" &&
+                      formData.customizationRule.some(
+                        (rule) =>
+                          Array.isArray(rule.value) && rule.value.length === 0
+                      ))
+                  }
+                  loading={loading}
+                  onClick={() => {
+                    id !== "create"
+                      ? updateCustomizationData()
+                      : handleCreateCustomization();
+                  }}
+                >
+                  {id !== "create" ? "Update" : "Create"}
+                </Button>
+              </Box>
             </Box>
           </BlockStack>
         </Page>
