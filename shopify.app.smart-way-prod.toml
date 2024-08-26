@@ -11,7 +11,7 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_payment_customizations,write_products,write_validations"
+scopes = "write_payment_customizations,write_products,write_validations,read_customers"
 
 [auth]
 redirect_urls = [
@@ -19,9 +19,6 @@ redirect_urls = [
   "https://smart-checkout-new.ozeefy.com/auth/shopify/callback",
   "https://smart-checkout-new.ozeefy.com/api/auth/callback"
 ]
-
-[access_scopes]
-scopes = "write_payment_customizations,write_products,write_validations,read_customers"
 
 [webhooks]
 api_version = "2023-10"
