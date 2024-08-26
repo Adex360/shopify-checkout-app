@@ -17,7 +17,7 @@ redirect_urls = [
 ]
 
 [access_scopes]
-scopes = "write_payment_customizations,write_products,write_validations,write_customers"
+scopes = "write_payment_customizations,write_products,write_validations,read_customers"
 
 [webhooks]
 api_version = "2023-10"
