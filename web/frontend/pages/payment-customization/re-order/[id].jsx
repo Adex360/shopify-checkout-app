@@ -378,7 +378,7 @@ const ReOrder = () => {
                                     "rule",
                                     value === "total-amount"
                                       ? "equal-to"
-                                      : "contain"
+                                      : "contains"
                                   );
                                   handleSortingRuleChange(index, "type", value);
                                 }}

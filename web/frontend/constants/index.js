@@ -22,7 +22,8 @@ export const paymentMethods = [
   },
   {
     label: "Bogus Gateway",
-    value: "Bogus Gateway",
+    value: "(for testing) Bogus Gateway",
+    // "Bogus Gateway",
   },
   {
     label: "Cash on Delivery (COD)",

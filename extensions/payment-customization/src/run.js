@@ -61,6 +61,7 @@ export function run(input) {
 
   let operations = [];
   if (configuration.type === PAYMENT_TYPE.RE_ORDER) {
+    console.log("okk");
     if (!configuration.payment_rule && configuration.conditions) {
       const countryCodes = input.cart.deliveryGroups.map((group) => {
         return group?.deliveryAddress?.countryCode;
@@ -86,7 +87,7 @@ export function run(input) {
           condition.type === CONDITION.CITY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return cityName.some((name) => condition.value.includes(name));
+          return cityName.some((name) => !condition.value.includes(name));
         }
         if (
           condition.type === CONDITION.SKU &&
@@ -98,7 +99,7 @@ export function run(input) {
           condition.type === CONDITION.SKU &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return skus.some((sku) => condition.value.includes(sku));
+          return skus.every((sku) => !condition.value.includes(sku));
         }
         if (
           condition.type === CONDITION.COUNTRY &&
@@ -110,7 +111,7 @@ export function run(input) {
           condition.type === CONDITION.COUNTRY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !countryCodes.some((code) => condition.value.includes(code));
+          return !countryCodes.some((code) => !condition.value.includes(code));
         }
         if (
           condition.type === CONDITION.TITLE &&
@@ -124,7 +125,9 @@ export function run(input) {
           condition.type === CONDITION.TITLE &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !deliveryTitles.some((name) => condition.value.includes(name));
+          return !deliveryTitles.some(
+            (name) => !condition.value.includes(name)
+          );
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
           const value = parseFloat(condition.value);
@@ -210,7 +213,7 @@ export function run(input) {
           condition.type === CONDITION.CITY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return cityName.some((name) => condition.value.includes(name));
+          return cityName.some((name) => !condition.value.includes(name));
         }
         if (
           condition.type === CONDITION.SKU &&
@@ -222,7 +225,8 @@ export function run(input) {
           condition.type === CONDITION.SKU &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return skus.some((sku) => condition.value.includes(sku));
+          // console.log("aa",skus.some((sku) => condition.value.includes(sku));)
+          return skus.some((sku) => !condition.value.includes(sku));
         }
         if (
           condition.type === CONDITION.COUNTRY &&
@@ -234,7 +238,7 @@ export function run(input) {
           condition.type === CONDITION.COUNTRY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !countryCodes.some((code) => condition.value.includes(code));
+          return !countryCodes.some((code) => !condition.value.includes(code));
         }
         if (
           condition.type === CONDITION.TITLE &&
@@ -248,7 +252,9 @@ export function run(input) {
           condition.type === CONDITION.TITLE &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !deliveryTitles.some((name) => condition.value.includes(name));
+          return !deliveryTitles.some(
+            (name) => !condition.value.includes(name)
+          );
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
           const value = parseFloat(condition.value);
@@ -271,6 +277,7 @@ export function run(input) {
           const renamePaymentMethod = input.paymentMethods.find(
             (method) => method.name === name.old
           );
+          console.log("renamePaymentMethod", renamePaymentMethod);
 
           if (renamePaymentMethod) {
             operations.push({
@@ -284,6 +291,20 @@ export function run(input) {
       }
     } else {
       console.log("WITHOUT CONDITION");
+      configuration.payment_name.forEach((name) => {
+        const renamePaymentMethod = input.paymentMethods.find(
+          (method) => method.name === name.old
+        );
+
+        if (renamePaymentMethod) {
+          operations.push({
+            rename: {
+              paymentMethodId: renamePaymentMethod.id,
+              name: name.new,
+            },
+          });
+        }
+      });
     }
   }
 
@@ -318,7 +339,7 @@ export function run(input) {
         condition.type === CONDITION.CITY &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return cityName.some((name) => condition.value.includes(name));
+        return cityName.some((name) => !condition.value.includes(name));
       }
       if (
         condition.type === CONDITION.SKU &&
@@ -330,7 +351,7 @@ export function run(input) {
         condition.type === CONDITION.SKU &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return skus.some((sku) => condition.value.includes(sku));
+        return skus.some((sku) => !condition.value.includes(sku));
       }
 
       if (
@@ -343,7 +364,7 @@ export function run(input) {
         condition.type === CONDITION.COUNTRY &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return !countryCodes.some((code) => condition.value.includes(code));
+        return !countryCodes.some((code) => !condition.value.includes(code));
       }
       if (
         condition.type === CONDITION.TITLE &&
@@ -355,7 +376,7 @@ export function run(input) {
         condition.type === CONDITION.TITLE &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return !deliveryTitles.some((name) => condition.value.includes(name));
+        return !deliveryTitles.some((name) => !condition.value.includes(name));
       }
       if (condition.type === CONDITION.TOTAL_AMOUNT) {
         const value = parseFloat(condition.value);
@@ -372,18 +393,12 @@ export function run(input) {
       return false;
     });
     if (conditionsMet) {
-      console.log("condition met ");
+      console.log("CONDITION MET");
       const paymentNames = configuration.payment_name.title;
       paymentNames.forEach((name) => {
-        console.log("namee", name);
         let hidePaymentMethod;
-
         hidePaymentMethod = input.paymentMethods.find((method) =>
           method.name.includes(name)
-        );
-        console.log(
-          "skus.some((sku) => condition.value.includes(sku))s",
-          hidePaymentMethod
         );
         if (hidePaymentMethod) {
           operations.push({
@@ -394,11 +409,11 @@ export function run(input) {
         }
       });
     } else {
-      console.log("no condition");
+      console.log("NO CONDTION");
     }
   }
 
-  console.log("operation  ", operations);
+  console.log("OPERATIONS", operations);
 
   if (operations.length === 0) {
     return NO_CHANGES;

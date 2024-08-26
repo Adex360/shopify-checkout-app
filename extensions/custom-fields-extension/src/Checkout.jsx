@@ -78,7 +78,6 @@ function CustomFields() {
   };
   const renderField = (field) => {
     const fieldWidth = field.field_width === "half" ? "50%" : "100%";
-    console.log("ield.type", field.type);
     switch (field.type) {
       case "Divider":
         return (
