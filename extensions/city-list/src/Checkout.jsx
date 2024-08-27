@@ -65,7 +65,7 @@ export function CityDropdown() {
         setFilteredCities([]);
       }
     }
-  }, [billing.countryCode, cityList, shippingAddress]);
+  }, [billingAddress.current.countryCode, cityList, shippingAddress]);
 
   const handleInputChange = (value) => {
     setInputValue(value);
