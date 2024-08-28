@@ -23,12 +23,10 @@ export const getShop = async (req, res) => {
   });
   const activeCountries = await CityList.activeCountries();
   const countryNames = activeCountries.map((country) => country.country_name);
-  return res
-    .status(200)
-    .send({
-      ...updatedShop,
-      count: counts,
-      activeCount: activeCount,
-      activeCountries: countryNames,
-    });
+  return res.status(200).send({
+    ...updatedShop,
+    count: counts,
+    activeCount: activeCount,
+    activeCountries: countryNames,
+  });
 };

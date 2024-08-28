@@ -1,4 +1,3 @@
-import ShopifyApp from "../shopify/index.js";
 import prismaClient from "../db/prisma/index.js";
 
 export class PaymentCustomization {
@@ -11,10 +10,11 @@ export class PaymentCustomization {
     return newCustomization;
   }
 
-  static async getByTitle(title) {
-    const titleFound = await prismaClient.payment_customization.findUnique({
+  static async getByTitle(title, shop_id) {
+    const titleFound = await prismaClient.payment_customization.findFirst({
       where: {
         title,
+        shop_id,
       },
     });
     if (titleFound) {
@@ -39,10 +39,10 @@ export class PaymentCustomization {
   }
 
   static async findAll(shop_id) {
-    const reOrders = await prismaClient.payment_customization.findMany({
+    const allCustomization = await prismaClient.payment_customization.findMany({
       where: { shop_id },
     });
-    return reOrders;
+    return allCustomization;
   }
 
   static async update(reOrderData) {

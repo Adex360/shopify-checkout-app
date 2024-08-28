@@ -10,14 +10,27 @@ export class Validation {
     return newValidation;
   }
 
-  static async getByTitle(title) {
-    const titleFound = await prismaClient.validation.findUnique({
+  // static async getByTitle(title) {
+  //   const titleFound = await prismaClient.validation.findUnique({
+  //     where: {
+  //       title,
+  //     },
+  //   });
+  //   if (titleFound) {
+  //     throw new Error(`Title already exist  `);
+  //   }
+
+  //   return titleFound;
+  // }
+  static async getByTitle(title, shop_id) {
+    const titleFound = await prismaClient.validation.findFirst({
       where: {
         title,
+        shop_id,
       },
     });
     if (titleFound) {
-      throw new Error(`Title already exist  `);
+      throw new Error(`Title already exist. Please choose a different title.`);
     }
 
     return titleFound;

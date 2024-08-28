@@ -41,12 +41,15 @@ model Shop {
   validation             Validation[]
   custom_fields          Custom_field[]
   city_list              City_list[]
+  discount               Discount[]
 }
 
 model Payment_customization {
   id           String  @id @default(uuid())
+  payment_id   String
+  function_id  String
   type         String
-  title        String  @unique
+  title        String
   rule_status  Boolean
   payment_rule Boolean
   conditions   Json
@@ -59,7 +62,9 @@ model Payment_customization {
 
 model Validation {
   id                    String  @id @default(uuid())
-  title                 String  @unique
+  validation_id         String
+  function_id           String
+  title                 String
   enabled               Boolean
   country_name          String
   phone_validation      Json?
@@ -85,7 +90,6 @@ model Custom_field {
 model City_list {
   id           String  @id @default(uuid())
   enabled      Boolean
-  // country_name String  @unique
   country_name String
   country_code String
   city_list    Json
@@ -95,6 +99,29 @@ model City_list {
 
   @@unique([shop_id, country_name])
   @@map("city_list")
+}
+
+model Discount {
+  id               String    @id @default(uuid())
+  discount_id      String
+  enabled          Boolean
+  title            String
+  discount_type    String
+  discount_value   String
+  discount_message String
+  discount_rule    Boolean
+  discount_class   String
+  combines_with    Json
+  startsAt         DateTime
+  endsAt           DateTime?
+  has_condition    Boolean   @default(false)
+  conditions       Json?
+  function_id      String
+
+  shop_id String
+  shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("discount")
 }
 
 model Plan {

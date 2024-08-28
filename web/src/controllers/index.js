@@ -6,3 +6,4 @@ export * from "./admin-controller.js";
 export * from "./plan-controller.js";
 export * from "./confirmation-controller.js";
 export * from "./shop-controller.js";
+export * from "./discount-controller.js";

@@ -8,6 +8,7 @@ import { adminRoutes } from "./admin-routes.js";
 import { planRoutes } from "./plan-routes.js";
 import { confirmationRoutes } from "./confirmation-routes.js";
 import { shopRoutes } from "./shop-routes.js";
+import { discountRoutes } from "./discount-routes.js";
 const API_PREFIX = API_VERSION;
 
 export const registerApi = (app) => {
@@ -17,6 +18,7 @@ export const registerApi = (app) => {
   app.use(`${API_PREFIX}/custom-fields`, customFieldsRoutes);
   app.use(`${API_PREFIX}/city-list`, cityListRoutes);
   app.use(`${API_PREFIX}/plan`, planRoutes);
+  app.use(`${API_PREFIX}/discount`, discountRoutes);
 };
 
 export const registerClientApi = (app) => {

@@ -8,14 +8,16 @@ export const createValidation = async (req, res) => {
     shop_name,
     accessToken,
   });
-
-  await Validation.getByTitle(data.title);
   const getFnId = await service.getShopifyFunctionId(
     "cart-checkout-validation"
   );
-  await service.createValidation(getFnId, data);
+  await Validation.getByTitle(data.title);
+
+  const validationId = await service.createValidation(getFnId, data);
   const createValidation = await Validation.create({
     shop_id: id,
+    validation_id: validationId,
+    function_id: getFnId,
     ...data,
   });
 
@@ -62,11 +64,7 @@ export const updateValidation = async (req, res) => {
       accessToken,
     });
     const getByID = await Validation.getByID(id);
-
-    const validationId = await service.getValidationNodes(getByID.title);
-
-    await service.updateValidation(validationId, data);
-
+    await service.updateValidation(getByID, data);
     const updatedValidation = await Validation.update({
       id,
       ...data,
@@ -88,11 +86,8 @@ export const deleteValidation = async (req, res) => {
       shop_name,
       accessToken,
     });
-
     const getByID = await Validation.getByID(id);
-    const pId = await service.getValidationNodes(getByID.title);
-    await service.deleteValidation(pId);
-
+    await service.deleteValidation(getByID.validation_id);
     const deletedValidation = await Validation.delete(id);
     return res
       .status(200)

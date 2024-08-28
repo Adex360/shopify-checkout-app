@@ -7,8 +7,7 @@ import { Plan } from "./plan.js";
 export class Shop {
   static async storeOrUpdateSession(session) {
     const { shop, accessToken, scope, state, id } = session;
-    const shop_exist = await this.findById(shop);
-
+    const shop_exist = await Shop.findByName(shop);
     if (shop_exist && shop_exist.status === "active") {
       if (
         shop_exist.accessToken !== accessToken ||
@@ -20,7 +19,6 @@ export class Shop {
           accessToken: accessToken,
         });
       }
-
       return true;
     }
 
