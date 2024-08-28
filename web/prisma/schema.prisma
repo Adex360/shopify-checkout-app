@@ -46,8 +46,8 @@ model Shop {
 
 model Payment_customization {
   id           String  @id @default(uuid())
-  payment_id   String
-  function_id  String
+  payment_id   String  @default("")
+  function_id  String  @default("")
   type         String
   title        String
   rule_status  Boolean
@@ -63,8 +63,8 @@ model Payment_customization {
 model Validation {
   id                    String  @id @default(uuid())
   validation_id         String
-  function_id           String
-  title                 String
+  function_id           String  @default("")
+  title                 String  @default("")
   enabled               Boolean
   country_name          String
   phone_validation      Json?
