@@ -61,7 +61,6 @@ export function run(input) {
 
   let operations = [];
   if (configuration.type === PAYMENT_TYPE.RE_ORDER) {
-    console.log("okk");
     if (!configuration.payment_rule && configuration.conditions) {
       const countryCodes = input.cart.deliveryGroups.map((group) => {
         return group?.deliveryAddress?.countryCode;

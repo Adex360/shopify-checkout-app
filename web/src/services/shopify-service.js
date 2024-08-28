@@ -166,49 +166,7 @@ export default class ShopifyService {
     const functionNode = nodes.find((node) => node.title === extensionName);
     return functionNode.id;
   }
-
-  async getPaymentCustomizationNodes(title) {
-    const queryString = {
-      query: `
-      query {
-        paymentCustomizations(first: 100) {
-          edges {
-            node {
-              id
-              title
-            }
-          }
-        }
-      }
-  `,
-    };
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    const nodes = resp.data.data.paymentCustomizations.edges;
-    const paymentCustomizationNode = nodes.find(
-      (edges) => edges.node.title === title
-    );
-    return paymentCustomizationNode.node.id.split("/").pop();
-  }
-
-  async getPaymentCustomization(id) {
-    const queryString = {
-      query: `
-    query getPaymentCustomization($id: ID!) {
-      paymentCustomization(id: $id) {
-        id
-        metafield(namespace: "$app:payment-customization", key: "function-configuration") {
-          value
-        }
-      }
-    }
-  `,
-      variables: {
-        id: `gid://shopify/PaymentCustomization/${id}`,
-      },
-    };
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    const result = resp.data.data.paymentCustomization.metafield.value;
-  }
+  // payment
 
   async createPaymentCustomization(id, settingData) {
     const paymentCustomizationInput = {
@@ -246,12 +204,14 @@ export default class ShopifyService {
         input: paymentCustomizationInput,
       },
     };
-    await this.post("/graphql.json", JSON.stringify(queryString));
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const paymentId =
+      resp.data.data.paymentCustomizationCreate.paymentCustomization.id;
+    return paymentId;
   }
-
-  async updatePaymentCustomization(fnId, cId, settingData) {
+  async updatePaymentCustomization(paymentObj, settingData) {
     const paymentCustomizationInput = {
-      functionId: fnId,
+      functionId: paymentObj.function_id,
       title: settingData.title,
       enabled: settingData.rule_status,
       metafields: [
@@ -283,7 +243,8 @@ export default class ShopifyService {
       }
       `,
       variables: {
-        id: `gid://shopify/PaymentCustomization/${cId}`,
+        id: paymentObj.payment_id,
+        // `gid://shopify/PaymentCustomization/${cId}`,
         input: paymentCustomizationInput,
       },
     };
@@ -305,193 +266,195 @@ export default class ShopifyService {
       }
   `,
       variables: {
-        id: `gid://shopify/PaymentCustomization/${id}`,
+        id: id,
       },
     };
     await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
-  async createMetafield() {
-    const MetafieldDefinitionInput = {
-      // definition: {
-      access: {
-        admin: "MERCHANT_READ_WRITE",
+  // discount
+  async createDiscount(id, settingData) {
+    const DiscountAutomaticAppInput = {
+      title: settingData.title,
+      functionId: id,
+      combinesWith: {
+        orderDiscounts: settingData.combines_with.order,
+        productDiscounts: settingData.combines_with.product,
       },
-      key: "function-configuration",
-      name: "Validation Configuration",
-      namespace: "$app:cart-checkout-validation",
-      ownerType: "VALIDATION",
-      type: "json",
-      // },
+      startsAt: settingData.startsAt,
+      endsAt: settingData.endsAt,
+      metafields: [
+        {
+          namespace: "$app:order-discount",
+          key: "function-configuration",
+          type: "json",
+          value: JSON.stringify({
+            class: settingData.discount_class,
+            message: settingData.discount_message,
+            type: settingData.discount_type,
+            value: settingData.discount_value,
+            rule: settingData.discount_rule,
+            hasCondition: settingData.has_condition,
+            conditions: settingData.conditions,
+          }),
+        },
+
+        // {
+        //   "namespace": "$app:order-discount",
+        //   "key": "function-configuration",
+        //   "type": "json",
+        //   "value": "{\"discounts\":[{\"value\":{\"fixedAmount\":{\"amount\":5}},\"targets\":\n[{\"orderSubtotal\":{\"excludedVariantIds\":[]}}]}],\"discountApplicationStrategy\":\"FIRST\"}"
+        // }
+      ],
     };
 
     const queryString = {
       query: `
-      mutation CreateMetafieldDefinition($definition: MetafieldDefinitionInput!) {
-        metafieldDefinitionCreate(definition: $definition) {
-          createdDefinition {
-            id
-            name
-            namespace
-            key
-          }
-          userErrors {
-            field
-            message
-            code
-          }
+    mutation discountAutomaticAppCreate($automaticAppDiscount: DiscountAutomaticAppInput!) {
+      discountAutomaticAppCreate(automaticAppDiscount: $automaticAppDiscount) {
+        userErrors {
+          field
+          message
+        }
+        automaticAppDiscount {
+          discountId
         }
       }
-      `,
+    }
+`,
       variables: {
-        definition: MetafieldDefinitionInput,
+        automaticAppDiscount: DiscountAutomaticAppInput,
       },
     };
-
-    await this.post("/graphql.json", JSON.stringify(queryString));
-  }
-  async getAllMetafield(title) {
-    const queryString = {
-      query: `
-      query {
-        metafieldDefinitions(first: 250, ownerType: VALIDATION) {
-          edges {
-            node {
-              id
-              name
-            }   
-          }
-        }
-      }
-      `,
-    };
-
     const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    const nodes = resp.data.data.metafieldDefinitions.edges;
-    const metafieldNode = nodes.find((edges) => edges.node.name === title);
-
-    return metafieldNode.node.id;
+    const discountId =
+      resp.data.data.discountAutomaticAppCreate.automaticAppDiscount.discountId;
+    return discountId;
   }
 
-  async updateMetafield(fnId, cId, settingData) {
-    const MetafieldDefinitionUpdateInput = {
-      access: {
-        admin: "MERCHANT_READ_WRITE",
+  // TODO
+  async updateDiscount(discountObj, settingData) {
+    const DiscountAutomaticAppInput = {
+      title: settingData.title,
+      functionId: discountObj.function_id,
+      combinesWith: {
+        orderDiscounts: settingData.combines_with.order,
+        productDiscounts: settingData.combines_with.product,
       },
-      key: "function-configuration",
-      name: "Validation Configuration",
-      namespace: "$app:cart-checkout-validation",
-      ownerType: "VALIDATION",
-      type: "json",
+      startsAt: settingData.startsAt,
+      endsAt: settingData.endsAt,
+      // metafields: [
+      //   {
+      //     namespace: "$app:order-discount",
+      //     key: "function-configuration",
+      //     type: "json",
+      //     value: JSON.stringify({
+      //       class: settingData.discount_class,
+      //       message: settingData.discount_message,
+      //       type: settingData.discount_type,
+      //       value: settingData.discount_value,
+      //       rule: settingData.discount_rule,
+      //       conditions: settingData.conditions,
+      //     }),
+      //   },
+      // ],
     };
 
     const queryString = {
       query: `
-      mutation UpdateMetafieldDefinition($definition: MetafieldDefinitionUpdateInput!) {
-        metafieldDefinitionUpdate(definition: $definition) {
-          updatedDefinition {
-            id
-            name
-            namespace
-            key
-            # add other return fields
+      mutation discountAutomaticAppUpdate($automaticAppDiscount: DiscountAutomaticAppInput!, $id: ID!) {
+        discountAutomaticAppUpdate(automaticAppDiscount: $automaticAppDiscount, id: $id) {
+          automaticAppDiscount {
+            discountId
+            title
+            startsAt
+            endsAt
+            status
+            appDiscountType {
+              appKey
+              functionId
+            }
+            combinesWith {
+              orderDiscounts
+              productDiscounts
+              shippingDiscounts
+            }
           }
           userErrors {
             field
             message
-            code
           }
         }
       }
       `,
       variables: {
-        id: `gid://shopify/MetafieldDefinition/${cId}`,
-        definition: MetafieldDefinitionUpdateInput,
+        automaticAppDiscount: DiscountAutomaticAppInput,
+        id: discountObj.discount_id,
       },
     };
 
     await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
-  async deleteMetafield(fnId, cId, settingData) {
+  async deleteDiscount(id) {
     const queryString = {
       query: `
-      mutation DeleteMetafieldDefinition {
-        metafieldDefinitionDelete(id: $id, deleteAllAssociatedMetafields: $deleteAllAssociatedMetafields) {
-          deletedDefinitionId
+      mutation discountAutomaticDelete($id: ID!) {
+        discountAutomaticDelete(id: $id) {
+          deletedAutomaticDiscountId
           userErrors {
             field
-            message
             code
+            message
           }
         }
       }
-      `,
-
+  `,
       variables: {
-        id: `gid://shopify/MetafieldDefinition/${cId}`,
-        deleteAllAssociatedMetafields: true,
+        id: id,
       },
     };
-
     await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
-  async createMetafieldSet(id, metafieldData) {
-    console.log("idddd", id);
-    const MetafieldsSetInput = {
-      // {
-      // "metafields": [
-      // {
-      key: "function-configuration",
-      namespace: "$app:cart-checkout-validation",
-      ownerId: "gid://shopify/Validation/8356117",
-      //  id,
-      //  "gid://shopify/MetafieldDefinition/34244198677",
-      type: "json",
-      value: JSON.stringify({
-        data: metafieldData,
-        // type: "test",
-        // CountryCode: 3,
-        // type: settingData.type,
-        // payment_rule: settingData.payment_rule,
-        // conditions: settingData.conditions,
-        // payment_name: settingData.payment_name,
-      }),
-      // },
-
-      // ]
-      // }
-    };
-
+  async deActivateDiscount(id) {
     const queryString = {
       query: `
-      mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
-        metafieldsSet(metafields: $metafields) {
-          metafields {
-            key
-            namespace
-            value
-            createdAt
-            updatedAt
-          }
+      mutation discountAutomaticActivate($id: ID!) {
+        discountAutomaticActivate(id: $id) {
           userErrors {
             field
             message
-            code
           }
         }
       }
-      `,
+  `,
       variables: {
-        metafields: MetafieldsSetInput,
+        id: id,
       },
     };
-
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    console.log("aaa", resp.data.data.metafieldsSet.metafields);
+    await this.post("/graphql.json", JSON.stringify(queryString));
+  }
+  async activateDiscount(id) {
+    const queryString = {
+      query: `
+      mutation discountAutomaticActivate($id: ID!) {
+        discountAutomaticActivate(id: $id) {
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+  `,
+      variables: {
+        id: id,
+      },
+    };
+    await this.post("/graphql.json", JSON.stringify(queryString));
   }
 
+  // validation
   async createValidation(id, settingData) {
     const ValidationCreateInput = {
       functionId: id,
@@ -528,32 +491,12 @@ export default class ShopifyService {
         validation: ValidationCreateInput,
       },
     };
-    await this.post("/graphql.json", JSON.stringify(queryString));
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const validationId = resp.data.data.validationCreate.validation.id;
+    return validationId;
   }
 
-  async getValidationNodes(title) {
-    const queryString = {
-      query: `
-      query {
-        validations(first: 250) {
-          edges {
-            node {
-              id
-              title
-            }   
-          }
-        }
-      }
-  `,
-    };
-    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
-    const nodes = resp.data.data.validations.edges;
-    const paymentCustomizationNode = nodes.find(
-      (edges) => edges.node.title === title
-    );
-    return paymentCustomizationNode.node.id.split("/").pop();
-  }
-  async updateValidation(cId, settingData) {
+  async updateValidation(validationObj, settingData) {
     const ValidationUpdateInput = {
       title: settingData.title,
       blockOnFailure: true,
@@ -585,7 +528,8 @@ export default class ShopifyService {
       }
       `,
       variables: {
-        id: `gid://shopify/Validation/${cId}`,
+        id: validationObj.validation_id,
+        //  `gid://shopify/Validation/${cId}`,
         validation: ValidationUpdateInput,
       },
     };
@@ -607,24 +551,9 @@ export default class ShopifyService {
       }
   `,
       variables: {
-        id: `gid://shopify/Validation/${id}`,
+        id: id,
       },
     };
     await this.post("/graphql.json", JSON.stringify(queryString));
   }
 }
-
-// get all metafields value
-// {
-//   "data": {
-//     "metafieldDefinitions": {
-//       "edges": [
-//         {
-//           "node": {
-//             "id": "gid://shopify/MetafieldDefinition/34244198677",
-//             "name": "Validation Configuration"
-//           }
-//         }
-//       ]
-//     }
-//   },

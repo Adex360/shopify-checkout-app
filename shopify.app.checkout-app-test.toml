@@ -3,7 +3,7 @@
 client_id = "8bfa5c9a03d85943ff39537757b47a7c"
 name = "checkout-app-test"
 handle = "checkout-app-test-30"
-application_url = "https://justify-egg-evanescence-potato.trycloudflare.com"
+application_url = "https://midlands-publishers-depression-purpose.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,20 +13,20 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_discounts,write_payment_customizations,write_products,write_validations,read_customers"
+scopes = "read_customers,read_products,write_discounts,write_payment_customizations,write_products,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://justify-egg-evanescence-potato.trycloudflare.com/auth/callback",
-  "https://justify-egg-evanescence-potato.trycloudflare.com/auth/shopify/callback",
-  "https://justify-egg-evanescence-potato.trycloudflare.com/api/auth/callback"
+  "https://midlands-publishers-depression-purpose.trycloudflare.com/auth/callback",
+  "https://midlands-publishers-depression-purpose.trycloudflare.com/auth/shopify/callback",
+  "https://midlands-publishers-depression-purpose.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
 
 [app_proxy]
-url = "https://justify-egg-evanescence-potato.trycloudflare.com"
+url = "https://midlands-publishers-depression-purpose.trycloudflare.com"
 subpath = "api"
 prefix = "apps"
 

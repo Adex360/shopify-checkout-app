@@ -4,19 +4,20 @@ import { PaymentCustomization, CityList } from "../models/index.js";
 export const createPaymentCustomization = async (req, res) => {
   const { id, shop_name, accessToken } = req.shop;
   const data = req.body;
-
-  await PaymentCustomization.getByTitle(data.title);
-  const createReOrder = await PaymentCustomization.create({
-    shop_id: id,
-    ...data,
-  });
   const service = new ShopifyService({
     shop_name,
     accessToken,
   });
-
   const getFnId = await service.getShopifyFunctionId("payment-customization");
-  await service.createPaymentCustomization(getFnId, data);
+  await PaymentCustomization.getByTitle(data.title, id);
+  const paymentId = await service.createPaymentCustomization(getFnId, data);
+  const createReOrder = await PaymentCustomization.create({
+    shop_id: id,
+    payment_id: paymentId,
+    function_id: getFnId,
+    ...data,
+  });
+
   res.status(200).json({
     message: `Payment Customization Setting for Type :${req.body.type} Created !! `,
     createReOrder,
@@ -59,7 +60,6 @@ export const getAllPaymentCustomization = async (req, res) => {
 
     res.status(200).json({ customizations: getAll });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error Getting All Customizations:" });
   }
 };
@@ -87,10 +87,7 @@ export const updatePaymentCustomization = async (req, res) => {
       accessToken,
     });
     const getByID = await PaymentCustomization.getByID(id);
-    const paymentId = await service.getPaymentCustomizationNodes(getByID.title);
-    const getFnId = await service.getShopifyFunctionId("payment-customization");
-    await service.updatePaymentCustomization(getFnId, paymentId, data);
-
+    await service.updatePaymentCustomization(getByID, data);
     const updatedReOrder = await PaymentCustomization.update({
       id,
       ...data,
@@ -112,9 +109,7 @@ export const deletePaymentCustomization = async (req, res) => {
       accessToken,
     });
     const getByID = await PaymentCustomization.getByID(id);
-    const pId = await service.getPaymentCustomizationNodes(getByID.title);
-    await service.deletePaymentCustomization(pId);
-
+    await service.deletePaymentCustomization(getByID.payment_id);
     const deletedPaymentCustomization = await PaymentCustomization.delete(id);
     return res.status(200).json({
       message: `${deletedPaymentCustomization.title} is Successfully Deleted`,

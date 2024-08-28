@@ -1,0 +1,38 @@
+query RunInput {
+  cart {
+    lines {
+      id
+      quantity
+    }
+    cost {
+      subtotalAmount {
+        amount
+      }
+      totalAmount {
+        amount
+      }
+    }
+    deliveryGroups {
+      deliveryAddress {
+        countryCode
+        city
+      }
+      deliveryOptions {
+        title
+      }
+    }
+    lines {
+      merchandise {
+        ... on ProductVariant {
+          sku
+        }
+      }
+      quantity
+    }
+  }
+  discountNode {
+    metafield(namespace: "$app:order-discount", key: "function-configuration") {
+      value
+    }
+  }
+}
