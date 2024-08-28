@@ -62,9 +62,9 @@ model Payment_customization {
 
 model Validation {
   id                    String  @id @default(uuid())
-  validation_id         String
+  validation_id         String  @default("")
   function_id           String  @default("")
-  title                 String  @default("")
+  title                 String
   enabled               Boolean
   country_name          String
   phone_validation      Json?
