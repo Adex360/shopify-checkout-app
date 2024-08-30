@@ -1,32 +1,3 @@
-// import { DiscountApplicationStrategy } from "../generated/api";
-
-// /**
-//  * @typedef {import("../generated/api").RunInput} RunInput
-//  * @typedef {import("../generated/api").FunctionRunResult} FunctionRunResult
-//  */
-
-// /**
-//  * @type {FunctionRunResult}
-//  */
-// const EMPTY_DISCOUNT = {
-//   discountApplicationStrategy: DiscountApplicationStrategy.First,
-//   discounts: [],
-// };
-
-// /**
-//  * @param {RunInput} input
-//  * @returns {FunctionRunResult}
-//  */
-// export function run(input) {
-//   const configuration = JSON.parse(
-//     input?.discountNode?.metafield?.value ?? "{}"
-//   );
-//   const obj = JSON.stringify(configuration, null, 2);
-//   console.log("metafields", obj);
-
-//   return EMPTY_DISCOUNT;
-// }
-
 import { DiscountApplicationStrategy } from "../generated/api";
 
 // Use JSDoc annotations for type safety
@@ -63,6 +34,8 @@ const CONDITION = {
   CART_TOTAL_QTY: "cart-total-qty",
   SINGLE_LINE_QTY: "single-line-qty",
   ALL_LINE_QTY: "all_line_qty",
+  PAYMENT_METHOD_TYPE: "payment-method-type",
+  PAYMENT_METHOD_HANDLE: "payment-method-handle",
 };
 const RULES = {
   CONTAINS: "contains",
@@ -73,7 +46,23 @@ const RULES = {
   EQUALS_TO: "equals-to",
 };
 
+const PAYMENT_METHODS = {
+  CREDIT_CARD: "creditCard",
+  DEFERRED: "deferred",
+  LOCAL: "local",
+  MANUAL_PAYMENT: "manualPayment",
+  OFFSITE: "offsite",
+  OTHER: "other",
+  PAYMENT_ON_DELIVERY: "paymentOnDelivery",
+  REDEEMABLE: "redeemable",
+  WALLET: "wallet",
+  CUSTOM_ON_SITE: "customOnsite",
+};
+
 export function run(input) {
+  const paymentMethod = input.cart.attribute
+    ? input.cart.attribute.value
+    : null;
   const configuration = JSON.parse(
     input?.discountNode?.metafield?.value ?? "{}"
   );
@@ -96,13 +85,28 @@ export function run(input) {
 
   const hasConditions =
     configuration.conditions && configuration.conditions.length > 0;
-
   const checkConditions = configuration.hasCondition
     ? (callback) => configuration.conditions.every(callback)
     : (callback) => configuration.conditions.some(callback);
-
   const conditionsMet = hasConditions
     ? checkConditions((condition) => {
+        if (condition.type === CONDITION.PAYMENT_METHOD_TYPE) {
+          if (condition.rule === RULES.CONTAINS) {
+            return condition.value.includes(paymentMethod);
+          }
+          if (condition.rule === RULES.DOES_NOT_CONTAINS) {
+            return !condition.value.includes(paymentMethod);
+          }
+        }
+        if (condition.type === CONDITION.PAYMENT_METHOD_HANDLE) {
+          if (condition.rule === RULES.CONTAINS) {
+            return condition.value.includes(paymentMethod);
+          }
+          if (condition.rule === RULES.DOES_NOT_CONTAINS) {
+            return !condition.value.includes(paymentMethod);
+          }
+        }
+
         if (condition.type === CONDITION.SINGLE_LINE_QTY) {
           const value = condition.value;
           if (condition.rule === RULES.GREATER_THAN) {
@@ -118,12 +122,24 @@ export function run(input) {
         if (condition.type === CONDITION.ALL_LINE_QTY) {
           const value = condition.value;
           if (condition.rule === RULES.GREATER_THAN) {
+            console.log(
+              ",greater then ",
+              input.cart.lines.every((line) => line.quantity > value)
+            );
             return input.cart.lines.every((line) => line.quantity > value);
           }
           if (condition.rule === RULES.LESS_THAN) {
+            console.log(
+              ",less than",
+              input.cart.lines.every((line) => line.quantity < value)
+            );
             return input.cart.lines.every((line) => line.quantity < value);
           }
           if (condition.rule === RULES.EQUALS_TO) {
+            console.log(
+              ",equals to",
+              input.cart.lines.every((line) => line.quantity === value)
+            );
             return input.cart.lines.every((line) => line.quantity === value);
           }
         }
@@ -172,6 +188,7 @@ export function run(input) {
         return false;
       })
     : true;
+  console.log("conditionsMet", conditionsMet);
   if (conditionsMet) {
     console.log("CONDITION MET OR NO CONDITIONS PROVIDED");
     return {

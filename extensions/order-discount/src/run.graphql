@@ -1,5 +1,10 @@
 query RunInput {
   cart {
+    attribute(key: "paymentMethod") {
+      key
+      value
+    }
+
     lines {
       id
       quantity

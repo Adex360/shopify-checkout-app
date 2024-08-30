@@ -2,7 +2,7 @@ import express from "express";
 import { errorHandler } from "../middleware/index.js";
 import * as CustomFieldController from "../controllers/index.js";
 import * as CityListController from "../controllers/index.js";
-
+import * as DiscountController from "../controllers/index.js";
 import cors from "cors";
 
 const router = new express.Router();
@@ -16,5 +16,9 @@ router.get(
 router.get(
   "/city-list/all/:shop_name",
   errorHandler(CityListController.getAllCityList)
+);
+router.get(
+  "/discount/all/:shop_name",
+  errorHandler(DiscountController.getAllDiscount)
 );
 export const publicRoutes = router;

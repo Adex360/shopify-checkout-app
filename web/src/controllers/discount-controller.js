@@ -1,5 +1,5 @@
 import ShopifyService from "../services/shopify-service.js";
-import { Discount } from "../models/index.js";
+import { Discount, Shop } from "../models/index.js";
 
 export const createDiscount = async (req, res) => {
   const { id, shop_name, accessToken } = req.shop;
@@ -26,11 +26,18 @@ export const createDiscount = async (req, res) => {
 
 export const getAllDiscount = async (req, res) => {
   try {
-    const { id } = req.shop;
-    const getAll = await Discount.findAll(id);
+    let shopId;
+    if (req.shop) {
+      shopId = req.shop.id;
+    } else {
+      const { shop_name } = req.params;
+      const shop = await Shop.findByName(shop_name);
+      shopId = shop.id;
+    }
+    const getAll = await Discount.findAll(shopId);
     res.status(200).json({ allDiscount: getAll });
   } catch (error) {
-    res.status(500).json({ error: "Error Getting All Discounts:" });
+    res.status(500).json({ error: "Error Getting All Discounts" });
   }
 };
 
