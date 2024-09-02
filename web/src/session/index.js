@@ -24,7 +24,9 @@ class Session {
   }
 
   async findSessionsByShop(shop) {
+    console.log("find session ", shop);
     const shopExist = await Shop.findByName(shop);
+    console.log("shop found => ", shopExist);
     if (!shopExist) return [];
     return [convertShopToSession(shopExist)];
   }
