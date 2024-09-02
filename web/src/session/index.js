@@ -7,6 +7,7 @@ class Session {
   }
 
   async loadSession(id) {
+    console.log("load session => ", id);
     const shop = await Shop.findByName(id.replace("offline_", ""));
     if (!shop || !shop.accessToken) return false;
 

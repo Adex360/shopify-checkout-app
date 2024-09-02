@@ -1,6 +1,7 @@
 import { Shop, PaymentCustomization, CityList } from "../models/index.js";
 
 export const getShop = async (req, res) => {
+  console.log("shop", req.shop);
   const shop = req.shop;
   const updatedShop = Shop.formatShopForApp(shop);
 
