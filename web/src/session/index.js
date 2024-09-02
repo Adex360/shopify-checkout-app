@@ -12,6 +12,7 @@ class Session {
     if (!shop || !shop.accessToken) return false;
 
     const session = convertShopToSession(shop);
+    console.log("session ", session);
     return session;
   }
 
@@ -24,9 +25,7 @@ class Session {
   }
 
   async findSessionsByShop(shop) {
-    console.log("find session ", shop);
     const shopExist = await Shop.findByName(shop);
-    console.log("shop found => ", shopExist);
     if (!shopExist) return [];
     return [convertShopToSession(shopExist)];
   }
