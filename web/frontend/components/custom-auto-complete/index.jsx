@@ -20,7 +20,6 @@ export function CustomAutoComplete({
       setInputValue(value);
 
       if (value === "") {
-        setSelectedOptions([]);
         setOptions(deselectedOptions);
         return;
       }
