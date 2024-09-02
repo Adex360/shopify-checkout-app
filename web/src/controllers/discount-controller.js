@@ -68,7 +68,6 @@ export const updateDiscount = async (req, res) => {
     }
     await service.deleteDiscount(getByID.discount_id);
     const discountId = await service.createDiscount(getByID.function_id, data);
-
     // await service.updateDiscount(getByID, data);
 
     const updateDiscount = await Discount.update({

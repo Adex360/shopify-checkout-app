@@ -8,6 +8,13 @@ query RunInput {
     lines {
       id
       quantity
+      merchandise {
+        ... on ProductVariant {
+          id
+          sku
+        }
+      }
+      quantity
     }
     cost {
       subtotalAmount {
@@ -25,14 +32,6 @@ query RunInput {
       deliveryOptions {
         title
       }
-    }
-    lines {
-      merchandise {
-        ... on ProductVariant {
-          sku
-        }
-      }
-      quantity
     }
   }
   discountNode {

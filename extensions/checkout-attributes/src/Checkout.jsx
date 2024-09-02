@@ -65,7 +65,6 @@ function Extension() {
         const handleCondition = discountItem.conditions.find(
           (condition) => condition.type === "payment-method-handle"
         );
-
         const isRequiredTypeSelected = typeCondition
           ? selectedPaymentOptions.some((option) =>
               typeCondition.value.includes(option.type)

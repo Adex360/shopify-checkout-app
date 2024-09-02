@@ -117,6 +117,7 @@ model Discount {
   has_condition    Boolean   @default(false)
   conditions       Json?
   function_id      String
+  variant_ids      Json?
 
   shop_id String
   shop    Shop?  @relation(fields: [shop_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
