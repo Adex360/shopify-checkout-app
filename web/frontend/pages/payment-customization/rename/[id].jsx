@@ -212,10 +212,11 @@ const ReName = () => {
           title: getByID.title,
           type: getByID.type,
           status: getByID.rule_status,
-          ruleType: getByID.payment_rule ? "always" : "condition",
+          ruleType: getByID.payment_rule ? ["always"] : ["condition"],
           customizationRule: getByID.conditions,
           paymentName: getByID.payment_name,
         });
+        console.log(formData.customizationRule);
 
         setPageLoading(false);
       }
