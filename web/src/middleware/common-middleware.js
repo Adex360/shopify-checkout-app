@@ -1,6 +1,7 @@
 import { Shop } from "../models/index.js";
 
 export const commonMiddleware = async (req, res, next) => {
+  console.log("common", res.locals.shopify.session);
   const session = res.locals.shopify.session;
 
   const shop = await Shop.findByName(session.shop);
