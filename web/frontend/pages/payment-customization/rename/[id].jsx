@@ -607,13 +607,6 @@ const ReName = () => {
                                       selectedValue
                                     );
                                   }}
-                                  // setSelectedOptions={(value) => {
-                                  //   handlePaymentRuleChange(
-                                  //     index,
-                                  //     "old",
-                                  //     value
-                                  //   );
-                                  // }}
                                 />
 
                                 <TextField
@@ -644,7 +637,7 @@ const ReName = () => {
                       <InlineStack align="end">
                         <Button
                           disabled={formData.paymentName.some((obj) =>
-                            Object.values(obj).some((value) => value === "")
+                            Object.values(obj).some((value) => !value)
                           )}
                           onClick={addNewTitle}
                           variant="primary"
