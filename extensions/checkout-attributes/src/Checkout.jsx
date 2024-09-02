@@ -76,7 +76,6 @@ function Extension() {
               handleCondition.value.includes(option.handle)
             )
           : false;
-
         if (isRequiredTypeSelected || isRequiredHandleSelected) {
           const selectedMethod = isRequiredTypeSelected
             ? selectedPaymentOptions.find((option) =>
@@ -85,8 +84,9 @@ function Extension() {
             : selectedPaymentOptions.find((option) =>
                 handleCondition.value.includes(option.handle)
               );
-
-          const newValue = selectedMethod.type || selectedMethod.handle;
+          const newValue = isRequiredTypeSelected
+            ? selectedMethod.type
+            : selectedMethod.handle;
           if (lastAppliedMethod.current !== newValue) {
             applyAttributeChange({
               key: "paymentMethod",

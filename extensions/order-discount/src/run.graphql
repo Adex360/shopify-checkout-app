@@ -24,15 +24,6 @@ query RunInput {
         amount
       }
     }
-    deliveryGroups {
-      deliveryAddress {
-        countryCode
-        city
-      }
-      deliveryOptions {
-        title
-      }
-    }
   }
   discountNode {
     metafield(namespace: "$app:order-discount", key: "function-configuration") {
