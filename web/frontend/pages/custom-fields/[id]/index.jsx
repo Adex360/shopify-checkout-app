@@ -55,7 +55,6 @@ const CreateCustomFields = () => {
     Divider: {
       size: "small",
       width: "full",
-      color: "#b5b5b5",
     },
     Select: {
       label: "add label here",
@@ -86,7 +85,11 @@ const CreateCustomFields = () => {
     setCustomFields((prev) => {
       return [
         ...prev,
-        { name: fieldType + v4(), type: fieldType, ...exampleField[fieldType] },
+        {
+          name: fieldType + v4().slice(0, 12),
+          type: fieldType,
+          ...exampleField[fieldType],
+        },
       ];
     });
 
