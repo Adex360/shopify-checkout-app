@@ -3,7 +3,7 @@
 client_id = "8bfa5c9a03d85943ff39537757b47a7c"
 name = "checkout-app-test"
 handle = "checkout-app-test-30"
-application_url = "https://december-futures-alexandria-periodic.trycloudflare.com"
+application_url = "https://custom-median-viewpicture-naturally.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,16 +17,16 @@ scopes = "read_customers,read_products,write_discounts,write_payment_customizati
 
 [auth]
 redirect_urls = [
-  "https://december-futures-alexandria-periodic.trycloudflare.com/auth/callback",
-  "https://december-futures-alexandria-periodic.trycloudflare.com/auth/shopify/callback",
-  "https://december-futures-alexandria-periodic.trycloudflare.com/api/auth/callback"
+  "https://custom-median-viewpicture-naturally.trycloudflare.com/auth/callback",
+  "https://custom-median-viewpicture-naturally.trycloudflare.com/auth/shopify/callback",
+  "https://custom-median-viewpicture-naturally.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
 
 [app_proxy]
-url = "https://december-futures-alexandria-periodic.trycloudflare.com"
+url = "https://custom-median-viewpicture-naturally.trycloudflare.com"
 subpath = "api"
 prefix = "apps"
 

@@ -11,6 +11,7 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   useApi,
+  useExtensionApi,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -53,13 +54,25 @@ export function CityDropdown() {
   }, []);
 
   useEffect(() => {
+    console.log(
+      "now",
+      "country",
+      shippingAddress?.current?.countryCode,
+      "shippping ",
+      shippingAddress,
+      "billing",
+      billingAddress.current.countryCode
+    );
     if (shippingAddress?.current?.countryCode && cityList.length > 0) {
       const selectedCountry = cityList.find(
-        (country) => country.country_code === billingAddress.current.countryCode
+        (country) =>
+          country.country_code === shippingAddress?.current?.countryCode
+        // billingAddress.current.countryCode
       );
-
+      console.log("selectedCountry", selectedCountry);
       if (selectedCountry) {
         const filteredCitiesValue = selectedCountry.city_list || [];
+        console.log("filteredCitiesValue", filteredCitiesValue);
         setFilteredCities(filteredCitiesValue);
       } else {
         setFilteredCities([]);
