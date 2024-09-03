@@ -67,7 +67,6 @@ export const deleteFields = async (req, res) => {
       message: `Custom Field Form for Title:${deletedForm.title} is deleted successfully `,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error deleting customField Form" });
   }
 };
