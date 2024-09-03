@@ -36,7 +36,7 @@ const Hide = () => {
   const { smUp } = useBreakpoints();
   const [countries, setCountries] = useState([]);
   const [paymentTitles, setPaymentTitles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const [pageLoading, setPageLoading] = useState(false);
   const [formError, setFormError] = useState({
@@ -79,7 +79,7 @@ const Hide = () => {
 
   const handleCreateCustomization = async () => {
     try {
-      setLoading(true);
+      setBtnLoading(true);
       const resp = await shopifyFetch("/api/v1/payment-customization/create", {
         method: "POST",
         headers: {
@@ -99,13 +99,16 @@ const Hide = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        show("Added Successfully!", {
+        show(data.message, {
           duration: 2000,
         });
-        setLoading(false);
+        setBtnLoading(false);
         navigate("/payment");
       } else {
-        show(data.error);
+        show(data.error.message, {
+          isError: true,
+        });
+        setBtnLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -180,6 +183,8 @@ const Hide = () => {
           customizationRule: getByID.conditions,
         });
         setPageLoading(false);
+      } else {
+        show(data.error.message, { isError: true });
       }
     } catch (e) {
       console.error(e);
@@ -187,31 +192,39 @@ const Hide = () => {
   };
 
   const updateCustomizationData = async () => {
-    setLoading(true);
-    const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: formData.title,
-        type: formData.type,
-        rule_status: formData.status,
-        payment_rule: formData.ruleType === "all" ? true : false,
-        conditions: formData.customizationRule,
-        payment_name: {
-          match: formData.paymentMethodType,
-          title: paymentTitles,
+    try {
+      setBtnLoading(true);
+      const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-    const data = await resp.json();
-    if (resp.ok) {
-      show("Updated Successfully!", {
-        duration: 2000,
+        body: JSON.stringify({
+          title: formData.title,
+          type: formData.type,
+          rule_status: formData.status,
+          payment_rule: formData.ruleType === "all" ? true : false,
+          conditions: formData.customizationRule,
+          payment_name: {
+            match: formData.paymentMethodType,
+            title: paymentTitles,
+          },
+        }),
       });
-      setLoading(false);
-      navigate("/payment");
+      const data = await resp.json();
+      if (resp.ok) {
+        show(data.message, {
+          duration: 2000,
+        });
+        setBtnLoading(false);
+        navigate("/payment");
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -594,7 +607,7 @@ const Hide = () => {
             >
               <Box paddingBlockEnd="800">
                 <Button
-                  loading={loading}
+                  loading={btnLoading}
                   disabled={
                     !formData.title ||
                     paymentTitles.length === 0 ||

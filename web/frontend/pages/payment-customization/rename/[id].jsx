@@ -39,7 +39,7 @@ const ReName = () => {
   const { show } = useToast();
   const { smUp } = useBreakpoints();
 
-  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [countries, setCountries] = useState("");
   const [formError, setFormError] = useState({
@@ -172,7 +172,7 @@ const ReName = () => {
 
   const handleCreateCustomization = async () => {
     try {
-      setLoading(true);
+      setBtnLoading(true);
       const resp = await shopifyFetch("/api/v1/payment-customization/create", {
         method: "POST",
         headers: {
@@ -189,11 +189,16 @@ const ReName = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        setLoading(false);
-        show("Added Successfully!", {
+        setBtnLoading(false);
+        show(data.message, {
           duration: 2000,
         });
         navigate("/payment");
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+        setBtnLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -226,7 +231,7 @@ const ReName = () => {
   };
 
   const updateCustomizationData = async () => {
-    setLoading(true);
+    setBtnLoading(true);
     const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
       method: "PUT",
       headers: {
@@ -246,11 +251,11 @@ const ReName = () => {
       show("Updated Successfully!", {
         duration: 2000,
       });
-      setLoading(false);
+      setBtnLoading(false);
       navigate("/payment");
     } else {
-      show(data.error, { isError: true });
-      setLoading(false);
+      show(data.error.message, { isError: true });
+      setBtnLoading(false);
     }
   };
 
@@ -670,7 +675,7 @@ const ReName = () => {
                           Array.isArray(rule.value) && rule.value.length === 0
                       ))
                   }
-                  loading={loading}
+                  loading={btnLoading}
                   onClick={() => {
                     id !== "create"
                       ? updateCustomizationData()
