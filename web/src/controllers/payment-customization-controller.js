@@ -146,7 +146,6 @@ export const countByTypesAndActive = async (req, res) => {
       activeCountries: countryNames,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error while counting" });
   }
 };
