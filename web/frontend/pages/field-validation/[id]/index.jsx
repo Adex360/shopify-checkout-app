@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import {
   BlockStack,
+  Box,
   Card,
   Collapsible,
   Page,
   Spinner,
   Text,
+  TextField,
 } from "@shopify/polaris";
 import { useNavigate } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../../context";
@@ -16,16 +18,6 @@ const CreateValidation = () => {
   const { loading, countries } = useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
-
-  // const [firstNameData, setFirstNameData] = useState({
-  //   type: "first-name-validation",
-  //   limit_type: true,
-  //   min_length: 2,
-  //   max_length: 10,
-  //   block_digits: true,
-  //   block_sequential_character: true,
-  //   special_character: "dont-block",
-  // });
 
   const [formData, setFormData] = useState({
     title: "all",
@@ -39,16 +31,11 @@ const CreateValidation = () => {
       block_digits: true,
       block_sequential_character: true,
       special_character: "dont-block",
+      if_block_selected: [],
     },
   });
 
-  console.log(formData.first_name_validation);
-
   const handleCreateValidation = async () => {
-    const reqData = {
-      ...formData,
-    };
-    console.log(reqData);
     try {
     } catch (error) {
       console.error(error);
@@ -80,6 +67,18 @@ const CreateValidation = () => {
       >
         <Card>
           <BlockStack gap="400">
+            <Box>
+              <TextField
+                label={
+                  <Text variant="headingSm" fontWeight="medium">
+                    Validation Title
+                  </Text>
+                }
+                placeholder="title"
+                value={formData.title}
+                onChange={(value) => handleFormDataChange("title", value)}
+              />
+            </Box>
             {loading ? (
               <Spinner size="small" />
             ) : (
