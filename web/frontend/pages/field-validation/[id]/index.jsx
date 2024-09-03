@@ -9,11 +9,23 @@ import {
 } from "@shopify/polaris";
 import { useNavigate } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../../context";
-import { CustomAutoComplete } from "../../../components";
+import { CustomAutoComplete, ValidationContainer } from "../../../components";
+import { useAuthenticatedFetch } from "../../../hooks";
 
 const CreateValidation = () => {
   const { loading, countries } = useAppContext();
   const navigate = useNavigate();
+  const shopifyFetch = useAuthenticatedFetch();
+
+  // const [firstNameData, setFirstNameData] = useState({
+  //   type: "first-name-validation",
+  //   limit_type: true,
+  //   min_length: 2,
+  //   max_length: 10,
+  //   block_digits: true,
+  //   block_sequential_character: true,
+  //   special_character: "dont-block",
+  // });
 
   const [formData, setFormData] = useState({
     title: "all",
@@ -28,26 +40,20 @@ const CreateValidation = () => {
       block_sequential_character: true,
       special_character: "dont-block",
     },
-    last_name_validation: {
-      type: "last-name-validation",
-      limit_type: true,
-      min_length: 1,
-      max_length: 10,
-      block_digits: true,
-      block_sequential_character: true,
-      special_character: "block-all",
-    },
-    address_validation: {
-      type: "address-name-validation",
-      limit_type: true,
-      min_length: 1,
-      max_length: 5,
-      block_digits: true,
-      block_sequential_character: true,
-      special_character: "block-selective",
-      if_block_selectective: ["@"],
-    },
   });
+
+  console.log(formData.first_name_validation);
+
+  const handleCreateValidation = async () => {
+    const reqData = {
+      ...formData,
+    };
+    console.log(reqData);
+    try {
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
@@ -89,11 +95,26 @@ const CreateValidation = () => {
                 }}
               />
             )}
-            <Card>
+            <ValidationContainer
+              title="First Name Validation"
+              data={formData.first_name_validation}
+              setData={(name, value) => {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    first_name_validation: {
+                      ...prev.first_name_validation,
+                      [name]: value,
+                    },
+                  };
+                });
+              }}
+            />
+            {/* <Card>
               <BlockStack>
                 <Text variant="headingMd">First Name Validation</Text>
               </BlockStack>
-            </Card>
+            </Card> */}
           </BlockStack>
         </Card>
       </Page>
