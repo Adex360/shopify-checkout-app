@@ -2,45 +2,41 @@ import React, { useState } from "react";
 import {
   BlockStack,
   Box,
+  Button,
   Card,
   Collapsible,
+  InlineStack,
   Page,
   Spinner,
   Text,
   TextField,
 } from "@shopify/polaris";
-import { useNavigate } from "@shopify/app-bridge-react";
+import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../../context";
 import { CustomAutoComplete, ValidationContainer } from "../../../components";
 import { useAuthenticatedFetch } from "../../../hooks";
+import { enable } from "@shopify/app-bridge/actions/LeaveConfirmation";
 
 const CreateValidation = () => {
   const { loading, countries } = useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
+  const { show } = useToast();
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: "all",
-    country_name: "US",
+    title: "",
+    country_name: "",
     enabled: true,
-    first_name_validation: {
-      type: "first-name-validation",
-      limit_type: true,
-      min_length: 2,
-      max_length: 10,
-      block_digits: true,
-      block_sequential_character: true,
-      special_character: "dont-block",
-      if_block_selected: [],
-    },
+    first_name_validation: null,
+    last_name_validation: null,
+    address_validation: null,
   });
-
-  const handleCreateValidation = async () => {
-    try {
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [enableValidation, setEnableValidation] = useState({
+    first_name_validation: false,
+    last_name_validation: false,
+    address_validation: false,
+  });
 
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
@@ -50,6 +46,70 @@ const CreateValidation = () => {
       };
     });
   };
+
+  const toggleEnableValidation = (name) => {
+    const validationTypes = {
+      first_name_validation: "first-name-validation",
+      last_name_validation: "last-name-validation",
+      address_validation: "address-name-validation",
+    };
+    setEnableValidation((prev) => {
+      const value = prev[name];
+      console.log(value);
+      return {
+        ...prev,
+        [name]: !value,
+      };
+    });
+    setFormData((prev) => {
+      if (prev[name]) {
+        return {
+          ...prev,
+          [name]: null,
+        };
+      } else {
+        return {
+          ...prev,
+          [name]: {
+            type: validationTypes[name],
+            limit_type: true,
+            min_length: 1,
+            max_length: 20,
+            block_digits: true,
+            block_sequential_character: false,
+            special_character: "dont-block",
+            if_block_selected: [],
+          },
+        };
+      }
+    });
+  };
+
+  const handleCreateValidation = async () => {
+    try {
+      setBtnLoading(true);
+      const resp = await shopifyFetch("/api/v1/validation/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        setBtnLoading(false);
+        show(data.message);
+        navigate("/field-validation");
+      } else {
+        show(data.error.message, { isError: true });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setBtnLoading(false);
+    }
+  };
+
   return (
     <>
       <Page
@@ -74,7 +134,7 @@ const CreateValidation = () => {
                     Validation Title
                   </Text>
                 }
-                placeholder="title"
+                placeholder="Title"
                 value={formData.title}
                 onChange={(value) => handleFormDataChange("title", value)}
               />
@@ -95,6 +155,8 @@ const CreateValidation = () => {
               />
             )}
             <ValidationContainer
+              enable={enableValidation.first_name_validation}
+              setEnable={() => toggleEnableValidation("first_name_validation")}
               title="First Name Validation"
               data={formData.first_name_validation}
               setData={(name, value) => {
@@ -109,6 +171,40 @@ const CreateValidation = () => {
                 });
               }}
             />
+            <ValidationContainer
+              title="Last Name Validation"
+              enable={enableValidation.last_name_validation}
+              setEnable={() => toggleEnableValidation("last_name_validation")}
+              data={formData.last_name_validation}
+              setData={(name, value) => {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    last_name_validation: {
+                      ...prev.last_name_validation,
+                      [name]: value,
+                    },
+                  };
+                });
+              }}
+            />
+            <ValidationContainer
+              enable={enableValidation.address_validation}
+              setEnable={() => toggleEnableValidation("address_validation")}
+              title="Address Validation"
+              data={formData.address_validation}
+              setData={(name, value) => {
+                setFormData((prev) => {
+                  return {
+                    ...prev,
+                    address_validation: {
+                      ...prev.address_validation,
+                      [name]: value,
+                    },
+                  };
+                });
+              }}
+            />
             {/* <Card>
               <BlockStack>
                 <Text variant="headingMd">First Name Validation</Text>
@@ -116,6 +212,20 @@ const CreateValidation = () => {
             </Card> */}
           </BlockStack>
         </Card>
+        <Box paddingBlock="200">
+          <InlineStack align="end">
+            <Button
+              onClick={() => {
+                handleCreateValidation();
+              }}
+              variant="primary"
+              loading={btnLoading}
+              disabled={!formData.title || !formData.country_name}
+            >
+              Create
+            </Button>
+          </InlineStack>
+        </Box>
       </Page>
     </>
   );
