@@ -82,7 +82,6 @@ function CustomFields() {
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <Divider
               key={field.name}
-              // size={field.field_size}
               size={field.size}
               alignment={field.width === "half" ? "start" : "center"}
               direction="inline"
