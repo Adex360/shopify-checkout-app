@@ -12,6 +12,7 @@ import {
   ToggleButtonGroup,
   useApi,
   useExtensionApi,
+  useShippingAddress,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -30,14 +31,12 @@ export function CityDropdown() {
   const [selectedCity, setSelectedCity] = useState("");
 
   const applyAttributeChange = useApplyAttributeChange();
-  const { shippingAddress, applyShippingAddressChange, billingAddress } =
-    useApi();
+  const shippingAddressValue = useShippingAddress();
+  const { applyShippingAddressChange } = useApi();
   const fetchCityList = async () => {
     try {
       // let url = `/apps/api/api/v1/city-list/all/${myshopifyDomain}`;
       let url = CUSTOM_FIELDS_END_POINT;
-      console.log({ url });
-
       const response = await fetch(url, {
         method: "GET",
         headers: requestHeader,
@@ -54,40 +53,33 @@ export function CityDropdown() {
   }, []);
 
   useEffect(() => {
-    console.log(
-      "now",
-      "country",
-      shippingAddress?.current?.countryCode,
-      "shippping ",
-      shippingAddress,
-      "billing",
-      billingAddress.current.countryCode
-    );
-    if (shippingAddress?.current?.countryCode && cityList.length > 0) {
+    if (shippingAddressValue?.countryCode && cityList.length > 0) {
       const selectedCountry = cityList.find(
-        (country) =>
-          country.country_code === shippingAddress?.current?.countryCode
-        // billingAddress.current.countryCode
+        (country) => country.country_code === shippingAddressValue?.countryCode
       );
-      console.log("selectedCountry", selectedCountry);
       if (selectedCountry) {
         const filteredCitiesValue = selectedCountry.city_list || [];
-        console.log("filteredCitiesValue", filteredCitiesValue);
         setFilteredCities(filteredCitiesValue);
       } else {
         setFilteredCities([]);
       }
     }
-  }, [billingAddress.current.countryCode, cityList, shippingAddress]);
+  }, [shippingAddressValue, cityList]);
 
   const handleInputChange = (value) => {
     setInputValue(value);
     setDropdownVisible(true);
-    setFilteredCities((prevCities) =>
-      prevCities.filter((city) =>
-        city.toLowerCase().includes(value.toLowerCase())
-      )
+    const selectedCountry = cityList.find(
+      (country) => country.country_code === shippingAddressValue?.countryCode
     );
+    if (selectedCountry) {
+      const filteredCities = selectedCountry.city_list.filter((city) =>
+        city.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredCities(
+        filteredCities.length > 0 ? filteredCities : selectedCountry.city_list
+      );
+    }
   };
 
   const handleCitySelect = async (city) => {
