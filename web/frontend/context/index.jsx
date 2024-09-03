@@ -6,8 +6,9 @@ const AppContext = createContext();
 const AppContextProvider = ({ children }) => {
   const shopifyFetch = useAuthenticatedFetch();
   const [loading, setLoading] = useState(false);
-  const [shop, setShop] = useState({});
   const navigate = useNavigate();
+  const [shop, setShop] = useState({});
+  const [countries, setCountries] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const getShop = async () => {
     try {
@@ -26,8 +27,31 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+  const getCountries = async () => {
+    try {
+      setLoading(true);
+      const resp = await fetch("https://countriesnow.space/api/v0.1/countries");
+      const data = await resp.json();
+      if (resp.ok) {
+        setLoading(false);
+        const countryArr = [];
+        data.data?.forEach((country) => {
+          countryArr.push({
+            label: country.country,
+            value: country.iso2,
+          });
+        });
+        console.log(countryArr);
+        setCountries(countryArr);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getShop();
+    getCountries();
   }, []);
 
   const contextValues = {
@@ -35,6 +59,7 @@ const AppContextProvider = ({ children }) => {
     loading,
     setLoading,
     isSubscribed,
+    countries,
   };
 
   return (

@@ -17,7 +17,7 @@ import { CustomAutoComplete, SearchAndSelect } from "../../../components";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 
-const CreateCity = () => {
+const CreateCityList = () => {
   const { loading, setLoading } = useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -225,4 +225,4 @@ const CreateCity = () => {
   );
 };
 
-export default CreateCity;
+export default CreateCityList;

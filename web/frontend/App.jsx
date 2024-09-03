@@ -36,6 +36,10 @@ export default function App() {
                     destination: "/phone-validation",
                   },
                   {
+                    label: "Field Validation",
+                    destination: "/field-validation",
+                  },
+                  {
                     label: "Custom Fields",
                     destination: "/custom-fields",
                   },
