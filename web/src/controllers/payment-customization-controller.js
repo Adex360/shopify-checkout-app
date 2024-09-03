@@ -19,7 +19,7 @@ export const createPaymentCustomization = async (req, res) => {
   });
 
   res.status(200).json({
-    message: `Payment Customization Setting for Type :${req.body.type} Created !! `,
+    message: `Payment Customization Setting for Type:${req.body.type} Created !! `,
     createReOrder,
   });
 };

@@ -55,7 +55,7 @@ const Payment = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        show("Payment Customization Deleted!");
+        show(data.message);
         setCustomizationRules((prev) => {
           prev.splice(index, 1);
           return prev;
