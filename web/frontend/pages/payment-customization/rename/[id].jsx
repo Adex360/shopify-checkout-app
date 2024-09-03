@@ -212,10 +212,11 @@ const ReName = () => {
           title: getByID.title,
           type: getByID.type,
           status: getByID.rule_status,
-          ruleType: getByID.payment_rule ? "always" : "condition",
+          ruleType: getByID.payment_rule ? ["always"] : ["condition"],
           customizationRule: getByID.conditions,
           paymentName: getByID.payment_name,
         });
+        console.log(formData.customizationRule);
 
         setPageLoading(false);
       }
@@ -606,13 +607,6 @@ const ReName = () => {
                                       selectedValue
                                     );
                                   }}
-                                  // setSelectedOptions={(value) => {
-                                  //   handlePaymentRuleChange(
-                                  //     index,
-                                  //     "old",
-                                  //     value
-                                  //   );
-                                  // }}
                                 />
 
                                 <TextField
@@ -643,7 +637,7 @@ const ReName = () => {
                       <InlineStack align="end">
                         <Button
                           disabled={formData.paymentName.some((obj) =>
-                            Object.values(obj).some((value) => value === "")
+                            Object.values(obj).some((value) => !value)
                           )}
                           onClick={addNewTitle}
                           variant="primary"
