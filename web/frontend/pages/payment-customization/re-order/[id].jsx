@@ -35,7 +35,7 @@ const ReOrder = () => {
   const { id } = useParams();
   const { show } = useToast();
   const { smUp } = useBreakpoints();
-  const [loading, setLoading] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [countries, setCountries] = useState("");
   const [paymentTitles, setPaymentTitles] = useState([]);
@@ -75,14 +75,14 @@ const ReOrder = () => {
         });
         setCountries(countryArr);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
     }
   };
 
   const handleCreateCustomization = async () => {
     try {
-      setLoading(true);
+      setBtnLoading(true);
       const resp = await shopifyFetch("/api/v1/payment-customization/create", {
         method: "POST",
         headers: {
@@ -102,11 +102,16 @@ const ReOrder = () => {
       });
       const data = await resp.json();
       if (resp.ok) {
-        show("Added Successfully!", {
+        show(data.message, {
           duration: 2000,
         });
         navigate("/payment");
-        setLoading(false);
+        setBtnLoading(false);
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+        setBtnLoading(false);
       }
     } catch (error) {
       console.error(error);
@@ -140,22 +145,38 @@ const ReOrder = () => {
     });
   };
 
-  const handlePaymentRuleChange = (name, value) => {
-    setFormData((prev) => {
-      const newRules = { ...prev.paymentName };
-      newRules[name].push(value);
-      return {
-        ...prev,
-        paymentName: newRules,
-      };
-    });
-  };
-
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {
         ...prev,
         [name]: value,
+      };
+    });
+  };
+
+  const handleAddCondition = () => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        paymentRuleConditions: [
+          ...prev.paymentRuleConditions,
+          {
+            type: "country",
+            rule: "contains",
+            value: [],
+          },
+        ],
+      };
+    });
+  };
+
+  const handleDeleCondition = (index) => {
+    const newConditions = [...formData.paymentRuleConditions];
+    newConditions?.splice(index, 1);
+    setFormData((prev) => {
+      return {
+        ...prev,
+        paymentRuleConditions: newConditions,
       };
     });
   };
@@ -185,32 +206,41 @@ const ReOrder = () => {
   };
 
   const updateCustomizationData = async () => {
-    setLoading(true);
-    const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        title: formData.title,
-        type: formData.type,
-        rule_status: formData.status,
-        payment_rule: formData.paymentRule[0] !== "condition" ? true : false,
-        conditions: formData.paymentRuleConditions,
-        payment_name: {
-          match: "contain",
-          title: paymentTitles,
+    try {
+      setBtnLoading(true);
+      const resp = await shopifyFetch(`/api/v1/payment-customization/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-
-    const data = await resp.json();
-    if (resp.ok) {
-      show("Updated Successfully!", {
-        duration: 2000,
+        body: JSON.stringify({
+          title: formData.title,
+          type: formData.type,
+          rule_status: formData.status,
+          payment_rule: formData.paymentRule[0] !== "condition" ? true : false,
+          conditions: formData.paymentRuleConditions,
+          payment_name: {
+            match: "contain",
+            title: paymentTitles,
+          },
+        }),
       });
-      setLoading(false);
-      navigate("/payment");
+
+      const data = await resp.json();
+      if (resp.ok) {
+        show(data.message, {
+          duration: 2000,
+        });
+        setBtnLoading(false);
+        navigate("/payment");
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+        setBtnLoading(false);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -234,16 +264,6 @@ const ReOrder = () => {
             onAction: () => navigate("/payment"),
           }}
           title="Re-order Payment Methods"
-          // primaryAction={{
-          //   loading: loading,
-          //   disabled: paymentTitles.length === 0 || formData.title === "",
-          //   content: id !== "create" ? "Update" : "Create",
-          //   onAction: () => {
-          //     id !== "create"
-          //       ? updateCustomizationData()
-          //       : handleCreateCustomization();
-          //   },
-          // }}
           primaryAction={{
             content: formData.status === true ? "Turn off" : "Turn on",
             destructive: formData.status === true,
@@ -346,125 +366,169 @@ const ReOrder = () => {
                       {formData.paymentRuleConditions.map(
                         (condition, index) => {
                           return (
-                            <>
-                              <Select
-                                value={condition.type}
-                                options={[
-                                  {
-                                    label: "Shipping Title",
-                                    value: "title",
-                                  },
-                                  {
-                                    label: "Country",
-                                    value: "country",
-                                  },
-                                  {
-                                    label: "Total Amount",
-                                    value: "total-amount",
-                                  },
-                                  {
-                                    label: "SKU",
-                                    value: "sku",
-                                  },
-                                  {
-                                    label: "City",
-                                    value: "city",
-                                  },
-                                ]}
-                                onChange={(value) => {
-                                  handleSortingRuleChange(index, "value", []);
-                                  handleSortingRuleChange(
-                                    index,
-                                    "rule",
-                                    value === "total-amount"
-                                      ? "equal-to"
-                                      : "contains"
-                                  );
-                                  handleSortingRuleChange(index, "type", value);
-                                }}
-                              />
-                              <Select
-                                value={condition.rule}
-                                options={
-                                  condition.type !== "total-amount"
-                                    ? customizationRuleForCountry
-                                    : customizationRuleForPayment
-                                }
-                                onChange={(value) => {
-                                  handleSortingRuleChange(index, "rule", value);
-                                }}
-                              />
-                              {}
-                              {condition.type === "country" ? (
-                                <>
-                                  {countries.length > 0 ? (
-                                    <SearchAndSelect
-                                      allowMultiple={true}
-                                      selectedOptions={condition.value}
-                                      setSelectedOptions={(value) => {
+                            <Card background="bg-fill-disabled">
+                              <BlockStack gap="200">
+                                <InlineGrid columns={2} gap="400">
+                                  <Select
+                                    value={condition.type}
+                                    options={[
+                                      {
+                                        label: "Shipping Title",
+                                        value: "title",
+                                      },
+                                      {
+                                        label: "Country",
+                                        value: "country",
+                                      },
+                                      {
+                                        label: "Total Amount",
+                                        value: "total-amount",
+                                      },
+                                      {
+                                        label: "SKU",
+                                        value: "sku",
+                                      },
+                                      {
+                                        label: "City",
+                                        value: "city",
+                                      },
+                                    ]}
+                                    onChange={(value) => {
+                                      handleSortingRuleChange(
+                                        index,
+                                        "value",
+                                        []
+                                      );
+                                      handleSortingRuleChange(
+                                        index,
+                                        "rule",
+                                        value === "total-amount"
+                                          ? "equal-to"
+                                          : "contains"
+                                      );
+                                      handleSortingRuleChange(
+                                        index,
+                                        "type",
+                                        value
+                                      );
+                                    }}
+                                  />
+                                  <Select
+                                    value={condition.rule}
+                                    options={
+                                      condition.type !== "total-amount"
+                                        ? customizationRuleForCountry
+                                        : customizationRuleForPayment
+                                    }
+                                    onChange={(value) => {
+                                      handleSortingRuleChange(
+                                        index,
+                                        "rule",
+                                        value
+                                      );
+                                    }}
+                                  />
+                                </InlineGrid>
+
+                                {condition.type === "country" ? (
+                                  <>
+                                    {countries.length > 0 ? (
+                                      <SearchAndSelect
+                                        allowMultiple={true}
+                                        selectedOptions={condition.value}
+                                        setSelectedOptions={(value) => {
+                                          handleSortingRuleChange(
+                                            index,
+                                            "value",
+                                            value
+                                          );
+                                        }}
+                                        placeholder="Search Country"
+                                        selectionOption={countries}
+                                      />
+                                    ) : (
+                                      <BlockStack
+                                        align="center"
+                                        inlineAlign="center"
+                                      >
+                                        <Spinner size="small" />
+                                      </BlockStack>
+                                    )}
+                                  </>
+                                ) : condition.type === "city" ||
+                                  condition.type === "sku" ? (
+                                  <>
+                                    <AddTag
+                                      setTags={(value) =>
                                         handleSortingRuleChange(
                                           index,
                                           "value",
                                           value
+                                        )
+                                      }
+                                      placeholder={
+                                        condition.type === "city"
+                                          ? "Enter Cities"
+                                          : "Enter SKU"
+                                      }
+                                      tags={condition.value}
+                                    />
+                                  </>
+                                ) : (
+                                  <>
+                                    <TextField
+                                      value={condition.value[0]}
+                                      type={
+                                        condition.type === "title"
+                                          ? "text"
+                                          : "number"
+                                      }
+                                      placeholder={
+                                        condition.type === "title"
+                                          ? "Add shipping title"
+                                          : "Add amount "
+                                      }
+                                      onChange={(value) => {
+                                        handleSortingRuleChange(
+                                          index,
+                                          "value",
+                                          [value]
                                         );
                                       }}
-                                      placeholder="Search Country"
-                                      selectionOption={countries}
                                     />
-                                  ) : (
-                                    <BlockStack
-                                      align="center"
-                                      inlineAlign="center"
-                                    >
-                                      <Spinner size="small" />
-                                    </BlockStack>
-                                  )}
-                                </>
-                              ) : condition.type === "city" ||
-                                condition.type === "sku" ? (
-                                <>
-                                  <AddTag
-                                    setTags={(value) =>
-                                      handleSortingRuleChange(
-                                        index,
-                                        "value",
-                                        value
-                                      )
-                                    }
-                                    placeholder={
-                                      condition.type === "city"
-                                        ? "Enter Cities"
-                                        : "Enter SKU"
-                                    }
-                                    tags={condition.value}
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <TextField
-                                    value={condition.value[0]}
-                                    type={
-                                      condition.type === "title"
-                                        ? "text"
-                                        : "number"
-                                    }
-                                    placeholder={
-                                      condition.type === "title"
-                                        ? "Add shipping title"
-                                        : "Add amount "
-                                    }
-                                    onChange={(value) => {
-                                      handleSortingRuleChange(index, "value", [
-                                        value,
-                                      ]);
-                                    }}
-                                  />
-                                </>
-                              )}
-                            </>
+                                  </>
+                                )}
+                                {formData.paymentRuleConditions.length > 1 && (
+                                  <InlineStack align="end">
+                                    <Button
+                                      onClick={() => handleDeleCondition(index)}
+                                      variant="primary"
+                                      icon={DeleteIcon}
+                                    />
+                                  </InlineStack>
+                                )}
+                              </BlockStack>
+                            </Card>
                           );
                         }
                       )}
+                      <Box paddingBlock="100">
+                        <InlineStack align="end">
+                          <Button
+                            disabled={formData.paymentRuleConditions.some(
+                              (rule) =>
+                                (Array.isArray(rule.value) &&
+                                  rule.value.length === 0) ||
+                                rule.value.includes("")
+                            )}
+                            onClick={handleAddCondition}
+                            variant="primary"
+                            icon={PlusCircleIcon}
+                          >
+                            Add new Rule
+                          </Button>
+                        </InlineStack>
+                      </Box>
                     </BlockStack>
                   )}
                 </BlockStack>
@@ -555,7 +619,7 @@ const ReOrder = () => {
             >
               <Box paddingBlockEnd="800">
                 <Button
-                  loading={loading}
+                  loading={btnLoading}
                   disabled={
                     paymentTitles.length === 0 ||
                     formData.title === "" ||

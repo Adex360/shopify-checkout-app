@@ -178,7 +178,7 @@ const Payment = () => {
                           <p>
                             It looks like you haven't created any customization
                             yet. Click the "Create payment customizations"
-                            button to create your own customization
+                            button to create your own customization.
                           </p>
                         </EmptyState>
                       </Card>
