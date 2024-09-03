@@ -70,14 +70,13 @@ const CustomFields = () => {
       field.fields.length === 0 ? (
         <Badge tone="critical-strong">No fields</Badge>
       ) : (
-        field?.fields.map((filedName, index) => {
-          return ` ${index > 0 ? ", " : ""}${filedName.label} `;
+        field?.fields.map((fieldName, index) => {
+          return ` ${index > 0 ? ", " : ""}${fieldName.label ? fieldName.label : fieldName.type}`;
         })
       );
     return [
       field.title,
       field?.fields.length,
-
       <Box maxWidth="200px">
         <Text truncate={true}>{fieldsName}</Text>
       </Box>,
