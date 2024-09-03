@@ -7,12 +7,10 @@ class Session {
   }
 
   async loadSession(id) {
-    console.log("load session => ", id);
     const shop = await Shop.findByName(id.replace("offline_", ""));
     if (!shop || !shop.accessToken) return false;
 
     const session = convertShopToSession(shop);
-    console.log("session ", session);
     return session;
   }
 
@@ -26,7 +24,6 @@ class Session {
 
   async findSessionsByShop(shop) {
     const shopExist = await Shop.findByName(shop);
-    console.log("shop exist ", shopExist);
     if (!shopExist) return [];
     return [convertShopToSession(shopExist)];
   }
