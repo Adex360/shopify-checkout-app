@@ -152,7 +152,7 @@ const FieldValidation = () => {
                         <Text variant="headingMd">Title</Text>,
                         <Text variant="headingMd">Status</Text>,
                         <Text variant="headingMd">Country Code</Text>,
-                        <Text variant="headingMd">Fist Name Val. </Text>,
+                        <Text variant="headingMd">First Name Val. </Text>,
                         <Text variant="headingMd">Last Name Val.</Text>,
                         <Text variant="headingMd">Address Val.</Text>,
                         "",

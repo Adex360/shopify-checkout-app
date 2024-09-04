@@ -51,7 +51,8 @@ export const getAllValidation = async (req, res) => {
     if (getAll.length >= 5) {
       return res.status(200).json({
         message: `You have reached the maximum limit of 5 validations total, including both phone and field validations. No additional validations can be added.`,
-        validations: getAll,
+        phoneValidations,
+        fieldValidations,
       });
     }
     res.status(200).json({
