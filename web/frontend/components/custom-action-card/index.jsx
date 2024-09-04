@@ -17,7 +17,7 @@ const CustomActionCard = ({
               <Text variant="headingMd">{title}</Text>
               {status}
             </InlineStack>
-            <Text variant="headingMd"> {activeNumbers} / 5</Text>
+            {/* <Text variant="headingMd"> {activeNumbers} / 5</Text> */}
           </InlineStack>
           <Text variant="bodyMd">{description}</Text>
           <InlineStack align="end">{action}</InlineStack>
