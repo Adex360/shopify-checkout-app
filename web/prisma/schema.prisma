@@ -111,7 +111,6 @@ model Discount {
   discount_message String
   discount_rule    Boolean
   discount_class   String
-  combines_with    Json
   startsAt         DateTime
   endsAt           DateTime?
   has_condition    Boolean   @default(false)

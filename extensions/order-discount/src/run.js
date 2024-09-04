@@ -29,7 +29,6 @@ const DISCOUNT_TYPE = {
   PERCENTAGE: "percentage",
 };
 const CONDITION = {
-  TITLE: "title",
   TOTAL_AMOUNT: "total-amount",
   SUB_TOTAL_AMOUNT: "sub-total-amount",
   SKU: "sku",
