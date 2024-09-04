@@ -10,6 +10,7 @@ import {
   Modal,
   Checkbox,
 } from "@shopify/polaris";
+import { useAppContext } from "../../context";
 
 const PhoneValidationModal = ({
   open,
@@ -18,14 +19,15 @@ const PhoneValidationModal = ({
   onEditSuccess,
   editingID,
 }) => {
+  const { countries, loading } = useAppContext();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
-  const [loading, setLoading] = useState({
+  const [pageLoadings, setPageLoadings] = useState({
     modalLoading: false,
     btnLoading: false,
   });
 
-  const [countries, setCountries] = useState([]);
+  // const [countries, setCountries] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     enable: true,
@@ -46,36 +48,12 @@ const PhoneValidationModal = ({
   };
 
   const changeLoading = (name, value) => {
-    setLoading((prev) => {
+    setPageLoadings((prev) => {
       return {
         ...prev,
         [name]: value,
       };
     });
-  };
-
-  const getCountries = async () => {
-    try {
-      changeLoading("modalLoading", true);
-      const resp = await shopifyFetch(
-        "https://countriesnow.space/api/v0.1/countries"
-      );
-      const data = await resp.json();
-      if (resp.ok) {
-        const countryArr = [];
-        data.data?.forEach((country) => {
-          countryArr.push({
-            label: country.country,
-            value: country.iso2,
-          });
-        });
-        setCountries(countryArr);
-        changeLoading("modalLoading", false);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-    }
   };
 
   const isFormDataValid = () => {
@@ -200,7 +178,7 @@ const PhoneValidationModal = ({
       onEditSuccess(data.updatedValidation);
     } else {
       show(data.error, { isError: true });
-      setLoading(false);
+      setPageLoadings(false);
     }
   };
 
@@ -210,9 +188,7 @@ const PhoneValidationModal = ({
     }
   }, [open]);
 
-  useEffect(() => {
-    getCountries();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -221,14 +197,14 @@ const PhoneValidationModal = ({
         onClose={() => {
           handleClose();
         }}
-        loading={loading.modalLoading}
+        loading={loading || pageLoadings.modalLoading}
         // size="medium"
         primaryAction={{
           content: editingID !== "" ? "Update" : "Add",
           onAction: () =>
             editingID !== "" ? updateValidationData() : setPhoneValidation(),
           disabled: !isFormDataValid(),
-          loading: loading.btnLoading,
+          loading: pageLoadings.btnLoading,
         }}
         title="Add Phone Validation"
       >
