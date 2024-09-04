@@ -73,16 +73,17 @@ function CustomFields() {
       value: value,
     });
   };
+  console.log("tt");
   const renderField = (field) => {
-    const fieldWidth = field.field_width === "half" ? "50%" : "100%";
+    const fieldWidth = field.width === "half" ? "50%" : "100%";
     switch (field.type) {
       case "Divider":
         return (
           <BlockStack key={field.name} maxInlineSize={fieldWidth}>
             <Divider
               key={field.name}
-              size={field.field_size}
-              alignment={field.field_width === "half" ? "start" : "center"}
+              size={field.size}
+              alignment={field.width === "half" ? "start" : "center"}
               direction="inline"
             />
           </BlockStack>

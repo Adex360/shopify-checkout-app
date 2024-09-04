@@ -19,7 +19,7 @@ export const createPaymentCustomization = async (req, res) => {
   });
 
   res.status(200).json({
-    message: `Payment Customization Setting for Type :${req.body.type} Created !! `,
+    message: `Payment Customization Setting for Type:${req.body.type} Created !! `,
     createReOrder,
   });
 };
@@ -146,7 +146,6 @@ export const countByTypesAndActive = async (req, res) => {
       activeCountries: countryNames,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Error while counting" });
   }
 };

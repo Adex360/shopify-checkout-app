@@ -296,6 +296,7 @@ export default class ShopifyService {
             rule: settingData.discount_rule,
             hasCondition: settingData.has_condition,
             conditions: settingData.conditions,
+            productVariantIds: settingData.variant_ids,
           }),
         },
 

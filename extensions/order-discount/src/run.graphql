@@ -1,7 +1,19 @@
 query RunInput {
   cart {
+    attribute(key: "paymentMethod") {
+      key
+      value
+    }
+
     lines {
       id
+      quantity
+      merchandise {
+        ... on ProductVariant {
+          id
+          sku
+        }
+      }
       quantity
     }
     cost {
@@ -11,23 +23,6 @@ query RunInput {
       totalAmount {
         amount
       }
-    }
-    deliveryGroups {
-      deliveryAddress {
-        countryCode
-        city
-      }
-      deliveryOptions {
-        title
-      }
-    }
-    lines {
-      merchandise {
-        ... on ProductVariant {
-          sku
-        }
-      }
-      quantity
     }
   }
   discountNode {
