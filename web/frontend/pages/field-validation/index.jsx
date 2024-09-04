@@ -22,6 +22,7 @@ const FieldValidation = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [fieldValidations, setFieldValidations] = useState([]);
+  const [loadingIndex, setLoadingIndex] = useState(-1);
 
   const getFieldValidations = async () => {
     try {
@@ -30,7 +31,7 @@ const FieldValidation = () => {
       const data = await resp.json();
       if (resp.ok) {
         console.log(data.getAll);
-        setFieldValidations(data.validations);
+        setFieldValidations(data.getAll);
       } else {
         show(data.error.message, {
           isError: true,
@@ -40,6 +41,35 @@ const FieldValidation = () => {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteValidation = async (id, index) => {
+    try {
+      setLoadingIndex(index);
+      const resp = await shopifyFetch(`api/v1/validation/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        show(data.message);
+        setFieldValidations((prev) => {
+          const newArr = [...prev];
+          newArr.splice(index, 1);
+          return newArr;
+        });
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingIndex(-1);
     }
   };
 
@@ -67,11 +97,24 @@ const FieldValidation = () => {
       ) : (
         <Badge tone="critical-strong">Disabled</Badge>
       ),
-      // data.last_name_validation,
-      // data.address_validation,
       <ButtonGroup variant="segmented">
-        <Button variant="secondary">Edit</Button>
-        <Button variant="primary">Delete</Button>
+        <Button
+          disabled={loadingIndex > -1}
+          onClick={() => {
+            navigate(`/field-validation/${data.id}`);
+          }}
+          variant="secondary"
+        >
+          Edit
+        </Button>
+        <Button
+          disabled={loadingIndex > -1}
+          loading={loadingIndex === index}
+          variant="primary"
+          onClick={() => handleDeleteValidation(data.id, index)}
+        >
+          Delete
+        </Button>
       </ButtonGroup>,
     ];
   });
@@ -111,7 +154,6 @@ const FieldValidation = () => {
                         <Text variant="headingMd">Country Code</Text>,
                         <Text variant="headingMd">Fist Name Val. </Text>,
                         <Text variant="headingMd">Last Name Val.</Text>,
-                        // <Text variant="headingMd">Last Name </Text>,
                         <Text variant="headingMd">Address Val.</Text>,
                         "",
                       ]}
