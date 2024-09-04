@@ -3,6 +3,8 @@ import { useAppContext } from "../../context";
 import { PlanUpgradeWarning } from "../../components";
 import {
   Badge,
+  Banner,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -144,6 +146,12 @@ const FieldValidation = () => {
           >
             <Layout>
               <Layout.Section>
+                <Box>
+                  <Banner tone="warning" title="Limit Reached">
+                    You have created maximum number of Validations. Delete the
+                    validation to create new one.
+                  </Banner>
+                </Box>
                 {fieldValidations?.length > 0 ? (
                   <Card padding="0">
                     <DataTable
@@ -152,7 +160,7 @@ const FieldValidation = () => {
                         <Text variant="headingMd">Title</Text>,
                         <Text variant="headingMd">Status</Text>,
                         <Text variant="headingMd">Country Code</Text>,
-                        <Text variant="headingMd">First Name Val. </Text>,
+                        <Text variant="headingMd">Fist Name Val. </Text>,
                         <Text variant="headingMd">Last Name Val.</Text>,
                         <Text variant="headingMd">Address Val.</Text>,
                         "",
