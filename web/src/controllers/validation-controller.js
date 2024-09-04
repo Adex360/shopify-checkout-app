@@ -41,14 +41,23 @@ export const getAllValidation = async (req, res) => {
   try {
     const shop = req.shop;
     const getAll = await Validation.findAll(shop.id);
+    const phoneValidations = getAll.filter(
+      (validation) => validation.phone_validation !== null
+    );
+    const fieldValidations = getAll.filter(
+      (validation) => validation.phone_validation === null
+    );
+
     if (getAll.length >= 5) {
       return res.status(200).json({
-        message:
-          "You have reached the maximum limit of 5 Validations. No additional Validation can be added.",
+        message: `You have reached the maximum limit of 5 validations total, including both phone and field validations. No additional validations can be added.`,
         validations: getAll,
       });
     }
-    res.status(200).json({ getAll });
+    res.status(200).json({
+      phoneValidations,
+      fieldValidations,
+    });
   } catch (error) {
     res.status(500).json({ error: "Error Getting All Validation:" });
   }
