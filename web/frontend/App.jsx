@@ -43,10 +43,10 @@ export default function App() {
                     label: "Custom Fields",
                     destination: "/custom-fields",
                   },
-                  {
-                    label: "Discounts",
-                    destination: "/discounts",
-                  },
+                  // {
+                  //   label: "Discounts",
+                  //   destination: "/discounts",
+                  // },
                   {
                     label: "Checkout Info Banner",
                     destination: "/checkout-info-banner",

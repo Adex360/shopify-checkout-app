@@ -28,7 +28,7 @@ const PhoneValidation = () => {
   const [editingID, setEditingID] = useState("");
   const [editingIndex, setEditingIndex] = useState("");
   const [loading, setLoading] = useState(false);
-  const [btnLoadingIndex, setBtnLoadingIndex] = useState("");
+  const [btnLoadingIndex, setBtnLoadingIndex] = useState(-1);
   const [validations, setValidations] = useState([]);
 
   const getPhoneValidations = async () => {
@@ -37,7 +37,7 @@ const PhoneValidation = () => {
       const resp = await shopifyFetch("api/v1/validation");
       const data = await resp.json();
       if (resp.ok) {
-        setValidations(data.getAll);
+        setValidations(data.phoneValidations);
       }
       setLoading(false);
     } catch (e) {
@@ -67,7 +67,7 @@ const PhoneValidation = () => {
     } catch (e) {
       console.error(e);
     } finally {
-      setBtnLoadingIndex("");
+      setBtnLoadingIndex(-1);
     }
   };
 
@@ -76,11 +76,11 @@ const PhoneValidation = () => {
     console.log(data);
     return [
       data.title,
-      // phone_validation.country_name,
-      // phone_validation.country_code.join(","),
-      // phone_validation.network_code,
-      // phone_validation.phone_no_length,
-      // phone_validation.error_message,
+      phone_validation.country_name,
+      phone_validation.country_code.join(","),
+      phone_validation.network_code,
+      phone_validation.phone_no_length,
+      phone_validation.error_message,
       data.enabled ? (
         <Badge tone="success">Active</Badge>
       ) : (
@@ -88,6 +88,7 @@ const PhoneValidation = () => {
       ),
       <ButtonGroup variant="segmented">
         <Button
+          disabled={btnLoadingIndex > -1}
           onClick={() => {
             setModalOpen(true);
             setEditingID(data.id);
@@ -97,6 +98,7 @@ const PhoneValidation = () => {
           Edit
         </Button>
         <Button
+          disabled={btnLoadingIndex > -1}
           loading={btnLoadingIndex === index}
           variant="primary"
           onClick={() => handleDeleteValidation(data.id, index)}

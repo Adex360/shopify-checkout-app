@@ -30,8 +30,8 @@ const FieldValidation = () => {
       const resp = await shopifyFetch("api/v1/validation");
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data.getAll);
-        setFieldValidations(data.getAll);
+        console.log(data.fieldValidations);
+        setFieldValidations(data.fieldValidations);
       } else {
         show(data.error.message, {
           isError: true,
