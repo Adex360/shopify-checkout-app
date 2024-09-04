@@ -11,8 +11,8 @@ import {
   ToggleButton,
   ToggleButtonGroup,
   useApi,
-  useExtensionApi,
   useShippingAddress,
+  useInstructions,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -20,6 +20,7 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 export function CityDropdown() {
+  const instructions = useInstructions();
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
@@ -35,7 +36,6 @@ export function CityDropdown() {
   const { applyShippingAddressChange } = useApi();
   const fetchCityList = async () => {
     try {
-      // let url = `/apps/api/api/v1/city-list/all/${myshopifyDomain}`;
       let url = CUSTOM_FIELDS_END_POINT;
       const response = await fetch(url, {
         method: "GET",
@@ -86,15 +86,20 @@ export function CityDropdown() {
     setInputValue(city);
     setDropdownVisible(false);
     try {
-      await applyShippingAddressChange({
-        type: "updateShippingAddress",
-        address: { city },
-      });
-      applyAttributeChange({
-        key: "selectedCity",
-        type: "updateAttribute",
-        value: city,
-      });
+      if (
+        instructions.delivery.canSelectCustomAddress &&
+        instructions.attributes.canUpdateAttributes
+      ) {
+        await applyShippingAddressChange({
+          type: "updateShippingAddress",
+          address: { city },
+        });
+        applyAttributeChange({
+          key: "selectedCity",
+          type: "updateAttribute",
+          value: city,
+        });
+      }
     } catch (error) {
       console.error("Error updating shipping address:", error);
     }

@@ -16,6 +16,7 @@ import {
   TextBlock,
   Heading,
   useShop,
+  useInstructions,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -23,6 +24,7 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 function CustomFields() {
+  const instructions = useInstructions();
   const { myshopifyDomain } = useShop();
   const CUSTOM_FIELDS_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const { form_name } = useSettings();
@@ -50,7 +52,6 @@ function CustomFields() {
         headers: requestHeader,
       });
       const data = await response.json();
-      console.log("Fetched Custom Fields Data:", data);
       setCustomFields(Array.isArray(data.getAll) ? data.getAll : []);
     } catch (error) {
       console.error("Error Fetching Custom Fields", error);
@@ -67,13 +68,14 @@ function CustomFields() {
       [field.name]: value,
     }));
 
-    applyAttributeChange({
-      key: field.name,
-      type: "updateAttribute",
-      value: value,
-    });
+    if (instructions.attributes.canUpdateAttributes) {
+      applyAttributeChange({
+        key: field.name,
+        type: "updateAttribute",
+        value: value,
+      });
+    }
   };
-  console.log("tt");
   const renderField = (field) => {
     const fieldWidth = field.width === "half" ? "50%" : "100%";
     switch (field.type) {

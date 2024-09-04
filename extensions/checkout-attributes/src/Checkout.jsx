@@ -6,6 +6,7 @@ import {
   useShop,
   useAvailablePaymentOptions,
   useSelectedPaymentOptions,
+  useInstructions,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -13,6 +14,7 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 function Extension() {
+  const instructions = useInstructions();
   const { myshopifyDomain } = useShop();
   const DISCOUNT_END_POINT = `${API_URL}/${myshopifyDomain}`;
   const requestHeader = { "Content-Type": "application/json" };
@@ -87,7 +89,10 @@ function Extension() {
           const newValue = isRequiredTypeSelected
             ? selectedMethod.type
             : selectedMethod.handle;
-          if (lastAppliedMethod.current !== newValue) {
+          if (
+            lastAppliedMethod.current !== newValue &&
+            instructions.attributes.canUpdateAttributes
+          ) {
             applyAttributeChange({
               key: "paymentMethod",
               type: "updateAttribute",
@@ -98,7 +103,10 @@ function Extension() {
         } else {
           const defaultMethod = selectedPaymentOptions[0].type;
 
-          if (lastAppliedMethod.current !== defaultMethod) {
+          if (
+            lastAppliedMethod.current !== defaultMethod &&
+            instructions.attributes.canUpdateAttributes
+          ) {
             applyAttributeChange({
               key: "paymentMethod",
               type: "updateAttribute",
