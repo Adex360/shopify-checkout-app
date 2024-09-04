@@ -14,6 +14,7 @@ import {
 } from "@shopify/polaris";
 
 const ValidationContainer = ({ title, data, setData, enable, setEnable }) => {
+  console.log("enabled............", enable);
   const { smUp } = useBreakpoints();
   return (
     <Card background="bg">
@@ -63,7 +64,7 @@ const ValidationContainer = ({ title, data, setData, enable, setEnable }) => {
                   }
                   value={data.min_length}
                   onChange={(value) => {
-                    setData("min_length", value);
+                    setData("min_length", +value);
                   }}
                 />
                 <TextField
@@ -76,7 +77,7 @@ const ValidationContainer = ({ title, data, setData, enable, setEnable }) => {
                   }
                   value={data.max_length}
                   onChange={(value) => {
-                    setData("max_length", value);
+                    setData("max_length", +value);
                   }}
                 />
               </InlineStack>
