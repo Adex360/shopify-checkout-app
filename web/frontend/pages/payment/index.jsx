@@ -145,8 +145,8 @@ const Payment = () => {
                       <Box paddingBlock="200">
                         {customizationRules.length >= 5 && (
                           <Banner tone="warning" title="Limit Reached">
-                            You have 5/5 customization active. Deactivate or
-                            delete customization to create new customizations
+                            You have 5/5 customization. Deactivate or delete
+                            customization to create new customizations
                           </Banner>
                         )}
                       </Box>
