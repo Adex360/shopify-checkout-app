@@ -109,6 +109,21 @@ export default class ShopifyService {
     return resp.data.webhooks;
   }
 
+  async getShopCountries() {
+    const queryString = {
+      query: `
+      query {
+        shop {
+          name
+          shipsToCountries
+        }
+      }
+  `,
+    };
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const shopCountries = resp.data.data.shop.shipsToCountries;
+    return shopCountries;
+  }
   async getShopifyFunctionId(extensionName) {
     const queryString = {
       query: `
