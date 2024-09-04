@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Badge,
+  Banner,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -144,6 +146,7 @@ const PhoneValidation = () => {
                 </InlineStack>
               }
               primaryAction={{
+                disabled: validations.length >= 5,
                 content: "Add validation",
                 onAction: () => setModalOpen(true),
               }}
@@ -178,6 +181,14 @@ const PhoneValidation = () => {
                   />
                   {validations.length > 0 ? (
                     <>
+                      {validations.length >= 5 && (
+                        <Box paddingBlockEnd="200">
+                          <Banner tone="warning" title="Limit Reached">
+                            You have created maximum number of Validations.
+                            Delete the validation to create new one.
+                          </Banner>
+                        </Box>
+                      )}
                       <DataTable
                         columnContentTypes={["text", "text", "text", "text"]}
                         headings={tableHeadings}
