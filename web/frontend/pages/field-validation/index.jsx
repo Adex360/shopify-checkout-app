@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useAppContext } from "../../context";
 import { PlanUpgradeWarning } from "../../components";
 import {
+  Badge,
+  Button,
+  ButtonGroup,
   Card,
   DataTable,
   EmptyState,
@@ -27,7 +30,7 @@ const FieldValidation = () => {
       const data = await resp.json();
       if (resp.ok) {
         console.log(data.getAll);
-        setFieldValidations(data.getAll);
+        setFieldValidations(data.validations);
       } else {
         show(data.error.message, {
           isError: true,
@@ -41,8 +44,38 @@ const FieldValidation = () => {
   };
 
   const tableRows = fieldValidations?.map((data, index) => {
-    return [data.address_validation, data.enabled];
+    return [
+      data.title,
+      data.enabled ? (
+        <Badge tone="success-strong">Enabled</Badge>
+      ) : (
+        <Badge tone="critical-strong">Disabled</Badge>
+      ),
+      data.country_name,
+      data.first_name_validation ? (
+        <Badge tone="success-strong">Enabled</Badge>
+      ) : (
+        <Badge tone="critical-strong">Disabled</Badge>
+      ),
+      data.last_name_validation ? (
+        <Badge tone="success-strong">Enabled</Badge>
+      ) : (
+        <Badge tone="critical-strong">Disabled</Badge>
+      ),
+      data.address_validation ? (
+        <Badge tone="success-strong">Enabled</Badge>
+      ) : (
+        <Badge tone="critical-strong">Disabled</Badge>
+      ),
+      // data.last_name_validation,
+      // data.address_validation,
+      <ButtonGroup variant="segmented">
+        <Button variant="secondary">Edit</Button>
+        <Button variant="primary">Delete</Button>
+      </ButtonGroup>,
+    ];
   });
+
   useState(() => {
     isSubscribed && getFieldValidations();
   }, [isSubscribed]);
@@ -68,18 +101,21 @@ const FieldValidation = () => {
           >
             <Layout>
               <Layout.Section>
-                {fieldValidations.length > 0 ? (
+                {fieldValidations?.length > 0 ? (
                   <Card padding="0">
                     <DataTable
                       columnContentTypes={["text", "text", "text", "text"]}
                       headings={[
                         <Text variant="headingMd">Title</Text>,
-                        <Text variant="headingMd">Rule</Text>,
-                        <Text variant="headingMd">Rule Status</Text>,
-                        <Text variant="headingMd">Condition</Text>,
+                        <Text variant="headingMd">Status</Text>,
+                        <Text variant="headingMd">Country Code</Text>,
+                        <Text variant="headingMd">Fist Name Val. </Text>,
+                        <Text variant="headingMd">Last Name Val.</Text>,
+                        // <Text variant="headingMd">Last Name </Text>,
+                        <Text variant="headingMd">Address Val.</Text>,
                         "",
                       ]}
-                      rows={[["a"], ["b"]]}
+                      rows={tableRows}
                     />
                   </Card>
                 ) : (
