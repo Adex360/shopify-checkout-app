@@ -80,11 +80,11 @@ export function run(input) {
         });
       } else if (fieldSetting.special_character === "block-selective") {
         const regex = new RegExp(
-          `[${fieldSetting.if_block_selectective.join("")}]`
+          `[${fieldSetting.if_block_selected.join("")}]`
         );
         if (regex.test(fieldValue)) {
           errors.push({
-            localizedMessage: `${fieldName} cannot contain the following characters: ${fieldSetting.if_block_selectective.join(
+            localizedMessage: `${fieldName} cannot contain the following characters: ${fieldSetting.if_block_selected.join(
               ", "
             )}`,
             target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,

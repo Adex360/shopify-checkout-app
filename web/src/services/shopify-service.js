@@ -109,41 +109,21 @@ export default class ShopifyService {
     return resp.data.webhooks;
   }
 
-  async installWebhook({ topic, address }) {
-    if (!address) return console.log("WEBHOOK ADDRESS NOT DEFINED");
-    try {
-      const resp = await this.post("/webhooks.json", {
-        webhook: {
-          topic,
-          address,
-          format: "json",
-        },
-      });
-      return resp.data.webhook;
-    } catch (error) {
-      console.log("ERROR########", error.response.data);
-    }
+  async getShopCountries() {
+    const queryString = {
+      query: `
+      query {
+        shop {
+          name
+          shipsToCountries
+        }
+      }
+  `,
+    };
+    const resp = await this.post("/graphql.json", JSON.stringify(queryString));
+    const shopCountries = resp.data.data.shop.shipsToCountries;
+    return shopCountries;
   }
-
-  async installAllWebhooks() {
-    for (const topic of WEBHOOK_TOPICS) {
-      await this.installWebhook({
-        topic,
-        address: process.env.AWS_WEBHOOK_EVENT_RULE_ARN,
-      });
-    }
-
-    return;
-  }
-
-  async getThemeId() {
-    const resp = await this.axios.get("/themes.json");
-    const { themes } = resp.data;
-    const currentTheme = themes.find((theme) => theme.role === "main");
-
-    return currentTheme.id;
-  }
-
   async getShopifyFunctionId(extensionName) {
     const queryString = {
       query: `
@@ -277,10 +257,6 @@ export default class ShopifyService {
     const DiscountAutomaticAppInput = {
       title: settingData.title,
       functionId: id,
-      combinesWith: {
-        orderDiscounts: settingData.combines_with.order,
-        productDiscounts: settingData.combines_with.product,
-      },
       startsAt: settingData.startsAt,
       endsAt: settingData.endsAt,
       metafields: [
@@ -299,13 +275,6 @@ export default class ShopifyService {
             productVariantIds: settingData.variant_ids,
           }),
         },
-
-        // {
-        //   "namespace": "$app:order-discount",
-        //   "key": "function-configuration",
-        //   "type": "json",
-        //   "value": "{\"discounts\":[{\"value\":{\"fixedAmount\":{\"amount\":5}},\"targets\":\n[{\"orderSubtotal\":{\"excludedVariantIds\":[]}}]}],\"discountApplicationStrategy\":\"FIRST\"}"
-        // }
       ],
     };
 
@@ -333,7 +302,6 @@ export default class ShopifyService {
     return discountId;
   }
 
-  // TODO
   async updateDiscount(discountObj, settingData) {
     const DiscountAutomaticAppInput = {
       title: settingData.title,
