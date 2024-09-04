@@ -73,13 +73,14 @@ const PhoneValidation = () => {
 
   const tableRows = validations?.map((data, index) => {
     const { phone_validation } = data;
+    console.log(data);
     return [
       data.title,
-      phone_validation.country_name,
-      phone_validation.country_code.join(","),
-      phone_validation.network_code,
-      phone_validation.phone_no_length,
-      phone_validation.error_message,
+      // phone_validation.country_name,
+      // phone_validation.country_code.join(","),
+      // phone_validation.network_code,
+      // phone_validation.phone_no_length,
+      // phone_validation.error_message,
       data.enabled ? (
         <Badge tone="success">Active</Badge>
       ) : (

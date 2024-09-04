@@ -35,13 +35,17 @@ export default function App() {
                     label: "Phone Validation",
                     destination: "/phone-validation",
                   },
-                  // {
-                  //   label: "Field Validation",
-                  //   destination: "/field-validation",
-                  // },
+                  {
+                    label: "Field Validation",
+                    destination: "/field-validation",
+                  },
                   {
                     label: "Custom Fields",
                     destination: "/custom-fields",
+                  },
+                  {
+                    label: "Discounts",
+                    destination: "/discounts",
                   },
                   {
                     label: "Checkout Info Banner",
