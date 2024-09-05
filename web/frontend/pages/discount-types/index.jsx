@@ -1,10 +1,11 @@
 import { Badge, InlineGrid, Layout, Link, Page } from "@shopify/polaris";
-import React from "react";
+import React, { useState } from "react";
 import { CustomActionCard } from "../../components";
 import { useNavigate } from "@shopify/app-bridge-react";
 
 const DiscountTypes = () => {
   const navigate = useNavigate();
+
   return (
     <>
       <Page
