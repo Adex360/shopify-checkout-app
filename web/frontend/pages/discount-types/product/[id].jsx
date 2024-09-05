@@ -4,6 +4,11 @@ import { useParams } from "react-router-dom";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 import {
+  customizationRuleForCountry,
+  customizationRuleForPayment,
+  discountOptions,
+} from "../../../constants";
+import {
   BlockStack,
   Box,
   Button,
@@ -17,6 +22,7 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
+import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 
 const ProductDiscount = () => {
   const { loading, setLoading } = useAppContext();
@@ -33,7 +39,7 @@ const ProductDiscount = () => {
     discount_message: "product discount",
     discount_rule: false,
     has_condition: false,
-    conditions: [{ type: "total-amount", rule: "greater-than", value: 2000 }],
+    conditions: [{ type: "total-amount", rule: "greater-than", value: [2000] }],
     discount_class: "PRODUCT",
 
     startsAt: "2024-08-26T10:59:28.768Z",
@@ -50,6 +56,20 @@ const ProductDiscount = () => {
       return {
         ...prev,
         [name]: value,
+      };
+    });
+  };
+
+  const handleConditionChange = (index, name, value) => {
+    setFormData((prev) => {
+      const newRules = prev.conditions;
+      newRules[index] = {
+        ...newRules[index],
+        [name]: value,
+      };
+      return {
+        ...prev,
+        conditions: newRules,
       };
     });
   };
@@ -204,71 +224,114 @@ const ProductDiscount = () => {
                   {!formData.discount_rule && (
                     <Box>
                       <Card>
-                        <InlineStack gap="800">
-                          <RadioButton
-                            label="All below"
-                            checked={formData.has_condition}
-                            onChange={(value) => {
-                              handleFormDataChange("has_condition", value);
-                            }}
-                          />
-                          <RadioButton
-                            label="Any Below"
-                            checked={!formData.has_condition}
-                            onChange={(value) => {
-                              handleFormDataChange("has_condition", !value);
-                            }}
-                          />
-                        </InlineStack>
-                        {formData.conditions.map((condition, index) => {
-                          return (
-                            <>
-                              <Card background="bg">
-                                <BlockStack gap="200">
-                                  <InlineGrid>
-                                    <Select
-                                      placeholder="Select Option"
-                                      options={[
-                                        {
-                                          label: "Total Amount",
-                                          value: "total-amount",
-                                        },
-                                        {
-                                          label: "Sub Total Amount",
-                                          value: "sub-total-amount",
-                                        },
-                                        {
-                                          label: "SKU",
-                                          value: "sku",
-                                        },
-                                        {
-                                          label: "Cart Total Quantity",
-                                          value: "cart-total-qty",
-                                        },
-                                        {
-                                          label: "Single Line Quantity ",
-                                          value: "single-line-qty",
-                                        },
-                                        {
-                                          label: "All Line Quantity ",
-                                          value: "all_line_qty",
-                                        },
-                                        {
-                                          label: "Payment Method Type",
-                                          value: "payment-method-type",
-                                        },
-                                        {
-                                          label: "Payment Method Handle",
-                                          value: "payment-method-handle",
-                                        },
-                                      ]}
-                                    />
-                                  </InlineGrid>
-                                </BlockStack>
-                              </Card>
-                            </>
-                          );
-                        })}
+                        <BlockStack gap="400">
+                          <InlineStack gap="800">
+                            <RadioButton
+                              label="All below"
+                              checked={formData.has_condition}
+                              onChange={(value) => {
+                                handleFormDataChange("has_condition", value);
+                              }}
+                            />
+                            <RadioButton
+                              label="Any Below"
+                              checked={!formData.has_condition}
+                              onChange={(value) => {
+                                handleFormDataChange("has_condition", !value);
+                              }}
+                            />
+                          </InlineStack>
+                          {formData.conditions.map((condition, index) => {
+                            return (
+                              <>
+                                <Card background="bg" key={index}>
+                                  <BlockStack gap="200">
+                                    <InlineGrid columns={2} gap="400">
+                                      <Select
+                                        placeholder="Select Option"
+                                        options={discountOptions}
+                                        value={condition.type}
+                                        onChange={(value) => {
+                                          handleConditionChange(
+                                            index,
+                                            "type",
+                                            value
+                                          );
+                                          handleConditionChange(
+                                            index,
+                                            "value",
+                                            []
+                                          );
+                                          handleConditionChange(
+                                            index,
+                                            "rule",
+                                            value === "payment-method-handle" ||
+                                              value === "sku" ||
+                                              value === "payment-method-type"
+                                              ? "contain"
+                                              : "equal-to"
+                                          );
+                                        }}
+                                      />
+                                      <Select
+                                        value={condition.rule}
+                                        onChange={(value) => {
+                                          handleConditionChange(
+                                            index,
+                                            "rule",
+                                            value
+                                          );
+                                        }}
+                                        placeholder="Select Condition"
+                                        options={
+                                          condition.type ===
+                                            "payment-method-handle" ||
+                                          condition.type === "sku" ||
+                                          condition.type ===
+                                            "payment-method-type"
+                                            ? customizationRuleForCountry
+                                            : customizationRuleForPayment
+                                        }
+                                      />
+                                    </InlineGrid>
+                                    {condition.type ===
+                                      "payment-method-handle" ||
+                                    condition.type === "sku" ||
+                                    condition.type === "payment-method-type" ? (
+                                      <TextField />
+                                    ) : (
+                                      <TextField
+                                        placeholder="Enter Value"
+                                        value={condition.value[0]}
+                                        type="number"
+                                        onChange={(value) => {
+                                          const newValue = value ? +value : "";
+                                          console.log(condition.value);
+                                          handleConditionChange(
+                                            index,
+                                            "value",
+                                            [newValue]
+                                          );
+                                        }}
+                                      />
+                                    )}
+                                    {formData.conditions.length > 1 && (
+                                      <InlineStack align="end">
+                                        <Button icon={DeleteIcon} />
+                                      </InlineStack>
+                                    )}
+                                  </BlockStack>
+                                </Card>
+                              </>
+                            );
+                          })}
+
+                          <InlineStack align="end">
+                            <Button icon={PlusCircleIcon} variant="primary">
+                              Add More Rule
+                            </Button>
+                          </InlineStack>
+                        </BlockStack>
                       </Card>
                     </Box>
                   )}
