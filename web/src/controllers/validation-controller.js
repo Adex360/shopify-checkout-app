@@ -40,6 +40,7 @@ export const getByIdValidation = async (req, res) => {
 export const getAllValidation = async (req, res) => {
   try {
     const shop = req.shop;
+
     const getAll = await Validation.findAll(shop.id);
     const phoneValidations = getAll.filter(
       (validation) => validation.phone_validation !== null
@@ -47,11 +48,17 @@ export const getAllValidation = async (req, res) => {
     const fieldValidations = getAll.filter(
       (validation) => validation.phone_validation === null
     );
-    const usedCountries = getAll.map((validation) => validation.country_name);
+    const usedCountriesForPhoneValidations = phoneValidations.map(
+      (validation) => validation.country_name
+    );
+    const usedCountriesForFieldValidations = fieldValidations.map(
+      (validation) => validation.country_name
+    );
     res.status(200).json({
       phoneValidations,
       fieldValidations,
-      usedCountries,
+      usedCountriesForPhoneValidations,
+      usedCountriesForFieldValidations,
     });
   } catch (error) {
     res.status(500).json({ error: "Error Getting All Validation:" });
