@@ -48,7 +48,6 @@ export function run(input) {
   const RULES = {
     CONTAINS: "contains",
     DOES_NOT_CONTAINS: "does-not-contains",
-    TOTAL_AMOUNT: "total-amount",
     GREATER_THAN: "greater-than",
     LESS_THAN: "less-than",
     EQUALS_TO: "equals-to",
@@ -129,7 +128,7 @@ export function run(input) {
           );
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return totalAmount > value;
           }
@@ -224,7 +223,6 @@ export function run(input) {
           condition.type === CONDITION.SKU &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          // console.log("aa",skus.some((sku) => condition.value.includes(sku));)
           return skus.some((sku) => !condition.value.includes(sku));
         }
         if (
@@ -256,7 +254,7 @@ export function run(input) {
           );
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return totalAmount > value;
           }
@@ -276,8 +274,6 @@ export function run(input) {
           const renamePaymentMethod = input.paymentMethods.find(
             (method) => method.name === name.old
           );
-          console.log("renamePaymentMethod", renamePaymentMethod);
-
           if (renamePaymentMethod) {
             operations.push({
               rename: {
@@ -378,7 +374,7 @@ export function run(input) {
         return !deliveryTitles.some((name) => !condition.value.includes(name));
       }
       if (condition.type === CONDITION.TOTAL_AMOUNT) {
-        const value = parseFloat(condition.value);
+        const value = parseFloat(condition.value[0]);
         if (condition.rule === RULES.GREATER_THAN) {
           return totalAmount > value;
         }

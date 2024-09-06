@@ -107,7 +107,7 @@ export function run(input) {
         }
 
         if (condition.type === CONDITION.SINGLE_LINE_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return input.cart.lines.some((line) => line.quantity > value);
           }
@@ -119,7 +119,7 @@ export function run(input) {
           }
         }
         if (condition.type === CONDITION.ALL_LINE_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return input.cart.lines.every((line) => line.quantity > value);
           }
@@ -131,20 +131,20 @@ export function run(input) {
           }
         }
         if (condition.type === CONDITION.CART_TOTAL_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN)
             return cartTotalQty > value;
           if (condition.rule === RULES.LESS_THAN) return cartTotalQty < value;
           if (condition.rule === RULES.EQUALS_TO) return cartTotalQty === value;
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = condition.value[0];
           if (condition.rule === RULES.GREATER_THAN) return totalAmount > value;
           if (condition.rule === RULES.LESS_THAN) return totalAmount < value;
           if (condition.rule === RULES.EQUALS_TO) return totalAmount === value;
         }
         if (condition.type === CONDITION.SUB_TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN)
             return subTotalAmount > value;
           if (condition.rule === RULES.LESS_THAN) return subTotalAmount < value;
