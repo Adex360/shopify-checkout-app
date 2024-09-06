@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context";
-import { Card, DataTable, EmptyState, Page, Spinner } from "@shopify/polaris";
+import {
+  Badge,
+  Button,
+  ButtonGroup,
+  Card,
+  DataTable,
+  EmptyState,
+  Page,
+  Spinner,
+  Text,
+} from "@shopify/polaris";
 import { PlanUpgradeWarning } from "../../components";
 import { useAuthenticatedFetch } from "../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
@@ -10,6 +20,7 @@ const Discounts = () => {
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const navigate = useNavigate();
+  const [loadingIndex, setLoadingIndex] = useState(-1);
   const [discounts, setDiscounts] = useState([]);
 
   const getDiscounts = async () => {
@@ -31,6 +42,73 @@ const Discounts = () => {
       setLoading(false);
     }
   };
+
+  const deleteDiscount = async (id, index) => {
+    try {
+      setLoadingIndex(index);
+      const resp = await shopifyFetch(`api/v1/discount/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await resp.json();
+      if (resp.ok) {
+        show(data.message);
+        setDiscounts((prev) => {
+          const newArr = [...prev];
+          newArr.splice(index, 1);
+          return newArr;
+        });
+      } else {
+        show(data.error.message, {
+          isError: true,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingIndex(-1);
+    }
+  };
+
+  const tableRows = discounts.map((discount, index) => {
+    return [
+      discount.title,
+      discount.enabled ? (
+        <Badge tone="success-strong">Enabled</Badge>
+      ) : (
+        <Badge tone="warning-strong">Disabled</Badge>
+      ),
+      discount.discount_type,
+      discount.discount_message,
+      discount.discount_class,
+      <ButtonGroup variant="segmented">
+        <Button
+          onClick={() =>
+            navigate(
+              `/discount-types/${discount.discount_class.toLowerCase()}/${discount.id}`
+            )
+          }
+          disabled={loadingIndex > -1}
+          variant="secondary"
+        >
+          Edit
+        </Button>
+        <Button
+          onClick={() => {
+            deleteDiscount(discount.id, index);
+          }}
+          disabled={loadingIndex > -1}
+          loading={loadingIndex === index}
+          variant="primary"
+        >
+          Delete
+        </Button>
+      </ButtonGroup>,
+    ];
+  });
+
   useEffect(() => {
     isSubscribed && getDiscounts();
   }, [isSubscribed]);
@@ -58,12 +136,19 @@ const Discounts = () => {
                 },
               }}
             >
-              {discounts.length === 0 ? (
+              {discounts.length > 0 ? (
                 <Card>
                   <DataTable
                     columnContentTypes={["text", "text", "text", "text"]}
-                    headings={[]}
-                    rows={[[]]}
+                    headings={[
+                      <Text variant="headingMd">Title</Text>,
+                      <Text variant="headingMd">Status</Text>,
+                      <Text variant="headingMd">Type</Text>,
+                      <Text variant="headingMd">Message</Text>,
+                      <Text variant="headingMd">Class</Text>,
+                      "",
+                    ]}
+                    rows={tableRows}
                   />
                 </Card>
               ) : (

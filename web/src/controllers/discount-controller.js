@@ -2,6 +2,7 @@ import ShopifyService from "../services/shopify-service.js";
 import { Discount, Shop } from "../models/index.js";
 
 export const createDiscount = async (req, res) => {
+  console.log("discount");
   const { id, shop_name, accessToken } = req.shop;
   const data = req.body;
 

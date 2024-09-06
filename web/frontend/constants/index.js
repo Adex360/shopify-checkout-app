@@ -1,4 +1,4 @@
-const features = [
+export const features = [
   "Payment Modification",
   "Field Validation",
   "Advance City Dropdown",
@@ -133,8 +133,37 @@ export const customizationRuleForCountry = [
   },
 ];
 
-export {
-  features,
-  // customizationRuleForCountry,
-  // customizationRuleForPayment,
-};
+export const discountOptions = [
+  {
+    label: "Total Amount",
+    value: "total-amount",
+  },
+  {
+    label: "Sub Total Amount",
+    value: "sub-total-amount",
+  },
+  {
+    label: "SKU",
+    value: "sku",
+  },
+  {
+    label: "Cart Total Quantity",
+    value: "cart-total-qty",
+  },
+  {
+    label: "Single Line Quantity ",
+    value: "single-line-qty",
+  },
+  {
+    label: "All Line Quantity ",
+    value: "all_line_qty",
+  },
+  {
+    label: "Payment Method Type",
+    value: "payment-method-type",
+  },
+  {
+    label: "Payment Method Handle",
+    value: "payment-method-handle",
+  },
+];
