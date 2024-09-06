@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useToast } from "@shopify/app-bridge-react";
+import {
+  ResourcePicker,
+  useAppBridge,
+  useNavigate,
+  useToast,
+} from "@shopify/app-bridge-react";
 import { useParams } from "react-router-dom";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
@@ -17,10 +22,12 @@ import {
   InlineStack,
   Page,
   RadioButton,
+  ResourceList,
   Select,
   Spinner,
   Text,
   TextField,
+  Thumbnail,
 } from "@shopify/polaris";
 import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
 
@@ -30,6 +37,8 @@ const ProductDiscount = () => {
   const navigate = useNavigate();
   const { show } = useToast();
   const shopifyFetch = useAuthenticatedFetch();
+  const [open, setOpen] = useState(false);
+  const [resources, setResources] = useState([]);
 
   const [formData, setFormData] = useState({
     enabled: true,
@@ -59,7 +68,6 @@ const ProductDiscount = () => {
       };
     });
   };
-
   const handleConditionChange = (index, name, value) => {
     setFormData((prev) => {
       const newRules = prev.conditions;
@@ -70,6 +78,67 @@ const ProductDiscount = () => {
       return {
         ...prev,
         conditions: newRules,
+      };
+    });
+  };
+
+  const handleSelection = (resource) => {
+    console.log(resource.selection);
+    setFormData((prev) => {
+      return {
+        ...prev,
+        variant_ids: resource.selection.map((selected) => {
+          return selected.id;
+        }),
+      };
+    });
+    console.log(formData.variant_ids);
+    setOpen(false);
+    setResources(resource.selection);
+    console.log(resources);
+  };
+
+  const handleDeleteResource = (index) => {
+    setResources((prev) => {
+      const newArr = [...prev];
+      console.log("deleted id form source", newArr[index].id);
+      newArr.splice(index, 1);
+      return newArr;
+    });
+    setFormData((prev) => {
+      const newVariantIds = [...prev.variant_ids];
+      console.log("deleted id form formData", newVariantIds[index]);
+      newVariantIds.splice(index, 1);
+      return {
+        ...prev,
+        variant_ids: newVariantIds,
+      };
+    });
+  };
+
+  const handleAddCondition = () => {
+    setFormData((prev) => {
+      return {
+        ...prev,
+        conditions: [
+          ...prev.conditions,
+          {
+            type: "total-amount",
+            rule: "equal-to",
+            value: [],
+          },
+        ],
+      };
+    });
+  };
+
+  const handleDeleCondition = (index) => {
+    const newConditions = [...formData.conditions];
+    newConditions?.splice(index, 1);
+    setFormData((prev) => {
+      return {
+        ...prev,
+        conditions: newConditions,
       };
     });
   };
@@ -206,17 +275,63 @@ const ProductDiscount = () => {
                       />
                     </InlineStack>
                   </Box>
-                  <Box width="50%">
+                  <Box width="">
                     <Card>
                       <InlineStack align="space-between">
                         <Text variant="headingMd">Variant Settings</Text>
-                        <Button variant="primary">Add Product</Button>
+                        <Button variant="primary" onClick={() => setOpen(true)}>
+                          Add Product Variants
+                        </Button>
+
+                        <ResourcePicker
+                          initialSelectionIds={[]}
+                          resourceType="ProductVariant"
+                          open={open}
+                          onSelection={(resource) => {
+                            handleSelection(resource);
+                          }}
+                          onCancel={() => {
+                            setOpen(false);
+                          }}
+                        />
                       </InlineStack>
                       <Box paddingBlock="400">
-                        <Text>
-                          Select products on which you want to apply the
-                          discounts.
-                        </Text>
+                        {resources.length > 0 ? (
+                          <BlockStack gap="200">
+                            {resources.map((resource, index) => {
+                              return (
+                                <Card key={index}>
+                                  <InlineStack
+                                    align="space-between"
+                                    blockAlign="center"
+                                  >
+                                    <InlineStack gap="200" blockAlign="start">
+                                      <Thumbnail
+                                        source={resource.image.originalSrc}
+                                      />
+                                      <Box width="200px">
+                                        <Text fontWeight="medium">
+                                          {resource.title}
+                                        </Text>
+                                      </Box>
+                                    </InlineStack>
+                                    <Button
+                                      icon={DeleteIcon}
+                                      onClick={() =>
+                                        handleDeleteResource(index)
+                                      }
+                                    />
+                                  </InlineStack>
+                                </Card>
+                              );
+                            })}
+                          </BlockStack>
+                        ) : (
+                          <Text>
+                            Select products on which you want to apply the
+                            discounts.
+                          </Text>
+                        )}
                       </Box>
                     </Card>
                   </Box>
@@ -301,6 +416,8 @@ const ProductDiscount = () => {
                                       <TextField />
                                     ) : (
                                       <TextField
+                                        max={100}
+                                        min={0}
                                         placeholder="Enter Value"
                                         value={condition.value[0]}
                                         type="number"
@@ -317,7 +434,12 @@ const ProductDiscount = () => {
                                     )}
                                     {formData.conditions.length > 1 && (
                                       <InlineStack align="end">
-                                        <Button icon={DeleteIcon} />
+                                        <Button
+                                          onClick={() =>
+                                            handleDeleCondition(index)
+                                          }
+                                          icon={DeleteIcon}
+                                        />
                                       </InlineStack>
                                     )}
                                   </BlockStack>
@@ -327,7 +449,17 @@ const ProductDiscount = () => {
                           })}
 
                           <InlineStack align="end">
-                            <Button icon={PlusCircleIcon} variant="primary">
+                            <Button
+                              disabled={formData.conditions.some(
+                                (rule) =>
+                                  (Array.isArray(rule.value) &&
+                                    rule.value.length === 0) ||
+                                  rule.value.includes("")
+                              )}
+                              onClick={handleAddCondition}
+                              icon={PlusCircleIcon}
+                              variant="primary"
+                            >
                               Add More Rule
                             </Button>
                           </InlineStack>
