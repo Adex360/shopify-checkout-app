@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://connection-helping-artistic-bi.trycloudflare.com"
+application_url = "https://dam-bytes-overseas-watt.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_discounts,write_payment_customizations,write_produ
 
 [auth]
 redirect_urls = [
-  "https://connection-helping-artistic-bi.trycloudflare.com/auth/callback",
-  "https://connection-helping-artistic-bi.trycloudflare.com/auth/shopify/callback",
-  "https://connection-helping-artistic-bi.trycloudflare.com/api/auth/callback"
+  "https://dam-bytes-overseas-watt.trycloudflare.com/auth/callback",
+  "https://dam-bytes-overseas-watt.trycloudflare.com/auth/shopify/callback",
+  "https://dam-bytes-overseas-watt.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

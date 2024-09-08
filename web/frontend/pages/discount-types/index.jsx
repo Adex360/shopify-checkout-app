@@ -25,7 +25,7 @@ const DiscountTypes = () => {
                   <>
                     <Link
                       onClick={() => {
-                        navigate("/discount-types/product/create");
+                        navigate(`/discount-types/create?type=PRODUCT`);
                       }}
                     >
                       Create Discount
@@ -42,7 +42,7 @@ const DiscountTypes = () => {
                     <>
                       <Link
                         onClick={() => {
-                          navigate("/discount-types/order/create");
+                          navigate("/discount-types/create/?type=ORDER");
                         }}
                       >
                         Create Discount

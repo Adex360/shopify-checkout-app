@@ -5,7 +5,7 @@ import {
   useNavigate,
   useToast,
 } from "@shopify/app-bridge-react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 import {
@@ -41,27 +41,32 @@ const ProductDiscount = () => {
   const { loading, setLoading } = useAppContext();
   const { id } = useParams();
 
+  const [searchParams] = useSearchParams();
+  const discountClass = searchParams.get("type");
+
   const navigate = useNavigate();
   const { show } = useToast();
   const shopifyFetch = useAuthenticatedFetch();
   const [open, setOpen] = useState(false);
+  const [btnLoading, setBtnLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     enabled: true,
     title: "",
-    discount_type: "percentage",
+    discount_type: "fixed-amount",
     discount_value: "",
     discount_message: "",
-    discount_rule: false,
-    has_condition: false,
+    discount_rule: true,
+    has_condition: true,
     conditions: [{ type: "total-amount", rule: "greater-than", value: [] }],
-    discount_class: "PRODUCT",
-
-    startsAt: "2024-08-26T10:59:28.768Z",
+    discount_class: discountClass,
+    startsAt: new Date().toISOString(),
     endsAt: null,
-    variant_ids: ["gid://shopify/ProductVariant/46236099019029"],
+    variant_ids: [],
     product_ids: [],
   });
+
+  console.log(formData.has_condition);
 
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
@@ -153,6 +158,7 @@ const ProductDiscount = () => {
 
   const handleCreateDiscount = async () => {
     try {
+      setBtnLoading(true);
       const resp = await shopifyFetch(`/api/v1/discount/${id}`, {
         method: id === "create" ? "POST" : "PUT",
         headers: {
@@ -163,6 +169,7 @@ const ProductDiscount = () => {
       const data = await resp.json();
 
       if (resp.ok) {
+        navigate("/discounts");
         show(data.message);
       } else {
         show(data.error.message, {
@@ -171,6 +178,8 @@ const ProductDiscount = () => {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setBtnLoading(false);
     }
   };
 
@@ -574,12 +583,15 @@ const ProductDiscount = () => {
                 disabled={
                   formData.title === "" ||
                   formData.discount_value === "" ||
-                  formData.conditions.some(
-                    (rule) =>
-                      (Array.isArray(rule.value) && rule.value.length === 0) ||
-                      rule.value.includes("")
-                  )
+                  (!formData.discount_rule &&
+                    formData.conditions.some(
+                      (rule) =>
+                        (Array.isArray(rule.value) &&
+                          rule.value.length === 0) ||
+                        rule.value.includes("")
+                    ))
                 }
+                loading={btnLoading}
                 onClick={() => handleCreateDiscount()}
                 variant="primary"
               >

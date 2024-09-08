@@ -87,7 +87,7 @@ const Discounts = () => {
         <Button
           onClick={() =>
             navigate(
-              `/discount-types/${discount.discount_class.toLowerCase()}/${discount.id}`
+              `/discount-types/${discount.id}/?type=${discount.discount_class}`
             )
           }
           disabled={loadingIndex > -1}
