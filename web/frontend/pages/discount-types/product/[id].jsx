@@ -12,6 +12,7 @@ import {
   customizationRuleForCountry,
   customizationRuleForPayment,
   discountOptions,
+  discountPaymentOptions,
 } from "../../../constants";
 import {
   BlockStack,
@@ -22,42 +23,44 @@ import {
   InlineStack,
   Page,
   RadioButton,
-  ResourceList,
   Select,
   Spinner,
   Text,
   TextField,
   Thumbnail,
 } from "@shopify/polaris";
-import { PlusCircleIcon, DeleteIcon } from "@shopify/polaris-icons";
+import { PlusCircleIcon, DeleteIcon, ImageIcon } from "@shopify/polaris-icons";
+import {
+  AddTag,
+  RangeDateSelector,
+  SearchAndSelect,
+} from "../../../components";
+import { getCorrectDate } from "../../../helpers";
 
 const ProductDiscount = () => {
   const { loading, setLoading } = useAppContext();
   const { id } = useParams();
+
   const navigate = useNavigate();
   const { show } = useToast();
   const shopifyFetch = useAuthenticatedFetch();
   const [open, setOpen] = useState(false);
-  const [resources, setResources] = useState([]);
 
   const [formData, setFormData] = useState({
     enabled: true,
-    title: "product discount",
+    title: "",
     discount_type: "percentage",
-    discount_value: "50.0",
-    discount_message: "product discount",
+    discount_value: "",
+    discount_message: "",
     discount_rule: false,
     has_condition: false,
-    conditions: [{ type: "total-amount", rule: "greater-than", value: [2000] }],
+    conditions: [{ type: "total-amount", rule: "greater-than", value: [] }],
     discount_class: "PRODUCT",
 
     startsAt: "2024-08-26T10:59:28.768Z",
     endsAt: null,
-    variant_ids: [
-      "gid://shopify/ProductVariant/44428494864569",
-      "gid://shopify/ProductVariant/44428495487161",
-      "gid://shopify/ProductVariant/44428495257785",
-    ],
+    variant_ids: ["gid://shopify/ProductVariant/46236099019029"],
+    product_ids: [],
   });
 
   const handleFormDataChange = (name, value) => {
@@ -84,34 +87,39 @@ const ProductDiscount = () => {
 
   const handleSelection = (resource) => {
     console.log(resource.selection);
+    const selectedProducts = resource.selection;
+    const variants = selectedProducts.flatMap((product) => {
+      return product.variants.map((variant) => {
+        return variant.id;
+      });
+    });
     setFormData((prev) => {
       return {
         ...prev,
-        variant_ids: resource.selection.map((selected) => {
-          return selected.id;
-        }),
+        variant_ids: variants,
       };
     });
-    console.log(formData.variant_ids);
+    setFormData((prev) => {
+      return {
+        ...prev,
+        product_ids: resource.selection,
+      };
+    });
     setOpen(false);
-    setResources(resource.selection);
-    console.log(resources);
   };
 
   const handleDeleteResource = (index) => {
-    setResources((prev) => {
-      const newArr = [...prev];
-      console.log("deleted id form source", newArr[index].id);
-      newArr.splice(index, 1);
-      return newArr;
-    });
     setFormData((prev) => {
       const newVariantIds = [...prev.variant_ids];
-      console.log("deleted id form formData", newVariantIds[index]);
+      const newProducts = [...prev.product_ids];
+
+      newProducts.splice(index, 1);
       newVariantIds.splice(index, 1);
+
       return {
         ...prev,
         variant_ids: newVariantIds,
+        product_ids: newProducts,
       };
     });
   };
@@ -145,8 +153,8 @@ const ProductDiscount = () => {
 
   const handleCreateDiscount = async () => {
     try {
-      const resp = await shopifyFetch("/api/v1/discount/create", {
-        method: "POST",
+      const resp = await shopifyFetch(`/api/v1/discount/${id}`, {
+        method: id === "create" ? "POST" : "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -180,10 +188,17 @@ const ProductDiscount = () => {
       setLoading(false);
     }
   };
+  const today = new Date();
+  console.log(getCorrectDate(today));
 
   useEffect(() => {
-    id !== "create" && getDiscount();
+    if (id === "create") {
+    } else {
+      getDiscount();
+    }
   }, []);
+
+  console.log(formData.endsAt);
 
   return (
     <>
@@ -197,6 +212,7 @@ const ProductDiscount = () => {
           primaryAction={{
             content: formData.enabled === true ? "Turn off" : "Turn on",
             destructive: formData.enabled === true,
+            disabled: id === "create",
             onAction: () => {
               handleFormDataChange("enabled", !formData.enabled);
             },
@@ -217,25 +233,67 @@ const ProductDiscount = () => {
                   label={<Text variant="headingMd">Discount Title</Text>}
                 />
               </Box>
+
+              <Box paddingBlock="300">
+                <BlockStack gap="200">
+                  <Text variant="headingMd" fontWeight="medium">
+                    Discount Date (Start to End)
+                  </Text>
+                  <Card>
+                    <RangeDateSelector
+                      start={formData.startsAt}
+                      end={formData.endsAt}
+                      onChange={(start, end) => {
+                        handleFormDataChange("startsAt", start);
+                        handleFormDataChange("endsAt", end);
+                      }}
+                    />
+                  </Card>
+                </BlockStack>
+              </Box>
+
               <Card background="bg">
                 <Box paddingBlockEnd="200">
                   <Text variant="headingMd">Discount Settings</Text>
                 </Box>
                 <BlockStack gap="400">
                   <Box>
+                    <InlineStack gap="800">
+                      <RadioButton
+                        label="Fixed Amount Discount"
+                        onChange={() => {
+                          handleFormDataChange("discount_type", "fixed-amount");
+                        }}
+                        checked={formData.discount_type === "fixed-amount"}
+                      />
+                      <RadioButton
+                        onChange={() => {
+                          handleFormDataChange("discount_type", "percentage");
+                        }}
+                        label="Percentage Discount"
+                        checked={formData.discount_type === "percentage"}
+                      />
+                    </InlineStack>
+                  </Box>
+                  <Box></Box>
+
+                  <Box>
                     <InlineGrid columns={2} gap="400">
                       <TextField
-                        value={Math.floor(formData.discount_value)}
+                        value={formData.discount_value}
                         onChange={(value) => {
-                          const newValue = Number(value);
-                          console.log(newValue.toFixed(1));
-                          handleFormDataChange(
-                            "discount_value",
-                            newValue.toFixed(1)
-                          );
+                          handleFormDataChange("discount_value", value);
                         }}
+                        prefix={
+                          formData.discount_type === "percentage" ? "%" : ""
+                        }
                         type="number"
-                        helpText="Enter value between 1 and 100"
+                        helpText={
+                          formData.discount_type === "percentage"
+                            ? "Enter value between 1 and 100"
+                            : "Enter Discount Amount"
+                        }
+                        placeholder="Number"
                         label={
                           <Text variant="headingMd" fontWeight="medium">
                             Discount Value
@@ -248,6 +306,7 @@ const ProductDiscount = () => {
                         onChange={(value) => {
                           handleFormDataChange("discount_message", value);
                         }}
+                        placeholder="E.g First Order Discount"
                         helpText="Shown to customers"
                         label={
                           <Text variant="headingMd" fontWeight="medium">
@@ -284,8 +343,19 @@ const ProductDiscount = () => {
                         </Button>
 
                         <ResourcePicker
-                          initialSelectionIds={[]}
-                          resourceType="ProductVariant"
+                          initialSelectionIds={formData.product_ids.map(
+                            (variant) => {
+                              return {
+                                id: variant.id,
+                                variants: variant.variants.map((varr) => {
+                                  return {
+                                    id: varr.id,
+                                  };
+                                }),
+                              };
+                            }
+                          )}
+                          resourceType="Product"
                           open={open}
                           onSelection={(resource) => {
                             handleSelection(resource);
@@ -296,9 +366,9 @@ const ProductDiscount = () => {
                         />
                       </InlineStack>
                       <Box paddingBlock="400">
-                        {resources.length > 0 ? (
+                        {formData.product_ids.length > 0 ? (
                           <BlockStack gap="200">
-                            {resources.map((resource, index) => {
+                            {formData.product_ids.map((resource, index) => {
                               return (
                                 <Card key={index}>
                                   <InlineStack
@@ -307,7 +377,11 @@ const ProductDiscount = () => {
                                   >
                                     <InlineStack gap="200" blockAlign="start">
                                       <Thumbnail
-                                        source={resource.image.originalSrc}
+                                        source={
+                                          resource.images[0]?.originalSrc ||
+                                          ImageIcon
+                                        }
+                                        alt="img"
                                       />
                                       <Box width="200px">
                                         <Text fontWeight="medium">
@@ -411,9 +485,32 @@ const ProductDiscount = () => {
                                     </InlineGrid>
                                     {condition.type ===
                                       "payment-method-handle" ||
-                                    condition.type === "sku" ||
-                                    condition.type === "payment-method-type" ? (
-                                      <TextField />
+                                    condition.type === "sku" ? (
+                                      // || condition.type === "payment-method-type"
+                                      <AddTag
+                                        tags={condition.value}
+                                        setTags={(value) => {
+                                          handleConditionChange(
+                                            index,
+                                            "value",
+                                            value
+                                          );
+                                        }}
+                                      />
+                                    ) : condition.type ===
+                                      "payment-method-type" ? (
+                                      <SearchAndSelect
+                                        allowMultiple={true}
+                                        selectionOption={discountPaymentOptions}
+                                        selectedOptions={condition.value}
+                                        setSelectedOptions={(value) => {
+                                          handleConditionChange(
+                                            index,
+                                            "value",
+                                            value
+                                          );
+                                        }}
+                                      />
                                     ) : (
                                       <TextField
                                         max={100}
@@ -423,7 +520,6 @@ const ProductDiscount = () => {
                                         type="number"
                                         onChange={(value) => {
                                           const newValue = value ? +value : "";
-                                          console.log(condition.value);
                                           handleConditionChange(
                                             index,
                                             "value",
@@ -432,6 +528,7 @@ const ProductDiscount = () => {
                                         }}
                                       />
                                     )}
+
                                     {formData.conditions.length > 1 && (
                                       <InlineStack align="end">
                                         <Button
@@ -473,7 +570,19 @@ const ProductDiscount = () => {
           </Card>
           <Box paddingBlock="400">
             <InlineStack align="end">
-              <Button onClick={() => handleCreateDiscount()} variant="primary">
+              <Button
+                disabled={
+                  formData.title === "" ||
+                  formData.discount_value === "" ||
+                  formData.conditions.some(
+                    (rule) =>
+                      (Array.isArray(rule.value) && rule.value.length === 0) ||
+                      rule.value.includes("")
+                  )
+                }
+                onClick={() => handleCreateDiscount()}
+                variant="primary"
+              >
                 {id === "create" ? "Create" : "Update"}
               </Button>
             </InlineStack>

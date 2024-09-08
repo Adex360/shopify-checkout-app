@@ -109,8 +109,8 @@ export const paymentMethods = [
 
 export const customizationRuleForPayment = [
   {
-    label: "Equal to ",
-    value: "equal-to",
+    label: "Equals to ",
+    value: "equals-to",
   },
   {
     label: "Greater than ",
@@ -119,6 +119,49 @@ export const customizationRuleForPayment = [
   {
     label: "Less than ",
     value: "less-than",
+  },
+];
+
+export const discountPaymentOptions = [
+  {
+    label: "CREDIT CARD",
+    value: "creditCard",
+  },
+  {
+    label: "DEFERRED",
+    value: "deferred",
+  },
+  {
+    label: "LOCAL",
+    value: "local",
+  },
+  {
+    label: "MANUAL PAYMENT",
+    value: "manualPayment",
+  },
+  {
+    label: "OFFSITE",
+    value: "offsite",
+  },
+  {
+    label: "OTHER",
+    value: "other",
+  },
+  {
+    label: "PAYMENT ON DELIVERY",
+    value: "paymentOnDelivery",
+  },
+  {
+    label: "REDEEMABLE",
+    value: "redeemable",
+  },
+  {
+    label: "WALLET",
+    value: "wallet",
+  },
+  {
+    label: "CUSTOM ON SITE",
+    value: "customOnsite",
   },
 ];
 
