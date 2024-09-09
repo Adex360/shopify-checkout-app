@@ -64,7 +64,6 @@ const CreateCityList = () => {
             value: country.iso2,
           });
         });
-        console.log(countryArr);
         setCountries(countryArr);
       }
     } catch (error) {
@@ -129,7 +128,6 @@ const CreateCityList = () => {
         setLoading(false);
         setFormData(data.getByID);
         setRawCites(data.getByID.city_list.join(", "));
-        console.log(formData.country_code);
       }
     } catch (e) {
       console.error(e);
@@ -169,8 +167,6 @@ const CreateCityList = () => {
                   selectionOptions={countries}
                   selectedOptions={[formData.country_code] || []}
                   setSelectedOptions={(value) => {
-                    console.log(value);
-                    console.log(formData.country_name);
                     handleFormDataChange("country_code", value[0]);
                     handleFormDataChange(
                       "country_name",
@@ -195,7 +191,6 @@ const CreateCityList = () => {
                   // );
                 }}
                 onBlur={() => {
-                  console.log(rawCities);
                   const newCities = rawCities
                     .split(",")
                     .map((item) => item.trim());

@@ -75,7 +75,6 @@ const PhoneValidation = () => {
 
   const tableRows = validations?.map((data, index) => {
     const { phone_validation } = data;
-    console.log(data);
     return [
       data.title,
       phone_validation.country_name,

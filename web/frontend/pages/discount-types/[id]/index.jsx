@@ -44,7 +44,6 @@ const ProductDiscount = () => {
 
   const [searchParams] = useSearchParams();
   const discountClass = searchParams.get("type");
-  console.log(discountClass, "classs..........");
 
   const navigate = useNavigate();
   const { show } = useToast();
@@ -67,8 +66,6 @@ const ProductDiscount = () => {
     variant_ids: [],
     product_ids: [],
   });
-
-  console.log(formData.has_condition);
 
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
@@ -93,7 +90,6 @@ const ProductDiscount = () => {
   };
 
   const handleSelection = (resource) => {
-    console.log(resource.selection);
     const selectedProducts = resource.selection;
     const variants = selectedProducts.flatMap((product) => {
       return product.variants.map((variant) => {
@@ -199,8 +195,6 @@ const ProductDiscount = () => {
       setLoading(false);
     }
   };
-  const today = new Date();
-  console.log(getCorrectDate(today));
 
   useEffect(() => {
     if (id === "create") {
@@ -208,8 +202,6 @@ const ProductDiscount = () => {
       getDiscount();
     }
   }, []);
-
-  console.log(formData.endsAt);
 
   return (
     <>

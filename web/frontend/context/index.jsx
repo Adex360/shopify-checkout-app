@@ -27,6 +27,18 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
+  const getNewCountries = async () => {
+    try {
+      const resp = await shopifyFetch("/countries");
+      const data = await resp.json();
+      if (resp.ok) {
+        console.log(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const getCountries = async () => {
     try {
       setLoading(true);

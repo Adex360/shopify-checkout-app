@@ -30,7 +30,6 @@ const Discounts = () => {
       const data = await resp.json();
       if (resp.ok) {
         setDiscounts(data.allDiscount);
-        console.log(data);
       } else {
         show(data.error.message, {
           isError: true,

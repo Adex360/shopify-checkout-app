@@ -55,7 +55,6 @@ const CreateValidation = () => {
     };
     setEnableValidation((prev) => {
       const value = prev[name];
-      console.log(value);
       return {
         ...prev,
         [name]: !value,
@@ -182,9 +181,7 @@ const CreateValidation = () => {
                   selectionOptions={countries}
                   selectedOptions={[formData.country_name] || []}
                   setSelectedOptions={(value) => {
-                    console.log(value);
                     handleFormDataChange("country_name", value[0]);
-                    console.log(formData);
                   }}
                 />
               )}

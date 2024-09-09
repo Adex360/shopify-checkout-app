@@ -3,8 +3,6 @@ import { useState, useCallback, useEffect } from "react";
 import { getCorrectDate } from "../../helpers";
 
 function RangeDateSelector({ start, end, onChange }) {
-  // console.log(start, end);
-
   const today = new Date();
   const disabledDate = today.setDate(today.getDate() - 1);
 

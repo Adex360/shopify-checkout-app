@@ -221,7 +221,6 @@ const ReName = () => {
           customizationRule: getByID.conditions,
           paymentName: getByID.payment_name,
         });
-        console.log(formData.customizationRule);
 
         setPageLoading(false);
       }
