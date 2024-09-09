@@ -21,6 +21,7 @@ import {
   Card,
   InlineGrid,
   InlineStack,
+  List,
   Page,
   RadioButton,
   Select,
@@ -43,6 +44,7 @@ const ProductDiscount = () => {
 
   const [searchParams] = useSearchParams();
   const discountClass = searchParams.get("type");
+  console.log(discountClass, "classs..........");
 
   const navigate = useNavigate();
   const { show } = useToast();
@@ -137,7 +139,7 @@ const ProductDiscount = () => {
           ...prev.conditions,
           {
             type: "total-amount",
-            rule: "equal-to",
+            rule: "equals-to",
             value: [],
           },
         ],
@@ -217,7 +219,7 @@ const ProductDiscount = () => {
         </div>
       ) : (
         <Page
-          title="Create Product Discount "
+          title={`Create ${discountClass} Discount `}
           primaryAction={{
             content: formData.enabled === true ? "Turn off" : "Turn on",
             destructive: formData.enabled === true,
@@ -343,81 +345,86 @@ const ProductDiscount = () => {
                       />
                     </InlineStack>
                   </Box>
-                  <Box width="">
-                    <Card>
-                      <InlineStack align="space-between">
-                        <Text variant="headingMd">Variant Settings</Text>
-                        <Button variant="primary" onClick={() => setOpen(true)}>
-                          Add Product Variants
-                        </Button>
+                  {discountClass === "PRODUCT" && (
+                    <Box width="">
+                      <Card>
+                        <InlineStack align="space-between">
+                          <Text variant="headingMd">Variant Settings</Text>
+                          <Button
+                            variant="primary"
+                            onClick={() => setOpen(true)}
+                          >
+                            Add Product Variants
+                          </Button>
 
-                        <ResourcePicker
-                          initialSelectionIds={formData.product_ids.map(
-                            (variant) => {
-                              return {
-                                id: variant.id,
-                                variants: variant.variants.map((varr) => {
-                                  return {
-                                    id: varr.id,
-                                  };
-                                }),
-                              };
-                            }
-                          )}
-                          resourceType="Product"
-                          open={open}
-                          onSelection={(resource) => {
-                            handleSelection(resource);
-                          }}
-                          onCancel={() => {
-                            setOpen(false);
-                          }}
-                        />
-                      </InlineStack>
-                      <Box paddingBlock="400">
-                        {formData.product_ids.length > 0 ? (
-                          <BlockStack gap="200">
-                            {formData.product_ids.map((resource, index) => {
-                              return (
-                                <Card key={index}>
-                                  <InlineStack
-                                    align="space-between"
-                                    blockAlign="center"
-                                  >
-                                    <InlineStack gap="200" blockAlign="start">
-                                      <Thumbnail
-                                        source={
-                                          resource.images[0]?.originalSrc ||
-                                          ImageIcon
+                          <ResourcePicker
+                            initialSelectionIds={formData.product_ids.map(
+                              (variant) => {
+                                return {
+                                  id: variant.id,
+                                  variants: variant.variants.map((varr) => {
+                                    return {
+                                      id: varr.id,
+                                    };
+                                  }),
+                                };
+                              }
+                            )}
+                            resourceType="Product"
+                            open={open}
+                            onSelection={(resource) => {
+                              handleSelection(resource);
+                            }}
+                            onCancel={() => {
+                              setOpen(false);
+                            }}
+                          />
+                        </InlineStack>
+                        <Box paddingBlock="400">
+                          {formData.product_ids.length > 0 ? (
+                            <BlockStack gap="200">
+                              {formData.product_ids.map((resource, index) => {
+                                return (
+                                  <Card key={index}>
+                                    <InlineStack
+                                      align="space-between"
+                                      blockAlign="center"
+                                    >
+                                      <InlineStack gap="200" blockAlign="start">
+                                        <Thumbnail
+                                          source={
+                                            resource.images[0]?.originalSrc ||
+                                            ImageIcon
+                                          }
+                                          alt="img"
+                                        />
+                                        <Box width="200px">
+                                          <Text fontWeight="medium">
+                                            {resource.title}
+                                          </Text>
+                                        </Box>
+                                      </InlineStack>
+                                      <Button
+                                        icon={DeleteIcon}
+                                        onClick={() =>
+                                          handleDeleteResource(index)
                                         }
-                                        alt="img"
                                       />
-                                      <Box width="200px">
-                                        <Text fontWeight="medium">
-                                          {resource.title}
-                                        </Text>
-                                      </Box>
                                     </InlineStack>
-                                    <Button
-                                      icon={DeleteIcon}
-                                      onClick={() =>
-                                        handleDeleteResource(index)
-                                      }
-                                    />
-                                  </InlineStack>
-                                </Card>
-                              );
-                            })}
-                          </BlockStack>
-                        ) : (
-                          <Text>
-                            Select products on which you want to apply the
-                            discounts.
-                          </Text>
-                        )}
-                      </Box>
-                    </Card>
-                  </Box>
+                                  </Card>
+                                );
+                              })}
+                            </BlockStack>
+                          ) : (
+                            <Text>
+                              Select products on which you want to apply the
+                              discounts.
+                            </Text>
+                          )}
+                        </Box>
+                      </Card>
+                    </Box>
+                  )}
 
                   {!formData.discount_rule && (
                     <Box>
@@ -466,8 +473,8 @@ const ProductDiscount = () => {
                                             value === "payment-method-handle" ||
                                               value === "sku" ||
                                               value === "payment-method-type"
-                                              ? "contain"
-                                              : "equal-to"
+                                              ? "contains"
+                                              : "equals-to"
                                           );
                                         }}
                                       />
@@ -536,6 +543,65 @@ const ProductDiscount = () => {
                                           );
                                         }}
                                       />
+                                    )}
+
+                                    {condition.type ===
+                                      "payment-method-handle" && (
+                                      <List type="number">
+                                        <List.Item>
+                                          {" "}
+                                          Don't forget to use checkout
+                                          Attributes. (shopify Plus)
+                                        </List.Item>
+                                        <List.Item>
+                                          Click here for the guide documentation
+                                          on payment method by Handle.
+                                        </List.Item>
+                                      </List>
+                                    )}
+
+                                    {condition.type ===
+                                      "payment-method-type" && (
+                                      <>
+                                        <Text variant="headingSm">
+                                          Some Examples of payment methods and
+                                          Type:
+                                        </Text>
+                                        <Box width="50%">
+                                          <InlineStack align="space-between">
+                                            <Box>
+                                              <Text variant="headingMd">
+                                                Payment Method
+                                              </Text>
+                                              <Text>Credit Card</Text>
+                                              <Text>
+                                                Cash on Delivery (CoD)
+                                              </Text>
+                                              <Text>Bank Deposit</Text>
+                                            </Box>
+
+                                            <Box>
+                                              <Text variant="headingMd">
+                                                Type
+                                              </Text>
+                                              <Text>creditCard</Text>
+                                              <Text>paymentOnDelivery</Text>
+                                              <Text>manualPayment</Text>
+                                            </Box>
+                                          </InlineStack>
+                                        </Box>
+                                        <List type="number">
+                                          <List.Item>
+                                            Don't forget to use checkout
+                                            Attributes. (shopify Plus)
+                                          </List.Item>
+                                          <List.Item>
+                                            Click here for the guide
+                                            documentation on payment method by
+                                            Handle.
+                                          </List.Item>
+                                        </List>
+                                      </>
                                     )}
 
                                     {formData.conditions.length > 1 && (
