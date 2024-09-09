@@ -19,7 +19,13 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
 
 const FieldValidation = () => {
-  const { isSubscribed, loading, setLoading } = useAppContext();
+  const {
+    isSubscribed,
+    loading,
+    setLoading,
+    setDisabledCountriesField,
+    setDisabledCountriesPhone,
+  } = useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -33,6 +39,8 @@ const FieldValidation = () => {
       const data = await resp.json();
       if (resp.ok) {
         setFieldValidations(data.fieldValidations);
+        setDisabledCountriesPhone(data.usedCountriesForPhoneValidations);
+        setDisabledCountriesField(data.usedCountriesForFieldValidations);
       } else {
         show(data.error.message, {
           isError: true,

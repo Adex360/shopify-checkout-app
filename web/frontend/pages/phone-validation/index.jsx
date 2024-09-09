@@ -20,7 +20,8 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../context";
 
 const PhoneValidation = () => {
-  const { shop } = useAppContext();
+  const { shop, setDisabledCountriesField, setDisabledCountriesPhone } =
+    useAppContext();
   const isSubscribed = shop.plan_status === "active";
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -40,6 +41,8 @@ const PhoneValidation = () => {
       const data = await resp.json();
       if (resp.ok) {
         setValidations(data.phoneValidations);
+        setDisabledCountriesPhone(data.usedCountriesForPhoneValidations);
+        setDisabledCountriesField(data.usedCountriesForFieldValidations);
       }
       setLoading(false);
     } catch (e) {

@@ -10,6 +10,9 @@ const AppContextProvider = ({ children }) => {
   const [shop, setShop] = useState({});
   const [countries, setCountries] = useState([]);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [disabledCountriesPhone, setDisabledCountriesPhone] = useState([]);
+  const [disabledCountriesField, setDisabledCountriesField] = useState([]);
+
   const getShop = async () => {
     try {
       setLoading(true);
@@ -27,34 +30,14 @@ const AppContextProvider = ({ children }) => {
     }
   };
 
-  const getNewCountries = async () => {
+  const getShopCountries = async () => {
+    setLoading(true);
     try {
-      const resp = await shopifyFetch("/countries");
+      const resp = await shopifyFetch("/api/v1/shop/countries");
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getCountries = async () => {
-    try {
-      setLoading(true);
-      const resp = await fetch("https://countriesnow.space/api/v0.1/countries");
-      const data = await resp.json();
-      if (resp.ok) {
+        setCountries(data.enabledCountries);
         setLoading(false);
-        const countryArr = [];
-        data.data?.forEach((country) => {
-          countryArr.push({
-            label: country.country,
-            value: country.iso2,
-          });
-        });
-        console.log(countryArr);
-        setCountries(countryArr);
       }
     } catch (error) {
       console.error(error);
@@ -63,7 +46,7 @@ const AppContextProvider = ({ children }) => {
 
   useEffect(() => {
     getShop();
-    getCountries();
+    getShopCountries();
   }, []);
 
   const contextValues = {
@@ -72,6 +55,10 @@ const AppContextProvider = ({ children }) => {
     setLoading,
     isSubscribed,
     countries,
+    disabledCountriesField,
+    setDisabledCountriesField,
+    disabledCountriesPhone,
+    setDisabledCountriesPhone,
   };
 
   return (

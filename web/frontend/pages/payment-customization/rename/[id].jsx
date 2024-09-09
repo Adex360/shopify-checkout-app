@@ -30,8 +30,10 @@ import {
 } from "../../../constants";
 import { useAuthenticatedFetch } from "../../../hooks";
 import { useNavigate, useToast } from "@shopify/app-bridge-react";
+import { useAppContext } from "../../../context";
 
 const ReName = () => {
+  const { countries } = useAppContext();
   const shopifyFetch = useAuthenticatedFetch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -41,7 +43,6 @@ const ReName = () => {
 
   const [btnLoading, setBtnLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
-  const [countries, setCountries] = useState("");
   const [formError, setFormError] = useState({
     title: false,
     paymentMethodTitles: false,
@@ -151,25 +152,6 @@ const ReName = () => {
     });
   };
 
-  const getCountries = async () => {
-    try {
-      const resp = await fetch("https://countriesnow.space/api/v0.1/countries");
-      const data = await resp.json();
-      if (resp.ok) {
-        const countryArr = [];
-        data.data?.forEach((country) => {
-          countryArr.push({
-            label: country.country,
-            value: country.iso2,
-          });
-        });
-        setCountries(countryArr);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleCreateCustomization = async () => {
     try {
       setBtnLoading(true);
@@ -262,7 +244,6 @@ const ReName = () => {
     if (id !== "create") {
       getCustomizationData();
     }
-    getCountries();
   }, []);
 
   return (

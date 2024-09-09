@@ -18,13 +18,12 @@ import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 
 const CreateCityList = () => {
-  const { loading, setLoading } = useAppContext();
+  const { loading, setLoading, countries } = useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [btnLoading, setBtnLoading] = useState(false);
-  const [countries, setCountries] = useState([]);
   const [rawCities, setRawCites] = useState("");
 
   const [formData, setFormData] = useState({
@@ -50,25 +49,6 @@ const CreateCityList = () => {
       }
     }
     return;
-  };
-
-  const getCountries = async () => {
-    try {
-      const resp = await fetch("https://countriesnow.space/api/v0.1/countries");
-      const data = await resp.json();
-      if (resp.ok) {
-        const countryArr = [];
-        data.data?.forEach((country) => {
-          countryArr.push({
-            label: country.country,
-            value: country.iso2,
-          });
-        });
-        setCountries(countryArr);
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const handleCreateList = async () => {
@@ -138,7 +118,6 @@ const CreateCityList = () => {
 
   useEffect(() => {
     if (id !== "create") getCityList();
-    getCountries();
   }, []);
   return (
     <>

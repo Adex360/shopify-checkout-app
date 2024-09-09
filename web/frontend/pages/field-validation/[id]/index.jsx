@@ -17,7 +17,8 @@ import { useAuthenticatedFetch } from "../../../hooks";
 import { useParams } from "react-router-dom";
 
 const CreateValidation = () => {
-  const { loading, countries, setLoading } = useAppContext();
+  const { loading, countries, setLoading, disabledCountriesField } =
+    useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
@@ -178,7 +179,9 @@ const CreateValidation = () => {
                 <CustomAutoComplete
                   label={<Text variant="headingMd">Select Country</Text>}
                   placeholder="Search Country "
-                  selectionOptions={countries}
+                  selectionOptions={countries.filter(
+                    (country) => !disabledCountriesField.includes(country.value)
+                  )}
                   selectedOptions={[formData.country_name] || []}
                   setSelectedOptions={(value) => {
                     handleFormDataChange("country_name", value[0]);
