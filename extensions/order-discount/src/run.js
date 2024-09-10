@@ -70,7 +70,7 @@ export function run(input) {
   );
   const obj = JSON.stringify(configuration, null, 2);
   console.log("metafields", obj);
-
+  let discountValue = parseFloat(configuration.value).toFixed(1);
   const totalAmount = parseFloat(input.cart.cost.totalAmount.amount);
   const subTotalAmount = parseFloat(input.cart.cost.subtotalAmount.amount);
   const skus = input.cart.lines.map((line) => line.merchandise.sku);
@@ -83,7 +83,9 @@ export function run(input) {
   );
 
   const hasConditions =
-    configuration.conditions && configuration.conditions.length > 0;
+    !configuration.rule &&
+    configuration.conditions &&
+    configuration.conditions.length > 0;
   const checkConditions = configuration.hasCondition
     ? (callback) => configuration.conditions.every(callback)
     : (callback) => configuration.conditions.some(callback);
@@ -202,7 +204,9 @@ export function run(input) {
           value: {
             percentage:
               configuration.type === DISCOUNT_TYPE.PERCENTAGE
-                ? { value: configuration.value }
+                ? {
+                    value: discountValue,
+                  }
                 : undefined,
             fixedAmount:
               configuration.type === DISCOUNT_TYPE.FIXEDAMOUNT

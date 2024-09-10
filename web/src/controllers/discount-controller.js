@@ -61,19 +61,20 @@ export const updateDiscount = async (req, res) => {
       accessToken,
     });
     const getByID = await Discount.getByID(id);
-    if (getByID.enabled) {
-      await service.activateDiscount(getByID.discount_id);
-    } else {
-      await service.deActivateDiscount(getByID.discount_id);
-    }
+
     await service.deleteDiscount(getByID.discount_id);
+
     const discountId = await service.createDiscount(getByID.function_id, data);
     // await service.updateDiscount(getByID, data);
-
+    if (data.enabled) {
+      await service.activateDiscount(discountId);
+    } else {
+      await service.deActivateDiscount(discountId);
+    }
     const updateDiscount = await Discount.update({
       id,
-      discount_id: discountId,
       ...data,
+      discount_id: discountId,
     });
     res.status(200).json({
       message: `Discount  Updated Successfully`,

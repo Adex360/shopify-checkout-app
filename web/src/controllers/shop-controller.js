@@ -1,9 +1,4 @@
-import {
-  Shop,
-  PaymentCustomization,
-  CityList,
-  Validation,
-} from "../models/index.js";
+import { Shop, PaymentCustomization, CityList } from "../models/index.js";
 import ShopifyService from "../services/shopify-service.js";
 import axios from "axios";
 export const getShop = async (req, res) => {
@@ -56,24 +51,7 @@ export const getCountries = async (req, res) => {
       value: country.iso2,
     }));
 
-  const getAll = await Validation.findAll(req.shop.id);
-  const phoneValidations = getAll.filter(
-    (validation) => validation.phone_validation !== null
-  );
-  const fieldValidations = getAll.filter(
-    (validation) => validation.phone_validation === null
-  );
-
-  const usedCountriesForPhoneValidations = phoneValidations.map(
-    (validation) => validation.country_name
-  );
-  const usedCountriesForFieldValidations = fieldValidations.map(
-    (validation) => validation.country_name
-  );
-
   return res.status(200).send({
     enabledCountries: filteredCountries,
-    usedCountriesForPhoneValidations,
-    usedCountriesForFieldValidations,
   });
 };
