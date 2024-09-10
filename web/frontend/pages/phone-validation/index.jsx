@@ -93,10 +93,13 @@ const PhoneValidation = () => {
       <ButtonGroup variant="segmented">
         <Button
           disabled={btnLoadingIndex > -1}
+          // onClick={() => {
+          //   setModalOpen(true);
+          //   setEditingID(data.id);
+          //   setEditingIndex(index);
+          // }}
           onClick={() => {
-            setModalOpen(true);
-            setEditingID(data.id);
-            setEditingIndex(index);
+            navigate(`/phone-validation/${data.id}`);
           }}
         >
           Edit
@@ -152,6 +155,13 @@ const PhoneValidation = () => {
                 content: "Add validation",
                 onAction: () => setModalOpen(true),
               }}
+              secondaryActions={[
+                {
+                  disabled: validations.length >= 5,
+                  content: "Add validation",
+                  onAction: () => navigate("/phone-validation/create"),
+                },
+              ]}
             >
               <Layout>
                 <Layout.Section>
