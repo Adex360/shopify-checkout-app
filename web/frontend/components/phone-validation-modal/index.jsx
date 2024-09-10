@@ -38,8 +38,6 @@ const PhoneValidationModal = ({
     errorMessage: "",
   });
 
-  console.log(disabledCountriesPhone);
-
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
       return {

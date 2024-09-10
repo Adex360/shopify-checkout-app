@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://contamination-xhtml-between-tennis.trycloudflare.com"
+application_url = "https://enjoy-publisher-soldiers-relating.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_discounts,write_payment_customizations,write_produ
 
 [auth]
 redirect_urls = [
-  "https://contamination-xhtml-between-tennis.trycloudflare.com/auth/callback",
-  "https://contamination-xhtml-between-tennis.trycloudflare.com/auth/shopify/callback",
-  "https://contamination-xhtml-between-tennis.trycloudflare.com/api/auth/callback"
+  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/auth/callback",
+  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/auth/shopify/callback",
+  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -6,7 +6,6 @@ export const getCorrectDate = (value) => {
     .slice(0, 10);
 
   const final = new Date(localISOTime).toISOString();
-  console.log(final);
   return final;
 };
 

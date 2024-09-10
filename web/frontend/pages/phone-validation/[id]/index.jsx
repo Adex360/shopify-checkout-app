@@ -18,7 +18,7 @@ import {
 import { useAppContext } from "../../../context";
 import { useParams } from "react-router-dom";
 
-const CreatePhoneValidation = ({ editingID }) => {
+const CreatePhoneValidation = () => {
   const { countries, loading, setLoading, disabledCountriesPhone } =
     useAppContext();
   const shopifyFetch = useAuthenticatedFetch();
@@ -40,8 +40,6 @@ const CreatePhoneValidation = ({ editingID }) => {
     phoneLength: "",
     errorMessage: "",
   });
-
-  console.log(disabledCountriesPhone);
 
   const handleFormDataChange = (name, value) => {
     setFormData((prev) => {
@@ -177,9 +175,7 @@ const CreatePhoneValidation = ({ editingID }) => {
     if (id !== "create") {
       getValidationData();
     }
-  });
-
-  useEffect(() => {}, []);
+  }, []);
 
   return (
     <>
@@ -189,7 +185,7 @@ const CreatePhoneValidation = ({ editingID }) => {
         </div>
       ) : (
         <Page
-          title="Add Phone Validation"
+          title={id === "create" ? "Add Phone Validation" : "Edit Validation"}
           backAction={{
             onAction: () => navigate("/phone-validation"),
           }}

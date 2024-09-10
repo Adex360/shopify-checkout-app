@@ -153,44 +153,11 @@ const PhoneValidation = () => {
               primaryAction={{
                 disabled: validations.length >= 5,
                 content: "Add validation",
-                onAction: () => setModalOpen(true),
+                onAction: () => navigate("/phone-validation/create"),
               }}
-              secondaryActions={[
-                {
-                  disabled: validations.length >= 5,
-                  content: "Add validation",
-                  onAction: () => navigate("/phone-validation/create"),
-                },
-              ]}
             >
               <Layout>
                 <Layout.Section>
-                  <PhoneValidationModal
-                    // data={validations}
-                    onSuccess={(value) => {
-                      setValidations((prev) => {
-                        const newArr = [...prev, value];
-                        return newArr;
-                      });
-                    }}
-                    onEditSuccess={(value) => {
-                      setValidations((prev) => {
-                        const newArr = [...prev];
-                        newArr[editingIndex] = value;
-                        return newArr;
-                      });
-                      setEditingID("");
-                      setEditingIndex("");
-                    }}
-                    editingID={editingID}
-                    onClose={() => {
-                      setEditingID("");
-                      setEditingIndex("");
-                      navigate("/phone-validation");
-                      setModalOpen(false);
-                    }}
-                    open={modalOpen}
-                  />
                   {validations.length > 0 ? (
                     <>
                       {validations.length >= 5 && (
