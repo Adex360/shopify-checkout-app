@@ -205,8 +205,8 @@ export const discountOptions = [
     label: "Payment Method Type",
     value: "payment-method-type",
   },
-  {
-    label: "Payment Method Handle",
-    value: "payment-method-handle",
-  },
+  // {
+  //   label: "Payment Method Handle",
+  //   value: "payment-method-handle",
+  // },
 ];

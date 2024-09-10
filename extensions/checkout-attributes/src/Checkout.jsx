@@ -42,24 +42,24 @@ function Extension() {
     fetchDiscount();
   }, []);
 
-  useEffect(() => {
-    console.log(
-      "%cPayment Method Handles by SMART WAY",
-      "color: #28a745; font-weight: bold; font-size: 16px;"
-    );
+  // useEffect(() => {
+  //   console.log(
+  //     "%cPayment Method Handles by SMART WAY",
+  //     "color: #28a745; font-weight: bold; font-size: 16px;"
+  //   );
 
-    availablePaymentOptions.forEach((option, index) => {
-      console.log(
-        `%c${index + 1}. Handle: %c${option.handle}   Type: %c${option.type}`,
-        "color: #28a745; font-weight: normal;",
-        "color: #28a745; font-weight: bold;",
-        "color: #28a745; font-weight: normal;"
-      );
-    });
-  }, [availablePaymentOptions]);
+  //   availablePaymentOptions.forEach((option, index) => {
+  //     console.log(
+  //       `%c${index + 1}. Handle: %c${option.handle}   Type: %c${option.type}`,
+  //       "color: #28a745; font-weight: normal;",
+  //       "color: #28a745; font-weight: bold;",
+  //       "color: #28a745; font-weight: normal;"
+  //     );
+  //   });
+  // }, [availablePaymentOptions]);
   useEffect(() => {
     discounts.forEach((discountItem) => {
-      if (discountItem.discount_rule === false) {
+      if (discountItem.discount_rule === false && discountItem.enabled) {
         const typeCondition = discountItem.conditions.find(
           (condition) => condition.type === "payment-method-type"
         );
@@ -86,6 +86,7 @@ function Extension() {
             : selectedPaymentOptions.find((option) =>
                 handleCondition.value.includes(option.handle)
               );
+
           const newValue = isRequiredTypeSelected
             ? selectedMethod.type
             : selectedMethod.handle;
