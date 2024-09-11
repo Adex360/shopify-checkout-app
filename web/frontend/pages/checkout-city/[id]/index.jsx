@@ -20,7 +20,6 @@ import { useAppContext } from "../../../context";
 const CreateCityList = () => {
   const { loading, setLoading, countries, disabledCountriesCityList } =
     useAppContext();
-  console.log(disabledCountriesCityList);
   const { id } = useParams();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();

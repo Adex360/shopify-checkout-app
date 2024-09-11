@@ -4,6 +4,7 @@ export const features = [
   "Advance City Dropdown",
   "Checkout Banners",
   "Custom Fields",
+  "Discount",
   "7 Days free trial",
 ];
 
