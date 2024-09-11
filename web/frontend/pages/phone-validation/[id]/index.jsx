@@ -220,9 +220,17 @@ const CreatePhoneValidation = () => {
                     handleFormDataChange("country", value);
                   }}
                   label="Select Country"
-                  selectionOption={countries.filter(
-                    (country) => !disabledCountriesPhone.includes(country.value)
-                  )}
+                  // selectionOption={countries.filter(
+                  //   (country) => !disabledCountriesPhone.includes(country.value)
+                  // )}
+                  selectionOption={countries.map((country) => {
+                    return disabledCountriesPhone.includes(country.value)
+                      ? {
+                          ...country,
+                          disabled: true,
+                        }
+                      : country;
+                  })}
                 />
 
                 <Banner

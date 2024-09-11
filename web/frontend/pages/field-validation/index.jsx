@@ -147,21 +147,12 @@ const FieldValidation = () => {
           <Page
             title="Field Validations"
             primaryAction={{
-              disabled: fieldValidations.length >= 5,
               content: "Create Validation",
               onAction: () => navigate("/field-validation/create"),
             }}
           >
             <Layout>
               <Layout.Section>
-                {fieldValidations.length >= 5 && (
-                  <Box paddingBlockEnd="200">
-                    <Banner tone="warning" title="Limit Reached">
-                      You have created maximum number of Validations. Delete the
-                      validation to create new one.
-                    </Banner>
-                  </Box>
-                )}
                 {fieldValidations?.length > 0 ? (
                   <Card padding="0">
                     <DataTable

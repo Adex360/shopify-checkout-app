@@ -20,7 +20,8 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
 
 const CheckoutCityList = () => {
-  const { isSubscribed, loading, setLoading } = useAppContext();
+  const { isSubscribed, loading, setLoading, setDisabledCountriesCityList } =
+    useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -34,6 +35,7 @@ const CheckoutCityList = () => {
       const data = await resp.json();
       if (resp.ok) {
         setCityList(data.getAll);
+        setDisabledCountriesCityList(data.usedCountriesForCityList);
         setLoading(false);
       } else {
         show(data.error.message);

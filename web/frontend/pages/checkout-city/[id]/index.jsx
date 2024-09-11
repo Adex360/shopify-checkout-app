@@ -18,7 +18,9 @@ import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 
 const CreateCityList = () => {
-  const { loading, setLoading, countries } = useAppContext();
+  const { loading, setLoading, countries, disabledCountriesCityList } =
+    useAppContext();
+  console.log(disabledCountriesCityList);
   const { id } = useParams();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
@@ -139,23 +141,27 @@ const CreateCityList = () => {
         >
           <Card>
             <BlockStack gap="400">
-              {countries.length > 0 ? (
-                <CustomAutoComplete
-                  label={<Text variant="headingMd">Select Country</Text>}
-                  placeholder="Search Country "
-                  selectionOptions={countries}
-                  selectedOptions={[formData.country_code] || []}
-                  setSelectedOptions={(value) => {
-                    handleFormDataChange("country_code", value[0]);
-                    handleFormDataChange(
-                      "country_name",
-                      getCountryNameByValue(value[0])
-                    );
-                  }}
-                />
-              ) : (
-                <Spinner size="small" />
-              )}
+              <CustomAutoComplete
+                label={<Text variant="headingMd">Select Country</Text>}
+                placeholder="Search Country "
+                // selectionOptions={countries}
+                selectionOptions={countries.map((country) => {
+                  return disabledCountriesCityList.includes(country.label)
+                    ? {
+                        ...country,
+                        disabled: true,
+                      }
+                    : country;
+                })}
+                selectedOptions={[formData.country_code] || []}
+                setSelectedOptions={(value) => {
+                  handleFormDataChange("country_code", value[0]);
+                  handleFormDataChange(
+                    "country_name",
+                    getCountryNameByValue(value[0])
+                  );
+                }}
+              />
               <TextField
                 label={<Text variant="headingMd">Enter Cities</Text>}
                 helpText="Please enter a comma-separated list of cities, for example: City 1, City 2, City 3."

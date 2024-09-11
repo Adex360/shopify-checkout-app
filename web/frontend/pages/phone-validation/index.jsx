@@ -151,7 +151,6 @@ const PhoneValidation = () => {
                 </InlineStack>
               }
               primaryAction={{
-                disabled: validations.length >= 5,
                 content: "Add validation",
                 onAction: () => navigate("/phone-validation/create"),
               }}
@@ -160,14 +159,6 @@ const PhoneValidation = () => {
                 <Layout.Section>
                   {validations.length > 0 ? (
                     <>
-                      {validations.length >= 5 && (
-                        <Box paddingBlockEnd="200">
-                          <Banner tone="warning" title="Limit Reached">
-                            You have created maximum number of Validations.
-                            Delete the validation to create new one.
-                          </Banner>
-                        </Box>
-                      )}
                       <DataTable
                         columnContentTypes={["text", "text", "text", "text"]}
                         headings={tableHeadings}

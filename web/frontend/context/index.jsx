@@ -12,6 +12,9 @@ const AppContextProvider = ({ children }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [disabledCountriesPhone, setDisabledCountriesPhone] = useState([]);
   const [disabledCountriesField, setDisabledCountriesField] = useState([]);
+  const [disabledCountriesCityList, setDisabledCountriesCityList] = useState(
+    []
+  );
 
   const getShop = async () => {
     try {
@@ -56,9 +59,11 @@ const AppContextProvider = ({ children }) => {
     isSubscribed,
     countries,
     disabledCountriesField,
-    setDisabledCountriesField,
     disabledCountriesPhone,
+    disabledCountriesCityList,
+    setDisabledCountriesField,
     setDisabledCountriesPhone,
+    setDisabledCountriesCityList,
   };
 
   return (

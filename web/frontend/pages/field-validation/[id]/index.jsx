@@ -179,9 +179,14 @@ const CreateValidation = () => {
                 <CustomAutoComplete
                   label={<Text variant="headingMd">Select Country</Text>}
                   placeholder="Search Country "
-                  selectionOptions={countries.filter(
-                    (country) => !disabledCountriesField.includes(country.value)
-                  )}
+                  selectionOptions={countries.map((country) => {
+                    return disabledCountriesField.includes(country.value)
+                      ? {
+                          ...country,
+                          disabled: true,
+                        }
+                      : country;
+                  })}
                   selectedOptions={[formData.country_name] || []}
                   setSelectedOptions={(value) => {
                     handleFormDataChange("country_name", value[0]);
