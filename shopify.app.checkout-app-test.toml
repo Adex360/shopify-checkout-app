@@ -3,7 +3,7 @@
 client_id = "8bfa5c9a03d85943ff39537757b47a7c"
 name = "checkout-app-test"
 handle = "checkout-app-test-30"
-application_url = "https://murray-fellow-murray-jerry.trycloudflare.com"
+application_url = "https://between-located-presentations-processed.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,20 +13,20 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,read_products,write_discounts,write_payment_customizations,write_products,write_validations"
+scopes = "read_customers,read_products,write_discounts,write_payment_customizations,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://murray-fellow-murray-jerry.trycloudflare.com/auth/callback",
-  "https://murray-fellow-murray-jerry.trycloudflare.com/auth/shopify/callback",
-  "https://murray-fellow-murray-jerry.trycloudflare.com/api/auth/callback"
+  "https://between-located-presentations-processed.trycloudflare.com/auth/callback",
+  "https://between-located-presentations-processed.trycloudflare.com/auth/shopify/callback",
+  "https://between-located-presentations-processed.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-07"
 
 [app_proxy]
-url = "https://murray-fellow-murray-jerry.trycloudflare.com"
+url = "https://between-located-presentations-processed.trycloudflare.com"
 subpath = "api"
 prefix = "apps"
 

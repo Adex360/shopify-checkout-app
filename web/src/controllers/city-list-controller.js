@@ -24,10 +24,12 @@ export const getAllCityList = async (req, res) => {
       const shop = await Shop.findByName(shop_name);
       shopId = shop.id;
     }
+
     const getAll = await CityList.findAll(shopId);
-    res.status(200).json({ getAll });
+    const usedCountriesForCityList = getAll.map((entry) => entry.country_name);
+    res.status(200).json({ getAll, usedCountriesForCityList });
   } catch (error) {
-    res.status(500).json({ error: "Error Getting Custom Fields" });
+    res.status(500).json({ error: "Error Getting City List" });
   }
 };
 export const getByIdCityList = async (req, res) => {
