@@ -1,9 +1,10 @@
-const features = [
+export const features = [
   "Payment Modification",
   "Field Validation",
   "Advance City Dropdown",
   "Checkout Banners",
   "Custom Fields",
+  "Discount",
   "7 Days free trial",
 ];
 
@@ -109,8 +110,8 @@ export const paymentMethods = [
 
 export const customizationRuleForPayment = [
   {
-    label: "Equal to ",
-    value: "equal-to",
+    label: "Equals to ",
+    value: "equals-to",
   },
   {
     label: "Greater than ",
@@ -119,6 +120,49 @@ export const customizationRuleForPayment = [
   {
     label: "Less than ",
     value: "less-than",
+  },
+];
+
+export const discountPaymentOptions = [
+  {
+    label: "CREDIT CARD",
+    value: "creditCard",
+  },
+  {
+    label: "DEFERRED",
+    value: "deferred",
+  },
+  {
+    label: "LOCAL",
+    value: "local",
+  },
+  {
+    label: "MANUAL PAYMENT",
+    value: "manualPayment",
+  },
+  {
+    label: "OFFSITE",
+    value: "offsite",
+  },
+  {
+    label: "OTHER",
+    value: "other",
+  },
+  {
+    label: "PAYMENT ON DELIVERY",
+    value: "paymentOnDelivery",
+  },
+  {
+    label: "REDEEMABLE",
+    value: "redeemable",
+  },
+  {
+    label: "WALLET",
+    value: "wallet",
+  },
+  {
+    label: "CUSTOM ON SITE",
+    value: "customOnsite",
   },
 ];
 
@@ -133,8 +177,37 @@ export const customizationRuleForCountry = [
   },
 ];
 
-export {
-  features,
-  // customizationRuleForCountry,
-  // customizationRuleForPayment,
-};
+export const discountOptions = [
+  {
+    label: "Total Amount",
+    value: "total-amount",
+  },
+  {
+    label: "Sub Total Amount",
+    value: "sub-total-amount",
+  },
+  {
+    label: "SKU",
+    value: "sku",
+  },
+  {
+    label: "Cart Total Quantity",
+    value: "cart-total-qty",
+  },
+  {
+    label: "Single Line Quantity ",
+    value: "single-line-qty",
+  },
+  {
+    label: "All Line Quantity ",
+    value: "all_line_qty",
+  },
+  {
+    label: "Payment Method Type",
+    value: "payment-method-type",
+  },
+  // {
+  //   label: "Payment Method Handle",
+  //   value: "payment-method-handle",
+  // },
+];

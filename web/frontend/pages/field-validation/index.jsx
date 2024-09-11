@@ -19,7 +19,13 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAuthenticatedFetch } from "../../hooks";
 
 const FieldValidation = () => {
-  const { isSubscribed, loading, setLoading } = useAppContext();
+  const {
+    isSubscribed,
+    loading,
+    setLoading,
+    setDisabledCountriesField,
+    setDisabledCountriesPhone,
+  } = useAppContext();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -32,8 +38,9 @@ const FieldValidation = () => {
       const resp = await shopifyFetch("api/v1/validation");
       const data = await resp.json();
       if (resp.ok) {
-        console.log(data.fieldValidations);
         setFieldValidations(data.fieldValidations);
+        setDisabledCountriesPhone(data.usedCountriesForPhoneValidations);
+        setDisabledCountriesField(data.usedCountriesForFieldValidations);
       } else {
         show(data.error.message, {
           isError: true,
@@ -140,21 +147,12 @@ const FieldValidation = () => {
           <Page
             title="Field Validations"
             primaryAction={{
-              disabled: fieldValidations.length >= 5,
               content: "Create Validation",
               onAction: () => navigate("/field-validation/create"),
             }}
           >
             <Layout>
               <Layout.Section>
-                {fieldValidations.length >= 5 && (
-                  <Box paddingBlockEnd="200">
-                    <Banner tone="warning" title="Limit Reached">
-                      You have created maximum number of Validations. Delete the
-                      validation to create new one.
-                    </Banner>
-                  </Box>
-                )}
                 {fieldValidations?.length > 0 ? (
                   <Card padding="0">
                     <DataTable
@@ -163,7 +161,7 @@ const FieldValidation = () => {
                         <Text variant="headingMd">Title</Text>,
                         <Text variant="headingMd">Status</Text>,
                         <Text variant="headingMd">Country Code</Text>,
-                        <Text variant="headingMd">Fist Name Val. </Text>,
+                        <Text variant="headingMd">First Name Val. </Text>,
                         <Text variant="headingMd">Last Name Val.</Text>,
                         <Text variant="headingMd">Address Val.</Text>,
                         "",

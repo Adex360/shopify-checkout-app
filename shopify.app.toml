@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://noon-centuries-innovation-czech.trycloudflare.com"
+application_url = "https://alex-geography-breaks-errors.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,13 +13,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_products,write_payment_customizations,write_products,write_validations"
+scopes = "read_products,write_discounts,write_payment_customizations,write_products,write_validations"
 
 [auth]
 redirect_urls = [
-  "https://noon-centuries-innovation-czech.trycloudflare.com/auth/callback",
-  "https://noon-centuries-innovation-czech.trycloudflare.com/auth/shopify/callback",
-  "https://noon-centuries-innovation-czech.trycloudflare.com/api/auth/callback"
+  "https://alex-geography-breaks-errors.trycloudflare.com/auth/callback",
+  "https://alex-geography-breaks-errors.trycloudflare.com/auth/shopify/callback",
+  "https://alex-geography-breaks-errors.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -19,7 +19,7 @@ const PhoneValidationModal = ({
   onEditSuccess,
   editingID,
 }) => {
-  const { countries, loading } = useAppContext();
+  const { countries, loading, disabledCountriesPhone } = useAppContext();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [pageLoadings, setPageLoadings] = useState({
@@ -238,7 +238,9 @@ const PhoneValidationModal = ({
                   handleFormDataChange("country", value);
                 }}
                 label="Select Country"
-                selectionOption={countries}
+                selectionOption={countries.filter(
+                  (country) => !disabledCountriesPhone.includes(country.value)
+                )}
               />
 
               <Banner

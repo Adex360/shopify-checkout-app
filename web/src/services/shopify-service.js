@@ -390,7 +390,7 @@ export default class ShopifyService {
     const queryString = {
       query: `
       mutation discountAutomaticActivate($id: ID!) {
-        discountAutomaticActivate(id: $id) {
+        discountAutomaticDeactivate(id: $id) {
           userErrors {
             field
             message

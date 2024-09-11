@@ -20,7 +20,8 @@ import { useNavigate, useToast } from "@shopify/app-bridge-react";
 import { useAppContext } from "../../context";
 
 const PhoneValidation = () => {
-  const { shop } = useAppContext();
+  const { shop, setDisabledCountriesField, setDisabledCountriesPhone } =
+    useAppContext();
   const isSubscribed = shop.plan_status === "active";
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
@@ -40,6 +41,8 @@ const PhoneValidation = () => {
       const data = await resp.json();
       if (resp.ok) {
         setValidations(data.phoneValidations);
+        setDisabledCountriesPhone(data.usedCountriesForPhoneValidations);
+        setDisabledCountriesField(data.usedCountriesForFieldValidations);
       }
       setLoading(false);
     } catch (e) {
@@ -75,7 +78,6 @@ const PhoneValidation = () => {
 
   const tableRows = validations?.map((data, index) => {
     const { phone_validation } = data;
-    console.log(data);
     return [
       data.title,
       phone_validation.country_name,
@@ -91,10 +93,13 @@ const PhoneValidation = () => {
       <ButtonGroup variant="segmented">
         <Button
           disabled={btnLoadingIndex > -1}
+          // onClick={() => {
+          //   setModalOpen(true);
+          //   setEditingID(data.id);
+          //   setEditingIndex(index);
+          // }}
           onClick={() => {
-            setModalOpen(true);
-            setEditingID(data.id);
-            setEditingIndex(index);
+            navigate(`/phone-validation/${data.id}`);
           }}
         >
           Edit
@@ -146,49 +151,14 @@ const PhoneValidation = () => {
                 </InlineStack>
               }
               primaryAction={{
-                disabled: validations.length >= 5,
                 content: "Add validation",
-                onAction: () => setModalOpen(true),
+                onAction: () => navigate("/phone-validation/create"),
               }}
             >
               <Layout>
                 <Layout.Section>
-                  <PhoneValidationModal
-                    // data={validations}
-                    onSuccess={(value) => {
-                      setValidations((prev) => {
-                        const newArr = [...prev, value];
-                        return newArr;
-                      });
-                    }}
-                    onEditSuccess={(value) => {
-                      setValidations((prev) => {
-                        const newArr = [...prev];
-                        newArr[editingIndex] = value;
-                        return newArr;
-                      });
-                      setEditingID("");
-                      setEditingIndex("");
-                    }}
-                    editingID={editingID}
-                    onClose={() => {
-                      setEditingID("");
-                      setEditingIndex("");
-                      navigate("/phone-validation");
-                      setModalOpen(false);
-                    }}
-                    open={modalOpen}
-                  />
                   {validations.length > 0 ? (
                     <>
-                      {validations.length >= 5 && (
-                        <Box paddingBlockEnd="200">
-                          <Banner tone="warning" title="Limit Reached">
-                            You have created maximum number of Validations.
-                            Delete the validation to create new one.
-                          </Banner>
-                        </Box>
-                      )}
                       <DataTable
                         columnContentTypes={["text", "text", "text", "text"]}
                         headings={tableHeadings}

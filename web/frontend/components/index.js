@@ -5,7 +5,10 @@ import AddTag from "./Add-Tag";
 import PhoneValidationModal from "./phone-validation-modal";
 import { CustomAutoComplete } from "./custom-auto-complete";
 import ValidationContainer from "./validation-container";
+import RangeDateSelector from "./range-date-selector";
+
 export {
+  RangeDateSelector,
   ValidationContainer,
   CustomAutoComplete,
   PhoneValidationModal,

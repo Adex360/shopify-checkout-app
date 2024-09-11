@@ -14,7 +14,6 @@ import {
 } from "@shopify/polaris";
 
 const ValidationContainer = ({ title, data, setData, enable, setEnable }) => {
-  console.log("enabled............", enable);
   const { smUp } = useBreakpoints();
   return (
     <Card background="bg">
@@ -151,7 +150,6 @@ const ValidationContainer = ({ title, data, setData, enable, setEnable }) => {
                   }
                   value={data.if_block_selected.join(",")}
                   onChange={(value) => {
-                    console.log(data);
                     setData(
                       "if_block_selected",
                       value.split(",").map((item) => item.trim())

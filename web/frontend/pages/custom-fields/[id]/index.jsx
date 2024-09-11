@@ -219,8 +219,6 @@ const CreateCustomFields = () => {
         );
 
       case "Select":
-        console.log(typeof field.options);
-        console.log(field.options, "selecett...........");
         const selectOptions = field.options.map((item) => ({
           label: item.trim(),
           value: item.trim(),
@@ -233,8 +231,6 @@ const CreateCustomFields = () => {
         );
 
       case "Radio":
-        console.log(typeof field.options);
-        console.log(field.options, "radio..............123");
         const options = field.options.map((item) => ({
           label: item.trim(),
           value: item.trim(),

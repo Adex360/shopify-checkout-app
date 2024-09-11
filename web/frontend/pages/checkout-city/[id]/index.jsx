@@ -18,13 +18,13 @@ import { useAuthenticatedFetch } from "../../../hooks";
 import { useAppContext } from "../../../context";
 
 const CreateCityList = () => {
-  const { loading, setLoading } = useAppContext();
+  const { loading, setLoading, countries, disabledCountriesCityList } =
+    useAppContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const shopifyFetch = useAuthenticatedFetch();
   const { show } = useToast();
   const [btnLoading, setBtnLoading] = useState(false);
-  const [countries, setCountries] = useState([]);
   const [rawCities, setRawCites] = useState("");
 
   const [formData, setFormData] = useState({
@@ -50,26 +50,6 @@ const CreateCityList = () => {
       }
     }
     return;
-  };
-
-  const getCountries = async () => {
-    try {
-      const resp = await fetch("https://countriesnow.space/api/v0.1/countries");
-      const data = await resp.json();
-      if (resp.ok) {
-        const countryArr = [];
-        data.data?.forEach((country) => {
-          countryArr.push({
-            label: country.country,
-            value: country.iso2,
-          });
-        });
-        console.log(countryArr);
-        setCountries(countryArr);
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const handleCreateList = async () => {
@@ -129,7 +109,6 @@ const CreateCityList = () => {
         setLoading(false);
         setFormData(data.getByID);
         setRawCites(data.getByID.city_list.join(", "));
-        console.log(formData.country_code);
       }
     } catch (e) {
       console.error(e);
@@ -140,7 +119,6 @@ const CreateCityList = () => {
 
   useEffect(() => {
     if (id !== "create") getCityList();
-    getCountries();
   }, []);
   return (
     <>
@@ -162,25 +140,27 @@ const CreateCityList = () => {
         >
           <Card>
             <BlockStack gap="400">
-              {countries.length > 0 ? (
-                <CustomAutoComplete
-                  label={<Text variant="headingMd">Select Country</Text>}
-                  placeholder="Search Country "
-                  selectionOptions={countries}
-                  selectedOptions={[formData.country_code] || []}
-                  setSelectedOptions={(value) => {
-                    console.log(value);
-                    console.log(formData.country_name);
-                    handleFormDataChange("country_code", value[0]);
-                    handleFormDataChange(
-                      "country_name",
-                      getCountryNameByValue(value[0])
-                    );
-                  }}
-                />
-              ) : (
-                <Spinner size="small" />
-              )}
+              <CustomAutoComplete
+                label={<Text variant="headingMd">Select Country</Text>}
+                placeholder="Search Country "
+                // selectionOptions={countries}
+                selectionOptions={countries.map((country) => {
+                  return disabledCountriesCityList.includes(country.label)
+                    ? {
+                        ...country,
+                        disabled: true,
+                      }
+                    : country;
+                })}
+                selectedOptions={[formData.country_code] || []}
+                setSelectedOptions={(value) => {
+                  handleFormDataChange("country_code", value[0]);
+                  handleFormDataChange(
+                    "country_name",
+                    getCountryNameByValue(value[0])
+                  );
+                }}
+              />
               <TextField
                 label={<Text variant="headingMd">Enter Cities</Text>}
                 helpText="Please enter a comma-separated list of cities, for example: City 1, City 2, City 3."
@@ -195,7 +175,6 @@ const CreateCityList = () => {
                   // );
                 }}
                 onBlur={() => {
-                  console.log(rawCities);
                   const newCities = rawCities
                     .split(",")
                     .map((item) => item.trim());

@@ -70,7 +70,7 @@ export function run(input) {
   );
   const obj = JSON.stringify(configuration, null, 2);
   console.log("metafields", obj);
-
+  let discountValue = parseFloat(configuration.value).toFixed(1);
   const totalAmount = parseFloat(input.cart.cost.totalAmount.amount);
   const subTotalAmount = parseFloat(input.cart.cost.subtotalAmount.amount);
   const skus = input.cart.lines.map((line) => line.merchandise.sku);
@@ -83,7 +83,9 @@ export function run(input) {
   );
 
   const hasConditions =
-    configuration.conditions && configuration.conditions.length > 0;
+    !configuration.rule &&
+    configuration.conditions &&
+    configuration.conditions.length > 0;
   const checkConditions = configuration.hasCondition
     ? (callback) => configuration.conditions.every(callback)
     : (callback) => configuration.conditions.some(callback);
@@ -107,7 +109,7 @@ export function run(input) {
         }
 
         if (condition.type === CONDITION.SINGLE_LINE_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return input.cart.lines.some((line) => line.quantity > value);
           }
@@ -119,7 +121,7 @@ export function run(input) {
           }
         }
         if (condition.type === CONDITION.ALL_LINE_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN) {
             return input.cart.lines.every((line) => line.quantity > value);
           }
@@ -131,20 +133,20 @@ export function run(input) {
           }
         }
         if (condition.type === CONDITION.CART_TOTAL_QTY) {
-          const value = condition.value;
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN)
             return cartTotalQty > value;
           if (condition.rule === RULES.LESS_THAN) return cartTotalQty < value;
           if (condition.rule === RULES.EQUALS_TO) return cartTotalQty === value;
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = condition.value[0];
           if (condition.rule === RULES.GREATER_THAN) return totalAmount > value;
           if (condition.rule === RULES.LESS_THAN) return totalAmount < value;
           if (condition.rule === RULES.EQUALS_TO) return totalAmount === value;
         }
         if (condition.type === CONDITION.SUB_TOTAL_AMOUNT) {
-          const value = parseFloat(condition.value);
+          const value = parseFloat(condition.value[0]);
           if (condition.rule === RULES.GREATER_THAN)
             return subTotalAmount > value;
           if (condition.rule === RULES.LESS_THAN) return subTotalAmount < value;
@@ -202,7 +204,9 @@ export function run(input) {
           value: {
             percentage:
               configuration.type === DISCOUNT_TYPE.PERCENTAGE
-                ? { value: configuration.value }
+                ? {
+                    value: discountValue,
+                  }
                 : undefined,
             fixedAmount:
               configuration.type === DISCOUNT_TYPE.FIXEDAMOUNT

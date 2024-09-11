@@ -1,10 +1,11 @@
 import { Badge, InlineGrid, Layout, Link, Page } from "@shopify/polaris";
-import React from "react";
+import React, { useState } from "react";
 import { CustomActionCard } from "../../components";
 import { useNavigate } from "@shopify/app-bridge-react";
 
 const DiscountTypes = () => {
   const navigate = useNavigate();
+
   return (
     <>
       <Page
@@ -24,7 +25,7 @@ const DiscountTypes = () => {
                   <>
                     <Link
                       onClick={() => {
-                        navigate("/discount-types/product/create");
+                        navigate(`/discount-types/create?type=PRODUCT`);
                       }}
                     >
                       Create Discount
@@ -41,7 +42,7 @@ const DiscountTypes = () => {
                     <>
                       <Link
                         onClick={() => {
-                          navigate("/discount-types/order/create");
+                          navigate("/discount-types/create/?type=ORDER");
                         }}
                       >
                         Create Discount
