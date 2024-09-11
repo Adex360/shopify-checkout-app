@@ -598,9 +598,14 @@ const ProductDiscount = () => {
                                             Attributes. (shopify Plus)
                                           </List.Item>
                                           <List.Item>
-                                            Click here for the guide
-                                            documentation on payment method by
-                                            Handle.
+                                            {" "}
+                                            <b>Step 1:</b> Go to Checkout
+                                            Customizer. Open Sections.
+                                          </List.Item>
+                                          <List.Item>
+                                            {" "}
+                                            <b>Step 2:</b> Click Add App Block
+                                            and Select Checkout Attributes Block
                                           </List.Item>
                                         </List>
                                       </>
