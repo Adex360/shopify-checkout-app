@@ -3,7 +3,7 @@
 client_id = "0f68786e5fb1400997d13885faab3bd3"
 name = "checkout-app"
 handle = "checkout-app-716"
-application_url = "https://enjoy-publisher-soldiers-relating.trycloudflare.com"
+application_url = "https://alex-geography-breaks-errors.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "read_products,write_discounts,write_payment_customizations,write_produ
 
 [auth]
 redirect_urls = [
-  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/auth/callback",
-  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/auth/shopify/callback",
-  "https://enjoy-publisher-soldiers-relating.trycloudflare.com/api/auth/callback"
+  "https://alex-geography-breaks-errors.trycloudflare.com/auth/callback",
+  "https://alex-geography-breaks-errors.trycloudflare.com/auth/shopify/callback",
+  "https://alex-geography-breaks-errors.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
