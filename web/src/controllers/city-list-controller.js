@@ -9,7 +9,7 @@ export const createCityList = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `City list for Country:${data.country_name} Created Successfully `,
+    message: `City list for ${data.country_name} Created Successfully `,
     createCityList,
   });
 };
@@ -64,7 +64,7 @@ export const deleteCityList = async (req, res) => {
     const { id } = req.params;
     const deletedCityList = await CityList.delete(id);
     res.status(200).json({
-      message: `City list for Country:${deletedCityList.country_name} successfully deleted`,
+      message: `City list for ${deletedCityList.country_name} successfully deleted`,
     });
   } catch (error) {
     res.status(500).json({ error: "Error creating City List" });

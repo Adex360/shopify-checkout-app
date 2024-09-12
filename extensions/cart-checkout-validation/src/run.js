@@ -32,7 +32,7 @@ export function run(input) {
   );
 
   if (setting && isCountryMatch) {
-    const validateField = (fieldValue, fieldSetting, fieldName) => {
+    const validateField = (fieldValue, fieldSetting, fieldName, fieldTitle) => {
       if (fieldSetting.limit_type) {
         const wordCount = fieldValue.trim().split(/\s+/).length;
         if (
@@ -40,7 +40,7 @@ export function run(input) {
           wordCount > fieldSetting.max_length
         ) {
           errors.push({
-            localizedMessage: `${fieldName} must have between ${fieldSetting.min_length} and ${fieldSetting.max_length} words.`,
+            localizedMessage: `${fieldTitle}     must have between ${fieldSetting.min_length} and ${fieldSetting.max_length} words.`,
             target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
           });
         }
@@ -50,14 +50,14 @@ export function run(input) {
           fieldValue.length > fieldSetting.max_length
         ) {
           errors.push({
-            localizedMessage: `${fieldName} must have between ${fieldSetting.min_length} and ${fieldSetting.max_length} characters.`,
+            localizedMessage: `${fieldTitle}  must have between ${fieldSetting.min_length} and ${fieldSetting.max_length} characters.`,
             target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
           });
         }
       }
       if (fieldSetting.block_digits && /\d/.test(fieldValue)) {
         errors.push({
-          localizedMessage: `${fieldName} cannot contain digits.`,
+          localizedMessage: `${fieldTitle}  cannot contain digits.`,
           target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
         });
       }
@@ -66,7 +66,7 @@ export function run(input) {
         /(.)\1{2,}/.test(fieldValue)
       ) {
         errors.push({
-          localizedMessage: `${fieldName} cannot contain sequential characters.`,
+          localizedMessage: `${fieldTitle} cannot contain sequential characters.`,
           target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
         });
       }
@@ -75,7 +75,7 @@ export function run(input) {
         /[^a-zA-Z\s]/.test(fieldValue)
       ) {
         errors.push({
-          localizedMessage: `${fieldName} cannot contain special characters.`,
+          localizedMessage: `${fieldTitle} cannot contain special characters.`,
           target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
         });
       } else if (fieldSetting.special_character === "block-selective") {
@@ -84,7 +84,7 @@ export function run(input) {
         );
         if (regex.test(fieldValue)) {
           errors.push({
-            localizedMessage: `${fieldName} cannot contain the following characters: ${fieldSetting.if_block_selected.join(
+            localizedMessage: `${fieldTitle} cannot contain the following characters: ${fieldSetting.if_block_selected.join(
               ", "
             )}`,
             target: `$.cart.deliveryGroups[0].deliveryAddress.${fieldName}`,
@@ -95,17 +95,32 @@ export function run(input) {
 
     // Validate first name
     if (setting.first_name_validation) {
-      validateField(firstName, setting.first_name_validation, "firstName");
+      validateField(
+        firstName,
+        setting.first_name_validation,
+        "firstName",
+        "First Name"
+      );
     }
 
     // Validate last name
     if (setting.last_name_validation) {
-      validateField(lastName, setting.last_name_validation, "lastName");
+      validateField(
+        lastName,
+        setting.last_name_validation,
+        "lastName",
+        "Last Name"
+      );
     }
 
     // Validate address
     if (setting.address_validation) {
-      validateField(address1, setting.address_validation, "address1");
+      validateField(
+        address1,
+        setting.address_validation,
+        "address1",
+        "Address"
+      );
     }
 
     // Phone validation

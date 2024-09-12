@@ -58,7 +58,9 @@ export function CityDropdown() {
         (country) => country.country_code === shippingAddressValue?.countryCode
       );
       if (selectedCountry) {
-        const filteredCitiesValue = selectedCountry.city_list || [];
+        const filteredCitiesValue = selectedCountry.city_list.map(
+          (city) => city.charAt(0).toUpperCase() + city.slice(1).toLowerCase()
+        );
         setFilteredCities(filteredCitiesValue);
       } else {
         setFilteredCities([]);

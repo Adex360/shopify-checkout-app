@@ -10,7 +10,7 @@ export const createCustomFields = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `CustomFields for Title:${data.title}  Created Successfully  !! `,
+    message: `CustomFields for ${data.title} Created Successfully  !! `,
     createCustomFIeld,
   });
 };
@@ -52,7 +52,7 @@ export const updateCustomFields = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `Custom Field Form for Title:${data.title} Updated Successfully  `,
+      message: `Custom Field Form for ${data.title} Updated Successfully  `,
       updatedCustomField,
     });
   } catch (error) {
@@ -64,7 +64,7 @@ export const deleteFields = async (req, res) => {
     const { id } = req.params;
     const deletedForm = await CustomField.delete(id);
     res.status(200).json({
-      message: `Custom Field Form for Title:${deletedForm.title} is deleted successfully `,
+      message: `Custom Field Form for ${deletedForm.title} is deleted successfully `,
     });
   } catch (error) {
     res.status(500).json({ error: "Error deleting customField Form" });

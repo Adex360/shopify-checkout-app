@@ -109,7 +109,7 @@ export function run(input) {
           condition.type === CONDITION.COUNTRY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !countryCodes.some((code) => !condition.value.includes(code));
+          return countryCodes.some((code) => !condition.value.includes(code));
         }
         if (
           condition.type === CONDITION.TITLE &&
@@ -123,9 +123,7 @@ export function run(input) {
           condition.type === CONDITION.TITLE &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !deliveryTitles.some(
-            (name) => !condition.value.includes(name)
-          );
+          return deliveryTitles.some((name) => !condition.value.includes(name));
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
           const value = parseFloat(condition.value[0]);
@@ -235,7 +233,7 @@ export function run(input) {
           condition.type === CONDITION.COUNTRY &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !countryCodes.some((code) => !condition.value.includes(code));
+          return countryCodes.some((code) => !condition.value.includes(code));
         }
         if (
           condition.type === CONDITION.TITLE &&
@@ -249,9 +247,7 @@ export function run(input) {
           condition.type === CONDITION.TITLE &&
           condition.rule === RULES.DOES_NOT_CONTAINS
         ) {
-          return !deliveryTitles.some(
-            (name) => !condition.value.includes(name)
-          );
+          return deliveryTitles.some((name) => !condition.value.includes(name));
         }
         if (condition.type === CONDITION.TOTAL_AMOUNT) {
           const value = parseFloat(condition.value[0]);
@@ -359,7 +355,7 @@ export function run(input) {
         condition.type === CONDITION.COUNTRY &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return !countryCodes.some((code) => !condition.value.includes(code));
+        return countryCodes.some((code) => !condition.value.includes(code));
       }
       if (
         condition.type === CONDITION.TITLE &&
@@ -371,7 +367,7 @@ export function run(input) {
         condition.type === CONDITION.TITLE &&
         condition.rule === RULES.DOES_NOT_CONTAINS
       ) {
-        return !deliveryTitles.some((name) => !condition.value.includes(name));
+        return deliveryTitles.some((name) => !condition.value.includes(name));
       }
       if (condition.type === CONDITION.TOTAL_AMOUNT) {
         const value = parseFloat(condition.value[0]);
