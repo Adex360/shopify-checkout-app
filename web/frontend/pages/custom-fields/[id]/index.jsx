@@ -226,7 +226,8 @@ const CreateCustomFields = () => {
         return (
           <Select
             options={selectOptions}
-            label={<Text variant="headingSm">{field.label}</Text>}
+            placeholder={field.label}
+            // label={<Text variant="headingSm">{field.label}</Text>}
           />
         );
 
@@ -249,7 +250,8 @@ const CreateCustomFields = () => {
       case "Date":
         return (
           <TextField
-            label={<Text variant="headingSm">{field.label}</Text>}
+            // placeholder={field.label}
+            // label={<Text variant="headingSm">{field.label}</Text>}
             type="date"
           />
         );
