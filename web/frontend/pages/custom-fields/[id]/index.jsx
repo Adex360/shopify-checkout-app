@@ -132,6 +132,7 @@ const CreateCustomFields = () => {
 
   const getFieldSettings = (typeName, index) => {
     return Object.keys(customFields[index]).map((key) => {
+      console.log(key);
       if (key === "fieldType") return;
 
       if (key === "label" || key === "placeholder" || key === "options") {
@@ -251,7 +252,7 @@ const CreateCustomFields = () => {
         return (
           <TextField
             // placeholder={field.label}
-            // label={<Text variant="headingSm">{field.label}</Text>}
+            label={<Text variant="headingSm">{field.label}</Text>}
             type="date"
           />
         );
