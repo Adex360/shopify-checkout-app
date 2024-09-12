@@ -211,7 +211,7 @@ const ProductDiscount = () => {
         </div>
       ) : (
         <Page
-          title={`Create ${discountClass} Discount `}
+          title={`${id === "create" ? "Create" : "Edit"} ${discountClass} Discount `}
           primaryAction={{
             content: formData.enabled === true ? "Turn off" : "Turn on",
             destructive: formData.enabled === true,
@@ -309,7 +309,7 @@ const ProductDiscount = () => {
                         onChange={(value) => {
                           handleFormDataChange("discount_message", value);
                         }}
-                        placeholder="E.g First Order Discount"
+                        placeholder="E.g Summer Discount"
                         helpText="Shown to customers"
                         label={
                           <Text variant="headingMd" fontWeight="medium">

@@ -41,12 +41,12 @@ const CreateCustomFields = () => {
   const exampleField = {
     Text: {
       label: "add label here",
-      placeholder: "add placeholder here",
+      // placeholder: "add placeholder here",
       width: "full",
     },
     Number: {
       label: "add label here",
-      placeholder: "add placeholder here",
+      // placeholder: "add placeholder here",
       width: "full",
     },
     Checkbox: {
@@ -132,6 +132,7 @@ const CreateCustomFields = () => {
 
   const getFieldSettings = (typeName, index) => {
     return Object.keys(customFields[index]).map((key) => {
+      console.log(key);
       if (key === "fieldType") return;
 
       if (key === "label" || key === "placeholder" || key === "options") {
@@ -186,16 +187,16 @@ const CreateCustomFields = () => {
       case "Text":
         return (
           <TextField
-            label={<Text variant="headingSm">{field.label}</Text>}
-            placeholder={field.placeholder}
+            // label={<Text variant="headingSm">{field.label}</Text>}
+            placeholder={field.label}
             width={field.width}
           />
         );
       case "Number":
         return (
           <TextField
-            label={<Text variant="headingSm">{field.label}</Text>}
-            placeholder={field.placeholder}
+            // label={<Text variant="headingSm">{field.label}</Text>}
+            placeholder={field.label}
             type="number"
             width={field.width}
           />
@@ -226,7 +227,8 @@ const CreateCustomFields = () => {
         return (
           <Select
             options={selectOptions}
-            label={<Text variant="headingSm">{field.label}</Text>}
+            placeholder={field.label}
+            // label={<Text variant="headingSm">{field.label}</Text>}
           />
         );
 
@@ -249,6 +251,7 @@ const CreateCustomFields = () => {
       case "Date":
         return (
           <TextField
+            // placeholder={field.label}
             label={<Text variant="headingSm">{field.label}</Text>}
             type="date"
           />

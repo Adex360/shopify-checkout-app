@@ -121,7 +121,7 @@ const Discounts = () => {
         <>
           {!isSubscribed ? (
             <Page>
-              <div className="loading">
+              <div className="">
                 <PlanUpgradeWarning />
               </div>
             </Page>
