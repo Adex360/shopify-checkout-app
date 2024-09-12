@@ -19,7 +19,7 @@ export const createDiscount = async (req, res) => {
     ...data,
   });
   res.status(200).json({
-    message: `Discount Created!!`,
+    message: `Discount Created Successfully!!`,
     discount,
   });
 };
@@ -77,7 +77,7 @@ export const updateDiscount = async (req, res) => {
       discount_id: discountId,
     });
     res.status(200).json({
-      message: `Discount  Updated Successfully`,
+      message: `Discount Updated Successfully`,
       updateDiscount,
     });
   } catch (error) {
@@ -94,9 +94,9 @@ export const deleteDiscount = async (req, res) => {
     });
     const getByID = await Discount.getByID(id);
     await service.deleteDiscount(getByID.discount_id);
-    const deletedPaymentCustomization = await Discount.delete(id);
+    const deletedDiscount = await Discount.delete(id);
     return res.status(200).json({
-      message: `${deletedPaymentCustomization.title} is Successfully Deleted`,
+      message: `${deletedDiscount.title} is Successfully Deleted`,
     });
   } catch (error) {
     res.status(500).json({ error: "Error Deleting Discount:" });

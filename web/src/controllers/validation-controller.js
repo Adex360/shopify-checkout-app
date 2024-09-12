@@ -22,7 +22,7 @@ export const createValidation = async (req, res) => {
   });
 
   res.status(200).json({
-    message: `Validation Setting  Created Successfully !! `,
+    message: `Validation Setting Created Successfully !! `,
     createValidation,
   });
 };
@@ -81,7 +81,7 @@ export const updateValidation = async (req, res) => {
       ...data,
     });
     res.status(200).json({
-      message: `Validation  Updated Successfully `,
+      message: `Validation Updated Successfully `,
       updatedValidation,
     });
   } catch (error) {
